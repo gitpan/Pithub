@@ -1,6 +1,6 @@
 package Pithub;
 BEGIN {
-  $Pithub::VERSION = '0.01000';
+  $Pithub::VERSION = '0.01001';
 }
 
 # ABSTRACT: Github v3 API
@@ -18,13 +18,21 @@ with 'MooseX::Role::BuildInstanceOf' => { target => '::Repos' };
 with 'MooseX::Role::BuildInstanceOf' => { target => '::Users' };
 around qr{^merge_.*?_args$}          => \&Pithub::Base::_merge_args;
 
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+=pod
+
 =head1 NAME
 
-Pithub
+Pithub - Github v3 API
 
 =head1 VERSION
 
-version 0.01000
+version 0.01001
 
 =head1 SYNOPSIS
 
@@ -417,8 +425,16 @@ all other modules. In case Github adds a new API call which is
 not supported yet by L<Pithub> the L<Pithub::Base/request>
 method can be used directly.
 
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-__PACKAGE__->meta->make_immutable;
-
-1;

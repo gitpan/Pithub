@@ -1,20 +1,88 @@
 package Pithub::Repos::Commits;
 BEGIN {
-  $Pithub::Repos::Commits::VERSION = '0.01000';
+  $Pithub::Repos::Commits::VERSION = '0.01001';
 }
+
+# ABSTRACT: Github v3 Repo Commits API
 
 use Moose;
 use Carp qw(croak);
 use namespace::autoclean;
 extends 'Pithub::Base';
 
+
+sub create_comment {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: sha' unless $args{sha};
+    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( POST => sprintf( '/repos/%s/%s/commits/%s/comments', $args{user}, $args{repo}, $args{sha} ), $args{data} );
+}
+
+
+sub delete_comment {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: comment_id' unless $args{comment_id};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( DELETE => sprintf( '/repos/%s/%s/comments/%d', $args{user}, $args{repo}, $args{comment_id} ) );
+}
+
+
+sub get {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: sha' unless $args{sha};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/commits/%s', $args{user}, $args{repo}, $args{sha} ) );
+}
+
+
+sub get_comment {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: comment_id' unless $args{comment_id};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/comments/%s', $args{user}, $args{repo}, $args{comment_id} ) );
+}
+
+
+sub list {
+    my ( $self, %args ) = @_;
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/commits', $args{user}, $args{repo} ) );
+}
+
+
+sub list_comments {
+    my ( $self, %args ) = @_;
+    $self->_validate_user_repo_args( \%args );
+    if ( my $sha = $args{sha} ) {
+        return $self->request( GET => sprintf( '/repos/%s/%s/commits/%s/comments', $args{user}, $args{repo}, $sha ) );
+    }
+    return $self->request( GET => sprintf( '/repos/%s/%s/comments', $args{user}, $args{repo} ) );
+}
+
+
+sub update_comment {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: comment_id' unless $args{comment_id};
+    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( PATCH => sprintf( '/repos/%s/%s/comments/%s', $args{user}, $args{repo}, $args{comment_id} ), $args{data} );
+}
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+=pod
+
 =head1 NAME
 
-Pithub::Repos::Commits
+Pithub::Repos::Commits - Github v3 Repo Commits API
 
 =head1 VERSION
 
-version 0.01000
+version 0.01001
 
 =head1 METHODS
 
@@ -39,16 +107,6 @@ Examples:
         data => { body => 'some comment' },
     );
 
-=cut
-
-sub create_comment {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: sha' unless $args{sha};
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/commits/%s/comments', $args{user}, $args{repo}, $args{sha} ), $args{data} );
-}
-
 =head2 delete_comment
 
 =over
@@ -68,15 +126,6 @@ Examples:
         repo       => 'Pithub',
         comment_id => 1,
     );
-
-=cut
-
-sub delete_comment {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: comment_id' unless $args{comment_id};
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/comments/%d', $args{user}, $args{repo}, $args{comment_id} ) );
-}
 
 =head2 get
 
@@ -98,15 +147,6 @@ Examples:
         sha  => 'df21b2660fb6',
     );
 
-=cut
-
-sub get {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: sha' unless $args{sha};
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/commits/%s', $args{user}, $args{repo}, $args{sha} ) );
-}
-
 =head2 get_comment
 
 =over
@@ -127,15 +167,6 @@ Examples:
         comment_id => 1,
     );
 
-=cut
-
-sub get_comment {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: comment_id' unless $args{comment_id};
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/comments/%s', $args{user}, $args{repo}, $args{comment_id} ) );
-}
-
 =head2 list
 
 =over
@@ -154,14 +185,6 @@ Examples:
         user => 'plu',
         repo => 'Pithub',
     );
-
-=cut
-
-sub list {
-    my ( $self, %args ) = @_;
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/commits', $args{user}, $args{repo} ) );
-}
 
 =head2 list_comments
 
@@ -199,17 +222,6 @@ Examples:
         sha  => 'df21b2660fb6',
     );
 
-=cut
-
-sub list_comments {
-    my ( $self, %args ) = @_;
-    $self->_validate_user_repo_args( \%args );
-    if ( my $sha = $args{sha} ) {
-        return $self->request( GET => sprintf( '/repos/%s/%s/commits/%s/comments', $args{user}, $args{repo}, $sha ) );
-    }
-    return $self->request( GET => sprintf( '/repos/%s/%s/comments', $args{user}, $args{repo} ) );
-}
-
 =head2 update_comment
 
 =over
@@ -231,16 +243,16 @@ Examples:
         data       => { body => 'updated comment' },
     );
 
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-sub update_comment {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: comment_id' unless $args{comment_id};
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/comments/%s', $args{user}, $args{repo}, $args{comment_id} ), $args{data} );
-}
-
-__PACKAGE__->meta->make_immutable;
-
-1;

@@ -1,20 +1,45 @@
 package Pithub::GitData::Tags;
 BEGIN {
-  $Pithub::GitData::Tags::VERSION = '0.01000';
+  $Pithub::GitData::Tags::VERSION = '0.01001';
 }
+
+# ABSTRACT: Github v3 Git Data Tags API
 
 use Moose;
 use Carp qw(croak);
 use namespace::autoclean;
 extends 'Pithub::Base';
 
+
+sub create {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( POST => sprintf( '/repos/%s/%s/git/tags', $args{user}, $args{repo} ), $args{data} );
+}
+
+
+sub get {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: sha' unless $args{sha};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/git/tags/%s', $args{user}, $args{repo}, $args{sha} ) );
+}
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+=pod
+
 =head1 NAME
 
-Pithub::GitData::Tags
+Pithub::GitData::Tags - Github v3 Git Data Tags API
 
 =head1 VERSION
 
-version 0.01000
+version 0.01001
 
 =head1 METHODS
 
@@ -94,15 +119,6 @@ B<tagger.date>: Timestamp of when this object was tagged
 
 =back
 
-=cut
-
-sub create {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/git/tags', $args{user}, $args{repo} ), $args{data} );
-}
-
 =head2 get
 
 =over
@@ -123,15 +139,16 @@ Examples:
         sha  => 'df21b2660fb6',
     );
 
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-sub get {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: sha' unless $args{sha};
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/git/tags/%s', $args{user}, $args{repo}, $args{sha} ) );
-}
-
-__PACKAGE__->meta->make_immutable;
-
-1;

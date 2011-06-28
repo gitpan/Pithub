@@ -1,7 +1,9 @@
 package Pithub::Repos;
 BEGIN {
-  $Pithub::Repos::VERSION = '0.01000';
+  $Pithub::Repos::VERSION = '0.01001';
 }
+
+# ABSTRACT: Github v3 Repos API
 
 use Moose;
 use Carp qw(croak);
@@ -15,13 +17,99 @@ with 'MooseX::Role::BuildInstanceOf' => { target => '::Keys' };
 with 'MooseX::Role::BuildInstanceOf' => { target => '::Watching' };
 around qr{^merge_.*?_args$}          => \&Pithub::Base::_merge_args;
 
+
+sub branches {
+    my ( $self, %args ) = @_;
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/branches', $args{user}, $args{repo} ) );
+}
+
+
+sub contributors {
+    my ( $self, %args ) = @_;
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/contributors', $args{user}, $args{repo} ) );
+}
+
+
+sub create {
+    my ( $self, @args ) = @_;
+    if ( scalar @args == 1 ) {
+        return $self->request( POST => '/user/repos', $args[0] );
+    }
+    elsif ( scalar @args == 2 ) {
+        my ( $org, $data ) = @args;
+        return $self->request( POST => sprintf( '/orgs/%s/repos', $org ), $data );
+    }
+    else {
+        croak 'Invalid parameters';
+    }
+}
+
+
+sub get {
+    my ( $self, %args ) = @_;
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s', $args{user}, $args{repo} ) );
+}
+
+
+sub languages {
+    my ( $self, %args ) = @_;
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/languages', $args{user}, $args{repo} ) );
+}
+
+
+sub list {
+    my ( $self, %args ) = @_;
+    if ( my $user = $args{user} ) {
+        return $self->request( GET => sprintf( '/users/%s/repos', $user ) );
+    }
+    elsif ( my $org = $args{org} ) {
+        return $self->request( GET => sprintf( '/orgs/%s/repos', $org ) );
+    }
+    else {
+        return $self->request( GET => '/user/repos' );
+    }
+}
+
+
+sub tags {
+    my ( $self, %args ) = @_;
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/tags', $args{user}, $args{repo} ) );
+}
+
+
+sub teams {
+    my ( $self, %args ) = @_;
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/teams', $args{user}, $args{repo} ) );
+}
+
+
+sub update {
+    my ( $self, $name, $data ) = @_;
+    croak 'Missing parameter: $name' unless $name;
+    croak 'Missing parameter: $data (hashref)' unless ref $data eq 'HASH';
+    return $self->request( PATCH => sprintf( '/user/repos/%s', $name ), $data );
+}
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+=pod
+
 =head1 NAME
 
-Pithub::Repos
+Pithub::Repos - Github v3 Repos API
 
 =head1 VERSION
 
-version 0.01000
+version 0.01001
 
 =head1 METHODS
 
@@ -57,14 +145,6 @@ Examples:
     $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
     $result = $r->repos->branches;
 
-=cut
-
-sub branches {
-    my ( $self, %args ) = @_;
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/branches', $args{user}, $args{repo} ) );
-}
-
 =head2 contributors
 
 =over
@@ -97,14 +177,6 @@ Examples:
     $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
     $result = $r->repos->contributors;
 
-=cut
-
-sub contributors {
-    my ( $self, %args ) = @_;
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/contributors', $args{user}, $args{repo} ) );
-}
-
 =head2 create
 
 =over
@@ -132,22 +204,6 @@ Examples:
     # create a repo for an organization (the authenticated user must
     # belong to this organization)
     $result = $p->repos->create( 'CPAN-API' => { name => 'some-repo' } );
-
-=cut
-
-sub create {
-    my ( $self, @args ) = @_;
-    if ( scalar @args == 1 ) {
-        return $self->request( POST => '/user/repos', $args[0] );
-    }
-    elsif ( scalar @args == 2 ) {
-        my ( $org, $data ) = @args;
-        return $self->request( POST => sprintf( '/orgs/%s/repos', $org ), $data );
-    }
-    else {
-        croak 'Invalid parameters';
-    }
-}
 
 =head2 get
 
@@ -181,14 +237,6 @@ Examples:
     $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
     $result = $r->repos->get;
 
-=cut
-
-sub get {
-    my ( $self, %args ) = @_;
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s', $args{user}, $args{repo} ) );
-}
-
 =head2 languages
 
 =over
@@ -221,14 +269,6 @@ Examples:
     $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
     $result = $r->repos->languages;
 
-=cut
-
-sub languages {
-    my ( $self, %args ) = @_;
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/languages', $args{user}, $args{repo} ) );
-}
-
 =head2 list
 
 =over
@@ -258,21 +298,6 @@ Examples:
     $result = $p->repos->list( user => 'plu' );
     $result = $p->repos->list( org => 'CPAN-API' );
     $result = $p->repos->list;
-
-=cut
-
-sub list {
-    my ( $self, %args ) = @_;
-    if ( my $user = $args{user} ) {
-        return $self->request( GET => sprintf( '/users/%s/repos', $user ) );
-    }
-    elsif ( my $org = $args{org} ) {
-        return $self->request( GET => sprintf( '/orgs/%s/repos', $org ) );
-    }
-    else {
-        return $self->request( GET => '/user/repos' );
-    }
-}
 
 =head2 tags
 
@@ -306,14 +331,6 @@ Examples:
     $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
     $result = $r->repos->tags;
 
-=cut
-
-sub tags {
-    my ( $self, %args ) = @_;
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/tags', $args{user}, $args{repo} ) );
-}
-
 =head2 teams
 
 =over
@@ -346,14 +363,6 @@ Examples:
     $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
     $result = $r->repos->teams;
 
-=cut
-
-sub teams {
-    my ( $self, %args ) = @_;
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/teams', $args{user}, $args{repo} ) );
-}
-
 =head2 update
 
 =over
@@ -371,15 +380,16 @@ Examples:
     # update a repo for the authenticated user
     $result = $p->repos->update( Pithub => { description => 'Github API v3' } );
 
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-sub update {
-    my ( $self, $name, $data ) = @_;
-    croak 'Missing parameter: $name' unless $name;
-    croak 'Missing parameter: $data (hashref)' unless ref $data eq 'HASH';
-    return $self->request( PATCH => sprintf( '/user/repos/%s', $name ), $data );
-}
-
-__PACKAGE__->meta->make_immutable;
-
-1;

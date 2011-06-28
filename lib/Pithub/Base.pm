@@ -1,7 +1,9 @@
 package Pithub::Base;
 BEGIN {
-  $Pithub::Base::VERSION = '0.01000';
+  $Pithub::Base::VERSION = '0.01001';
 }
+
+# ABSTRACT: Github v3 base class for all Pithub modules
 
 use Moose;
 use Carp qw(croak);
@@ -12,32 +14,6 @@ use Pithub::Response;
 use Pithub::Result;
 use namespace::autoclean;
 
-=head1 NAME
-
-Pithub::Base
-
-=head1 VERSION
-
-version 0.01000
-
-All L<Pithub/MODULES> inherit from L<Pithub::Base>, even L<Pithub>
-itself. So all attributes listed here can either be set in the
-constructor or via the setter on the objects.
-
-=head1 ATTRIBUTES
-
-=head2 api_uri
-
-Defaults to L<https://api.github.com>.
-
-Examples:
-
-    $users = Pithub::Users->new( api_uri => 'https://api-foo.github.com' );
-
-    $users = Pithub::Users->new;
-    $users->api_uri('https://api-foo.github.com');
-
-=cut
 
 has 'api_uri' => (
     coerce   => 1,
@@ -47,31 +23,6 @@ has 'api_uri' => (
     required => 1,
 );
 
-=head2 repo
-
-This can be set as a default repo to use for API calls that require
-the repo parameter to be set.
-
-Examples:
-
-    $c = Pithub::Repos::Collaborators->new( repo => 'Pithub' );
-    $result = $c->list( user => 'plu' );
-
-There are two helper methods:
-
-=over
-
-=item *
-
-B<clear_repo>: reset the repo attribute
-
-=item *
-
-B<has_repo>: check if the repo attribute is set
-
-=back
-
-=cut
 
 has 'repo' => (
     clearer   => 'clear_repo',
@@ -81,23 +32,6 @@ has 'repo' => (
     required  => 0,
 );
 
-=head2 skip_request
-
-Mainly used by tests. But it might be useful to build another library
-on top of L<Pithub>.
-
-Examples:
-
-    $c = Pithub::Repos::Collaborators->new( skip_request => 1 );
-
-    # This will not make any request at all!
-    $result = $c->list( user => 'plu' );
-
-    # This will return the HTTP::Request object that has been created
-    # for this particular API call
-    $http_request = $c->request->http_request;
-
-=cut
 
 has 'skip_request' => (
     default  => 0,
@@ -106,15 +40,6 @@ has 'skip_request' => (
     required => 1,
 );
 
-=head2 token
-
-If the OAuth token is set, L<Pithub> will sent it via an HTTP header
-on each API request. Currently the basic authentication method is
-not supported.
-
-See also: L<http://developer.github.com/v3/oauth/>
-
-=cut
 
 has 'token' => (
     clearer   => 'clear_token',
@@ -124,12 +49,6 @@ has 'token' => (
     required  => 0,
 );
 
-=head2 ua
-
-By default a L<LWP::UserAgent> object, but it can be anything that
-implements the same interface.
-
-=cut
 
 has 'ua' => (
     is         => 'ro',
@@ -137,38 +56,6 @@ has 'ua' => (
     lazy_build => 1,
 );
 
-=head2 user
-
-This can be set as a default user to use for API calls that require
-the user parameter to be set.
-
-Examples:
-
-    $c = Pithub::Repos::Collaborators->new( user => 'plu' );
-    $result = $c->list( repo => 'Pithub' );
-
-There are two helper methods:
-
-=over
-
-=item *
-
-B<clear_user>: reset the user attribute
-
-=item *
-
-B<has_user>: check if the user attribute is set
-
-=back
-
-It might makes sense to use this together with the repo attribute:
-
-    $c = Pithub::Repos::Commits->new( user => 'plu', repo => 'Pithub' );
-    $result = $c->list;
-    $result = $c->list_comments;
-    $reuslt = $c->get('6b6127383666e8ecb41ec20a669e4f0552772363');
-
-=cut
 
 has 'user' => (
     clearer   => 'clear_user',
@@ -277,104 +164,6 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^PUT /user/watched/[^/]+/.*?$},
 );
 
-=head1 METHODS
-
-=head2 request
-
-This method is the central point: All L<Pithub> are using this method
-for making requests to the Github. If Github adds a new API call that
-is not yet supported, this method can be used directly. It accepts
-following parameters:
-
-=over
-
-=item *
-
-B<$method>: mandatory string, one of the following:
-
-=over
-
-=item *
-
-DELETE
-
-=item *
-
-GET
-
-=item *
-
-PATCH
-
-=item *
-
-POST
-
-=item *
-
-PUT
-
-=back
-
-=item *
-
-B<$path>: mandatory string of the relative path used for making the
-API call.
-
-=item *
-
-B<$data>: optional data reference, usually a reference to an array
-or hash. It must be possible to serialize this using L<JSON::Any>.
-This will be the HTTP request body.
-
-=item *
-
-B<$options>: optional hash reference to set additional options on
-the request. So far only C<< prepare_uri >> is supported. See more
-about that in the examples below.
-
-=back
-
-Usually you should not end up using this method at all. It's only
-available if L<Pithub> is missing anything from the Github v3 API.
-Though here are some examples how to use it:
-
-=item *
-
-Same as L<Pithub::Users/get>:
-
-    $p = Pithub->new;
-    $result = $p->request( GET => '/users/plu' );
-
-Same as L<Pithub::Gists/create>:
-
-    $p      = Pithub->new;
-    $method = 'POST';
-    $path   = '/gists';
-    $data   = {
-        description => 'the description for this gist',
-        public      => 1,
-        files       => { 'file1.txt' => { content => 'String file content' } }
-    };
-    $result = $p->request( $method, $path, $data );
-
-Same as L<Pithub::GitData::Trees/get>:
-
-    $p       = Pithub->new;
-    $method  = 'GET';
-    $path    = '/repos/plu/Pithub/git/trees/aac667c5aaa6e49572894e8c722d0705bb00fab2';
-    $data    = undef;
-    $options = {
-        prepare_uri => sub {
-            my ($uri) = @_;
-            $uri->query_form( recursive => 1 );
-        },
-    };
-    $result = $p->request( $method, $path, $data, $options );
-
-This method always returns a L<Pithub::Result> object.
-
-=cut
 
 sub request {
     my $self = shift;
@@ -474,3 +263,228 @@ sub _validate_user_repo_args {
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+__END__
+=pod
+
+=head1 NAME
+
+Pithub::Base - Github v3 base class for all Pithub modules
+
+=head1 VERSION
+
+version 0.01001
+
+=head1 DESCRIPTION
+
+All L<Pithub/MODULES> inherit from L<Pithub::Base>, even L<Pithub>
+itself. So all attributes listed here can either be set in the
+constructor or via the setter on the objects.
+
+=head1 ATTRIBUTES
+
+=head2 api_uri
+
+Defaults to L<https://api.github.com>.
+
+Examples:
+
+    $users = Pithub::Users->new( api_uri => 'https://api-foo.github.com' );
+
+    $users = Pithub::Users->new;
+    $users->api_uri('https://api-foo.github.com');
+
+=head2 repo
+
+This can be set as a default repo to use for API calls that require
+the repo parameter to be set.
+
+Examples:
+
+    $c = Pithub::Repos::Collaborators->new( repo => 'Pithub' );
+    $result = $c->list( user => 'plu' );
+
+There are two helper methods:
+
+=over
+
+=item *
+
+B<clear_repo>: reset the repo attribute
+
+=item *
+
+B<has_repo>: check if the repo attribute is set
+
+=back
+
+=head2 skip_request
+
+Mainly used by tests. But it might be useful to build another library
+on top of L<Pithub>.
+
+Examples:
+
+    $c = Pithub::Repos::Collaborators->new( skip_request => 1 );
+
+    # This will not make any request at all!
+    $result = $c->list( user => 'plu' );
+
+    # This will return the HTTP::Request object that has been created
+    # for this particular API call
+    $http_request = $c->request->http_request;
+
+=head2 token
+
+If the OAuth token is set, L<Pithub> will sent it via an HTTP header
+on each API request. Currently the basic authentication method is
+not supported.
+
+See also: L<http://developer.github.com/v3/oauth/>
+
+=head2 ua
+
+By default a L<LWP::UserAgent> object, but it can be anything that
+implements the same interface.
+
+=head2 user
+
+This can be set as a default user to use for API calls that require
+the user parameter to be set.
+
+Examples:
+
+    $c = Pithub::Repos::Collaborators->new( user => 'plu' );
+    $result = $c->list( repo => 'Pithub' );
+
+There are two helper methods:
+
+=over
+
+=item *
+
+B<clear_user>: reset the user attribute
+
+=item *
+
+B<has_user>: check if the user attribute is set
+
+=back
+
+It might makes sense to use this together with the repo attribute:
+
+    $c = Pithub::Repos::Commits->new( user => 'plu', repo => 'Pithub' );
+    $result = $c->list;
+    $result = $c->list_comments;
+    $reuslt = $c->get('6b6127383666e8ecb41ec20a669e4f0552772363');
+
+=head1 METHODS
+
+=head2 request
+
+This method is the central point: All L<Pithub> are using this method
+for making requests to the Github. If Github adds a new API call that
+is not yet supported, this method can be used directly. It accepts
+following parameters:
+
+=over
+
+=item *
+
+B<$method>: mandatory string, one of the following:
+
+=over
+
+=item *
+
+DELETE
+
+=item *
+
+GET
+
+=item *
+
+PATCH
+
+=item *
+
+POST
+
+=item *
+
+PUT
+
+=back
+
+=item *
+
+B<$path>: mandatory string of the relative path used for making the
+API call.
+
+=item *
+
+B<$data>: optional data reference, usually a reference to an array
+or hash. It must be possible to serialize this using L<JSON::Any>.
+This will be the HTTP request body.
+
+=item *
+
+B<$options>: optional hash reference to set additional options on
+the request. So far only C<< prepare_uri >> is supported. See more
+about that in the examples below.
+
+=back
+
+Usually you should not end up using this method at all. It's only
+available if L<Pithub> is missing anything from the Github v3 API.
+Though here are some examples how to use it:
+
+=item *
+
+Same as L<Pithub::Users/get>:
+
+    $p = Pithub->new;
+    $result = $p->request( GET => '/users/plu' );
+
+Same as L<Pithub::Gists/create>:
+
+    $p      = Pithub->new;
+    $method = 'POST';
+    $path   = '/gists';
+    $data   = {
+        description => 'the description for this gist',
+        public      => 1,
+        files       => { 'file1.txt' => { content => 'String file content' } }
+    };
+    $result = $p->request( $method, $path, $data );
+
+Same as L<Pithub::GitData::Trees/get>:
+
+    $p       = Pithub->new;
+    $method  = 'GET';
+    $path    = '/repos/plu/Pithub/git/trees/aac667c5aaa6e49572894e8c722d0705bb00fab2';
+    $data    = undef;
+    $options = {
+        prepare_uri => sub {
+            my ($uri) = @_;
+            $uri->query_form( recursive => 1 );
+        },
+    };
+    $result = $p->request( $method, $path, $data, $options );
+
+This method always returns a L<Pithub::Result> object.
+
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+

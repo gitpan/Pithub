@@ -1,7 +1,9 @@
 package Pithub::Request;
 BEGIN {
-  $Pithub::Request::VERSION = '0.01000';
+  $Pithub::Request::VERSION = '0.01001';
 }
+
+# ABSTRACT: Github v3 request object
 
 use Moose;
 use MooseX::Types::URI qw(Uri);
@@ -11,22 +13,6 @@ use JSON::Any;
 use URI;
 use namespace::autoclean;
 
-=head1 NAME
-
-Pithub::Request
-
-=head1 VERSION
-
-version 0.01000
-
-=head1 ATTRIBUTES
-
-=head2 data
-
-The request data. It will be JSON encoded later and set in the
-L<HTTP::Request> body.
-
-=cut
 
 has 'data' => (
     is        => 'ro',
@@ -35,11 +21,6 @@ has 'data' => (
     required  => 0,
 );
 
-=head2 http_request
-
-The L<HTTP::Request> object.
-
-=cut
 
 has 'http_request' => (
     is         => 'ro',
@@ -47,11 +28,6 @@ has 'http_request' => (
     lazy_build => 1,
 );
 
-=head2 method
-
-The HTTP method (GET, POST, PUT, DELETE, ...).
-
-=cut
 
 has 'method' => (
     is       => 'ro',
@@ -59,12 +35,6 @@ has 'method' => (
     required => 1,
 );
 
-=head2 token
-
-OAuth access token. If this is set, the authentication header is
-added to the L</http_request> object.
-
-=cut
 
 has 'token' => (
     clearer   => 'clear_token',
@@ -74,19 +44,6 @@ has 'token' => (
     required  => 0,
 );
 
-=head2 ua
-
-The LWP user agent. This is set from L<Pithub> or any other module
-you are using. So you can exchange it by another module which
-implements the L<LWP::UserAgent> interface.
-
-    $p = Pithub->new( ua => WWW::Mechanize->new );
-    $u = Pithub::Users->new( ua => WWW::Mechanize->new );
-
-Of course you can set various options on the user agent object
-before you hand it over to the constructor, e.g. proxy settings.
-
-=cut
 
 has 'ua' => (
     is       => 'ro',
@@ -94,12 +51,6 @@ has 'ua' => (
     required => 1,
 );
 
-=head2 uri
-
-An L<URI> object containing everything necessary to make that
-particular API call, besides the body (see L</data for that>).
-
-=cut
 
 has 'uri' => (
     coerce   => 1,
@@ -138,15 +89,6 @@ sub _build_http_request {
     return $request;
 }
 
-=head1 METHODS
-
-=head2 send
-
-Send the HTTP request. It's just a oneliner actually:
-
-    $self->ua->request( $self->http_request );
-
-=cut
 
 sub send {
     my ($self) = @_;
@@ -156,3 +98,73 @@ sub send {
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+__END__
+=pod
+
+=head1 NAME
+
+Pithub::Request - Github v3 request object
+
+=head1 VERSION
+
+version 0.01001
+
+=head1 ATTRIBUTES
+
+=head2 data
+
+The request data. It will be JSON encoded later and set in the
+L<HTTP::Request> body.
+
+=head2 http_request
+
+The L<HTTP::Request> object.
+
+=head2 method
+
+The HTTP method (GET, POST, PUT, DELETE, ...).
+
+=head2 token
+
+OAuth access token. If this is set, the authentication header is
+added to the L</http_request> object.
+
+=head2 ua
+
+The LWP user agent. This is set from L<Pithub> or any other module
+you are using. So you can exchange it by another module which
+implements the L<LWP::UserAgent> interface.
+
+    $p = Pithub->new( ua => WWW::Mechanize->new );
+    $u = Pithub::Users->new( ua => WWW::Mechanize->new );
+
+Of course you can set various options on the user agent object
+before you hand it over to the constructor, e.g. proxy settings.
+
+=head2 uri
+
+An L<URI> object containing everything necessary to make that
+particular API call, besides the body (see L</data for that>).
+
+=head1 METHODS
+
+=head2 send
+
+Send the HTTP request. It's just a oneliner actually:
+
+    $self->ua->request( $self->http_request );
+
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+

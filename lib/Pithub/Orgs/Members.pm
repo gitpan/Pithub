@@ -1,20 +1,83 @@
 package Pithub::Orgs::Members;
 BEGIN {
-  $Pithub::Orgs::Members::VERSION = '0.01000';
+  $Pithub::Orgs::Members::VERSION = '0.01001';
 }
+
+# ABSTRACT: Github v3 Org Members API
 
 use Moose;
 use Carp qw(croak);
 use namespace::autoclean;
 extends 'Pithub::Base';
 
+
+sub conceal {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: org'  unless $args{org};
+    croak 'Missing key in parameters: user' unless $args{user};
+    return $self->request( DELETE => sprintf( '/orgs/%s/public_members/%s', $args{org}, $args{user} ) );
+}
+
+
+sub delete {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: org'  unless $args{org};
+    croak 'Missing key in parameters: user' unless $args{user};
+    return $self->request( DELETE => sprintf( '/orgs/%s/members/%s', $args{org}, $args{user} ) );
+}
+
+
+sub is_member {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: org'  unless $args{org};
+    croak 'Missing key in parameters: user' unless $args{user};
+    return $self->request( GET => sprintf( '/orgs/%s/members/%s', $args{org}, $args{user} ) );
+}
+
+
+sub is_public {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: org'  unless $args{org};
+    croak 'Missing key in parameters: user' unless $args{user};
+    return $self->request( GET => sprintf( '/orgs/%s/public_members/%s', $args{org}, $args{user} ) );
+}
+
+
+sub list {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: org' unless $args{org};
+    return $self->request( GET => sprintf( '/orgs/%s/members', $args{org} ) );
+}
+
+
+sub list_public {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: org' unless $args{org};
+    return $self->request( GET => sprintf( '/orgs/%s/public_members', $args{org} ) );
+}
+
+
+sub publicize {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: org'  unless $args{org};
+    croak 'Missing key in parameters: user' unless $args{user};
+    return $self->request( PUT => sprintf( '/orgs/%s/public_members/%s', $args{org}, $args{user} ) );
+}
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+=pod
+
 =head1 NAME
 
-Pithub::Orgs::Members
+Pithub::Orgs::Members - Github v3 Org Members API
 
 =head1 VERSION
 
-version 0.01000
+version 0.01001
 
 =head1 METHODS
 
@@ -37,15 +100,6 @@ Examples:
         user => 'plu',
     );
 
-=cut
-
-sub conceal {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: org'  unless $args{org};
-    croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( DELETE => sprintf( '/orgs/%s/public_members/%s', $args{org}, $args{user} ) );
-}
-
 =head2 delete
 
 =over
@@ -67,15 +121,6 @@ Examples:
         user => 'plu',
     );
 
-=cut
-
-sub delete {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: org'  unless $args{org};
-    croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( DELETE => sprintf( '/orgs/%s/members/%s', $args{org}, $args{user} ) );
-}
-
 =head2 is_member
 
 =over
@@ -95,15 +140,6 @@ Examples:
         user => 'plu',
     );
 
-=cut
-
-sub is_member {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: org'  unless $args{org};
-    croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( GET => sprintf( '/orgs/%s/members/%s', $args{org}, $args{user} ) );
-}
-
 =head2 is_public
 
 =over
@@ -122,15 +158,6 @@ Examples:
         org  => 'CPAN-API',
         user => 'plu',
     );
-
-=cut
-
-sub is_public {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: org'  unless $args{org};
-    croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( GET => sprintf( '/orgs/%s/public_members/%s', $args{org}, $args{user} ) );
-}
 
 =head2 list
 
@@ -152,14 +179,6 @@ Examples:
 
     $result = $p->orgs->members->list( org => 'CPAN-API' );
 
-=cut
-
-sub list {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: org' unless $args{org};
-    return $self->request( GET => sprintf( '/orgs/%s/members', $args{org} ) );
-}
-
 =head2 list_public
 
 =over
@@ -176,14 +195,6 @@ publicized or not.
 Examples:
 
     $result = $p->orgs->members->list_public( org => 'CPAN-API' );
-
-=cut
-
-sub list_public {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: org' unless $args{org};
-    return $self->request( GET => sprintf( '/orgs/%s/public_members', $args{org} ) );
-}
 
 =head2 publicize
 
@@ -204,15 +215,16 @@ Examples:
         user => 'plu',
     );
 
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-sub publicize {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: org'  unless $args{org};
-    croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( PUT => sprintf( '/orgs/%s/public_members/%s', $args{org}, $args{user} ) );
-}
-
-__PACKAGE__->meta->make_immutable;
-
-1;

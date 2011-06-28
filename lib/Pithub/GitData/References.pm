@@ -1,20 +1,64 @@
 package Pithub::GitData::References;
 BEGIN {
-  $Pithub::GitData::References::VERSION = '0.01000';
+  $Pithub::GitData::References::VERSION = '0.01001';
 }
+
+# ABSTRACT: Github v3 Git Data References API
 
 use Moose;
 use Carp qw(croak);
 use namespace::autoclean;
 extends 'Pithub::Base';
 
+
+sub create {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( POST => sprintf( '/repos/%s/%s/git/refs', $args{user}, $args{repo} ), $args{data} );
+}
+
+
+sub get {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: ref' unless $args{ref};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/git/refs/%s', $args{user}, $args{repo}, $args{ref} ) );
+}
+
+
+sub list {
+    my ( $self, %args ) = @_;
+    $self->_validate_user_repo_args( \%args );
+    if ( my $ref = $args{ref} ) {
+        return $self->request( GET => sprintf( '/repos/%s/%s/git/refs/%s', $args{user}, $args{repo}, $args{ref} ) );
+    }
+    return $self->request( GET => sprintf( '/repos/%s/%s/git/refs', $args{user}, $args{repo} ) );
+}
+
+
+sub update {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: ref' unless $args{ref};
+    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( PATCH => sprintf( '/repos/%s/%s/git/refs/%s', $args{user}, $args{repo}, $args{ref} ), $args{data} );
+}
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+=pod
+
 =head1 NAME
 
-Pithub::GitData::References
+Pithub::GitData::References - Github v3 Git Data References API
 
 =head1 VERSION
 
-version 0.01000
+version 0.01001
 
 =head1 METHODS
 
@@ -57,15 +101,6 @@ B<sha>: String of the SHA1 value to set this reference to
 
 =back
 
-=cut
-
-sub create {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/git/refs', $args{user}, $args{repo} ), $args{data} );
-}
-
 =head2 get
 
 =over
@@ -89,15 +124,6 @@ Examples:
 The key B<ref> must be formatted as C<< heads/branch >>, not just
 C<< branch >>. For example, the call to get the data for a branch
 named C<< sc/featureA > would be: C<< heads/sc/featureA >>
-
-=cut
-
-sub get {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: ref' unless $args{ref};
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/git/refs/%s', $args{user}, $args{repo}, $args{ref} ) );
-}
 
 =head2 list
 
@@ -137,17 +163,6 @@ Examples:
         repo => 'Pithub',
         ref  => 'tags',
     );
-
-=cut
-
-sub list {
-    my ( $self, %args ) = @_;
-    $self->_validate_user_repo_args( \%args );
-    if ( my $ref = $args{ref} ) {
-        return $self->request( GET => sprintf( '/repos/%s/%s/git/refs/%s', $args{user}, $args{repo}, $args{ref} ) );
-    }
-    return $self->request( GET => sprintf( '/repos/%s/%s/git/refs', $args{user}, $args{repo} ) );
-}
 
 =head2 update
 
@@ -190,16 +205,16 @@ overwriting work.
 
 =back
 
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-sub update {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: ref' unless $args{ref};
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/git/refs/%s', $args{user}, $args{repo}, $args{ref} ), $args{data} );
-}
-
-__PACKAGE__->meta->make_immutable;
-
-1;

@@ -1,20 +1,128 @@
 package Pithub::Orgs::Teams;
 BEGIN {
-  $Pithub::Orgs::Teams::VERSION = '0.01000';
+  $Pithub::Orgs::Teams::VERSION = '0.01001';
 }
+
+# ABSTRACT: Github v3 Org Teams API
 
 use Moose;
 use Carp qw(croak);
 use namespace::autoclean;
 extends 'Pithub::Base';
 
+
+sub add_member {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: team_id' unless $args{team_id};
+    croak 'Missing key in parameters: user'    unless $args{user};
+    return $self->request( PUT => sprintf( '/teams/%d/members/%s', $args{team_id}, $args{user} ) );
+}
+
+
+sub add_repo {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: team_id' unless $args{team_id};
+    croak 'Missing key in parameters: repo'    unless $args{repo};
+    return $self->request( PUT => sprintf( '/teams/%d/repos/%s', $args{team_id}, $args{repo} ) );
+}
+
+
+sub create {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: org' unless $args{org};
+    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
+    return $self->request( POST => sprintf( '/orgs/%s/teams', $args{org} ), $args{data} );
+}
+
+
+sub delete {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: team_id' unless $args{team_id};
+    return $self->request( DELETE => sprintf( '/teams/%d', $args{team_id} ) );
+}
+
+
+sub get {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: team_id' unless $args{team_id};
+    return $self->request( GET => sprintf( '/teams/%d', $args{team_id} ) );
+}
+
+
+sub get_repo {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: team_id' unless $args{team_id};
+    croak 'Missing key in parameters: repo'    unless $args{repo};
+    return $self->request( GET => sprintf( '/teams/%d/repos/%s', $args{team_id}, $args{repo} ) );
+}
+
+
+sub is_member {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: team_id' unless $args{team_id};
+    croak 'Missing key in parameters: user'    unless $args{user};
+    return $self->request( GET => sprintf( '/teams/%d/members/%s', $args{team_id}, $args{user} ) );
+}
+
+
+sub list {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: org' unless $args{org};
+    return $self->request( GET => sprintf( '/orgs/%s/teams', $args{org} ) );
+}
+
+
+sub list_members {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: team_id' unless $args{team_id};
+    return $self->request( GET => sprintf( '/teams/%d/members', $args{team_id} ) );
+}
+
+
+sub list_repos {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: team_id' unless $args{team_id};
+    return $self->request( GET => sprintf( '/teams/%d/repos', $args{team_id} ) );
+}
+
+
+sub remove_member {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: team_id' unless $args{team_id};
+    croak 'Missing key in parameters: user'    unless $args{user};
+    return $self->request( DELETE => sprintf( '/teams/%d/members/%s', $args{team_id}, $args{user} ) );
+}
+
+
+sub remove_repo {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: team_id' unless $args{team_id};
+    croak 'Missing key in parameters: repo'    unless $args{repo};
+    return $self->request( DELETE => sprintf( '/teams/%d/repos/%s', $args{team_id}, $args{repo} ) );
+}
+
+
+sub update {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: team_id' unless $args{team_id};
+    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
+    return $self->request( PATCH => sprintf( '/teams/%d', $args{team_id} ), $args{data} );
+}
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+=pod
+
 =head1 NAME
 
-Pithub::Orgs::Teams
+Pithub::Orgs::Teams - Github v3 Org Teams API
 
 =head1 VERSION
 
-version 0.01000
+version 0.01001
 
 =head1 METHODS
 
@@ -37,15 +145,6 @@ Examples:
         user    => 'plu',
     );
 
-=cut
-
-sub add_member {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: team_id' unless $args{team_id};
-    croak 'Missing key in parameters: user'    unless $args{user};
-    return $self->request( PUT => sprintf( '/teams/%d/members/%s', $args{team_id}, $args{user} ) );
-}
-
 =head2 add_repo
 
 =over
@@ -63,15 +162,6 @@ Examples:
         team_id => 1,
         repo    => 'some_repo',
     );
-
-=cut
-
-sub add_repo {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: team_id' unless $args{team_id};
-    croak 'Missing key in parameters: repo'    unless $args{repo};
-    return $self->request( PUT => sprintf( '/teams/%d/repos/%s', $args{team_id}, $args{repo} ) );
-}
 
 =head2 create
 
@@ -95,15 +185,6 @@ Examples:
         }
     );
 
-=cut
-
-sub create {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: org' unless $args{org};
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    return $self->request( POST => sprintf( '/orgs/%s/teams', $args{org} ), $args{data} );
-}
-
 =head2 delete
 
 =over
@@ -119,14 +200,6 @@ Examples:
 
     $result = $p->orgs->teams->delete( team_id => 1 );
 
-=cut
-
-sub delete {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: team_id' unless $args{team_id};
-    return $self->request( DELETE => sprintf( '/teams/%d', $args{team_id} ) );
-}
-
 =head2 get
 
 =over
@@ -140,14 +213,6 @@ Get team
 Examples:
 
     $result = $p->orgs->teams->get( team_id => 1 );
-
-=cut
-
-sub get {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: team_id' unless $args{team_id};
-    return $self->request( GET => sprintf( '/teams/%d', $args{team_id} ) );
-}
 
 =head2 get_repo
 
@@ -165,15 +230,6 @@ Examples:
         team_id => 1,
         repo    => 'some_repo',
     );
-
-=cut
-
-sub get_repo {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: team_id' unless $args{team_id};
-    croak 'Missing key in parameters: repo'    unless $args{repo};
-    return $self->request( GET => sprintf( '/teams/%d/repos/%s', $args{team_id}, $args{repo} ) );
-}
 
 =head2 is_member
 
@@ -193,15 +249,6 @@ Examples:
         user    => 'plu',
     );
 
-=cut
-
-sub is_member {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: team_id' unless $args{team_id};
-    croak 'Missing key in parameters: user'    unless $args{user};
-    return $self->request( GET => sprintf( '/teams/%d/members/%s', $args{team_id}, $args{user} ) );
-}
-
 =head2 list
 
 =over
@@ -215,14 +262,6 @@ List teams
 Examples:
 
     $result = $p->orgs->teams->list( org => 'CPAN-API' );
-
-=cut
-
-sub list {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: org' unless $args{org};
-    return $self->request( GET => sprintf( '/orgs/%s/teams', $args{org} ) );
-}
 
 =head2 list_members
 
@@ -239,14 +278,6 @@ Examples:
 
     $result = $p->orgs->teams->list_members( team_id => 1 );
 
-=cut
-
-sub list_members {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: team_id' unless $args{team_id};
-    return $self->request( GET => sprintf( '/teams/%d/members', $args{team_id} ) );
-}
-
 =head2 list_repos
 
 =over
@@ -260,14 +291,6 @@ List team repos
 Examples:
 
     $result = $p->orgs->teams->list_repos( team_id => 1 );
-
-=cut
-
-sub list_repos {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: team_id' unless $args{team_id};
-    return $self->request( GET => sprintf( '/teams/%d/repos', $args{team_id} ) );
-}
 
 =head2 remove_member
 
@@ -289,15 +312,6 @@ Examples:
         user    => 'plu',
     );
 
-=cut
-
-sub remove_member {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: team_id' unless $args{team_id};
-    croak 'Missing key in parameters: user'    unless $args{user};
-    return $self->request( DELETE => sprintf( '/teams/%d/members/%s', $args{team_id}, $args{user} ) );
-}
-
 =head2 remove_repo
 
 =over
@@ -315,15 +329,6 @@ Examples:
         team_id => 1,
         repo    => 'some_repo',
     );
-
-=cut
-
-sub remove_repo {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: team_id' unless $args{team_id};
-    croak 'Missing key in parameters: repo'    unless $args{repo};
-    return $self->request( DELETE => sprintf( '/teams/%d/repos/%s', $args{team_id}, $args{repo} ) );
-}
 
 =head2 update
 
@@ -346,15 +351,16 @@ Examples:
         }
     );
 
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-sub update {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: team_id' unless $args{team_id};
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    return $self->request( PATCH => sprintf( '/teams/%d', $args{team_id} ), $args{data} );
-}
-
-__PACKAGE__->meta->make_immutable;
-
-1;

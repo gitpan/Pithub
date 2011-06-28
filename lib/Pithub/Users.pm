@@ -1,7 +1,9 @@
 package Pithub::Users;
 BEGIN {
-  $Pithub::Users::VERSION = '0.01000';
+  $Pithub::Users::VERSION = '0.01001';
 }
+
+# ABSTRACT: Github v3 Users API
 
 use Moose;
 use Carp qw(croak);
@@ -12,13 +14,36 @@ with 'MooseX::Role::BuildInstanceOf' => { target => '::Followers' };
 with 'MooseX::Role::BuildInstanceOf' => { target => '::Keys' };
 around qr{^merge_.*?_args$}          => \&Pithub::Base::_merge_args;
 
+
+sub get {
+    my ( $self, %args ) = @_;
+    if ( $args{user} ) {
+        return $self->request( GET => sprintf( '/users/%s', $args{user} ) );
+    }
+    return $self->request( GET => '/user' );
+}
+
+
+sub update {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
+    return $self->request( PATCH => '/user', $args{data} );
+}
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+=pod
+
 =head1 NAME
 
-Pithub::Users
+Pithub::Users - Github v3 Users API
 
 =head1 VERSION
 
-version 0.01000
+version 0.01001
 
 =head1 METHODS
 
@@ -54,16 +79,6 @@ Examples:
     $u = Pithub::Users->new( token => 'b3c62c6' );
     $result = $u->get;
 
-=cut
-
-sub get {
-    my ( $self, %args ) = @_;
-    if ( $args{user} ) {
-        return $self->request( GET => sprintf( '/users/%s', $args{user} ) );
-    }
-    return $self->request( GET => '/user' );
-}
-
 =head2 update
 
 =over
@@ -84,14 +99,16 @@ Examples:
     $u = Pithub::Users->new( token => 'b3c62c6' );
     $result = $u->update( data => { email => 'plu@cpan.org' } );
 
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-sub update {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    return $self->request( PATCH => '/user', $args{data} );
-}
-
-__PACKAGE__->meta->make_immutable;
-
-1;

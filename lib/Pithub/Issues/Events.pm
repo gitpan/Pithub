@@ -1,20 +1,47 @@
 package Pithub::Issues::Events;
 BEGIN {
-  $Pithub::Issues::Events::VERSION = '0.01000';
+  $Pithub::Issues::Events::VERSION = '0.01001';
 }
+
+# ABSTRACT: Github v3 Issue Events API
 
 use Moose;
 use Carp qw(croak);
 use namespace::autoclean;
 extends 'Pithub::Base';
 
+
+sub get {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: event_id' unless $args{event_id};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/issues/events/%d', $args{user}, $args{repo}, $args{event_id} ) );
+}
+
+
+sub list {
+    my ( $self, %args ) = @_;
+    $self->_validate_user_repo_args( \%args );
+    if ( my $issue_id = $args{issue_id} ) {
+        return $self->request( GET => sprintf( '/repos/%s/%s/issues/%d/events', $args{user}, $args{repo}, $issue_id ) );
+    }
+    return $self->request( GET => sprintf( '/repos/%s/%s/issues/events', $args{user}, $args{repo} ) );
+}
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+=pod
+
 =head1 NAME
 
-Pithub::Issues::Events
+Pithub::Issues::Events - Github v3 Issue Events API
 
 =head1 VERSION
 
-version 0.01000
+version 0.01001
 
 =head1 METHODS
 
@@ -37,15 +64,6 @@ Examples:
         user     => 'plu',
         event_id => 1,
     );
-
-=cut
-
-sub get {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: event_id' unless $args{event_id};
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/issues/events/%d', $args{user}, $args{repo}, $args{event_id} ) );
-}
 
 =head2 list
 
@@ -78,17 +96,16 @@ List events for a repository
         user => 'plu',
     );
 
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-sub list {
-    my ( $self, %args ) = @_;
-    $self->_validate_user_repo_args( \%args );
-    if ( my $issue_id = $args{issue_id} ) {
-        return $self->request( GET => sprintf( '/repos/%s/%s/issues/%d/events', $args{user}, $args{repo}, $issue_id ) );
-    }
-    return $self->request( GET => sprintf( '/repos/%s/%s/issues/events', $args{user}, $args{repo} ) );
-}
-
-__PACKAGE__->meta->make_immutable;
-
-1;

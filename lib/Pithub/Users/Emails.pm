@@ -1,20 +1,49 @@
 package Pithub::Users::Emails;
 BEGIN {
-  $Pithub::Users::Emails::VERSION = '0.01000';
+  $Pithub::Users::Emails::VERSION = '0.01001';
 }
+
+# ABSTRACT: Github v3 User Emails API
 
 use Moose;
 use Carp qw(croak);
 use namespace::autoclean;
 extends 'Pithub::Base';
 
+
+sub add {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: data (arrayref)' unless ref $args{data} eq 'ARRAY';
+    return $self->request( POST => '/user/emails', $args{data} );
+}
+
+
+sub delete {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: data (arrayref)' unless ref $args{data} eq 'ARRAY';
+    return $self->request( DELETE => '/user/emails', $args{data} );
+}
+
+
+sub list {
+    my ($self) = @_;
+    return $self->request( GET => '/user/emails' );
+}
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+=pod
+
 =head1 NAME
 
-Pithub::Users::Emails
+Pithub::Users::Emails - Github v3 User Emails API
 
 =head1 VERSION
 
-version 0.01000
+version 0.01001
 
 =head1 METHODS
 
@@ -40,14 +69,6 @@ Examples:
     $result = $e->add( data => ['plu@cpan.org'] );
     $result = $e->add( data => [ 'plu@cpan.org', 'plu@pqpq.de' ] );
 
-=cut
-
-sub add {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: data (arrayref)' unless ref $args{data} eq 'ARRAY';
-    return $self->request( POST => '/user/emails', $args{data} );
-}
-
 =head2 delete
 
 =over
@@ -70,14 +91,6 @@ Examples:
     $result = $e->delete( data => ['plu@cpan.org'] );
     $result = $e->delete( data => [ 'plu@cpan.org', 'plu@pqpq.de' ] );
 
-=cut
-
-sub delete {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: data (arrayref)' unless ref $args{data} eq 'ARRAY';
-    return $self->request( DELETE => '/user/emails', $args{data} );
-}
-
 =head2 list
 
 =over
@@ -98,13 +111,16 @@ Examples:
     $e = Pithub::Users::Emails->new( token => 'b3c62c6' );
     $result = $e->list;
 
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-sub list {
-    my ($self) = @_;
-    return $self->request( GET => '/user/emails' );
-}
-
-__PACKAGE__->meta->make_immutable;
-
-1;

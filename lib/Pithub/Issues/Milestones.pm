@@ -1,20 +1,69 @@
 package Pithub::Issues::Milestones;
 BEGIN {
-  $Pithub::Issues::Milestones::VERSION = '0.01000';
+  $Pithub::Issues::Milestones::VERSION = '0.01001';
 }
+
+# ABSTRACT: Github v3 Issue Milestones API
 
 use Moose;
 use Carp qw(croak);
 use namespace::autoclean;
 extends 'Pithub::Base';
 
+
+sub create {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( POST => sprintf( '/repos/%s/%s/milestones', $args{user}, $args{repo} ), $args{data} );
+}
+
+
+sub delete {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: milestone_id' unless $args{milestone_id};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( DELETE => sprintf( '/repos/%s/%s/milestones/%d', $args{user}, $args{repo}, $args{milestone_id} ) );
+}
+
+
+sub get {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: milestone_id' unless $args{milestone_id};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/milestones/%d', $args{user}, $args{repo}, $args{milestone_id} ) );
+}
+
+
+sub list {
+    my ( $self, %args ) = @_;
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/milestones', $args{user}, $args{repo} ) );
+}
+
+
+sub update {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: milestone_id' unless $args{milestone_id};
+    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( PATCH => sprintf( '/repos/%s/%s/milestones/%d', $args{user}, $args{repo}, $args{milestone_id} ), $args{data} );
+}
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+=pod
+
 =head1 NAME
 
-Pithub::Issues::Milestones
+Pithub::Issues::Milestones - Github v3 Issue Milestones API
 
 =head1 VERSION
 
-version 0.01000
+version 0.01001
 
 =head1 METHODS
 
@@ -43,15 +92,6 @@ Examples:
         }
     );
 
-=cut
-
-sub create {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/milestones', $args{user}, $args{repo} ), $args{data} );
-}
-
 =head2 delete
 
 =over
@@ -71,15 +111,6 @@ Examples:
         user => 'plu',
         milestone_id => 1,
     );
-
-=cut
-
-sub delete {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: milestone_id' unless $args{milestone_id};
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/milestones/%d', $args{user}, $args{repo}, $args{milestone_id} ) );
-}
 
 =head2 get
 
@@ -101,15 +132,6 @@ Examples:
         milestone_id => 1,
     );
 
-=cut
-
-sub get {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: milestone_id' unless $args{milestone_id};
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/milestones/%d', $args{user}, $args{repo}, $args{milestone_id} ) );
-}
-
 =head2 list
 
 =over
@@ -128,14 +150,6 @@ Examples:
         repo => 'Pithub',
         user => 'plu',
     );
-
-=cut
-
-sub list {
-    my ( $self, %args ) = @_;
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/milestones', $args{user}, $args{repo} ) );
-}
 
 =head2 update
 
@@ -162,16 +176,16 @@ Examples:
         }
     );
 
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-sub update {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: milestone_id' unless $args{milestone_id};
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/milestones/%d', $args{user}, $args{repo}, $args{milestone_id} ), $args{data} );
-}
-
-__PACKAGE__->meta->make_immutable;
-
-1;

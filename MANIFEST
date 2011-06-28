@@ -1,5 +1,7 @@
+Changes
 LICENSE
 MANIFEST
+META.json
 META.yml
 Makefile.PL
 README
@@ -57,7 +59,6 @@ t/live.t
 t/multi.t
 t/orgs.t
 t/pull_requests.t
-t/release-pod-coverage.t
 t/release-pod-syntax.t
 t/repos.t
 t/users.t

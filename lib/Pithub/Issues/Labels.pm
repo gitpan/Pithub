@@ -1,20 +1,104 @@
 package Pithub::Issues::Labels;
 BEGIN {
-  $Pithub::Issues::Labels::VERSION = '0.01000';
+  $Pithub::Issues::Labels::VERSION = '0.01001';
 }
+
+# ABSTRACT: Github v3 Issue Labels API
 
 use Moose;
 use Carp qw(croak);
 use namespace::autoclean;
 extends 'Pithub::Base';
 
+
+sub add {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: issue_id' unless $args{issue_id};
+    croak 'Missing key in parameters: data (arrayref)' unless ref $args{data} eq 'ARRAY';
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( POST => sprintf( '/repos/%s/%s/issues/%d/labels', $args{user}, $args{repo}, $args{issue_id} ), $args{data} );
+}
+
+
+sub create {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( POST => sprintf( '/repos/%s/%s/labels', $args{user}, $args{repo} ), $args{data} );
+}
+
+
+sub delete {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: label_id' unless $args{label_id};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( DELETE => sprintf( '/repos/%s/%s/labels/%d', $args{user}, $args{repo}, $args{label_id} ) );
+}
+
+
+sub get {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: label_id' unless $args{label_id};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/labels/%d', $args{user}, $args{repo}, $args{label_id} ) );
+}
+
+
+sub list {
+    my ( $self, %args ) = @_;
+    $self->_validate_user_repo_args( \%args );
+    if ( my $milestone_id = $args{milestone_id} ) {
+        return $self->request( GET => sprintf( '/repos/%s/%s/milestones/%d/labels', $args{user}, $args{repo}, $milestone_id ) );
+    }
+    elsif ( my $issue_id = $args{issue_id} ) {
+        return $self->request( GET => sprintf( '/repos/%s/%s/issues/%d/labels', $args{user}, $args{repo}, $issue_id ) );
+    }
+    return $self->request( GET => sprintf( '/repos/%s/%s/labels', $args{user}, $args{repo} ) );
+}
+
+
+sub remove {
+    my ( $self, %args ) = @_;
+    $self->_validate_user_repo_args( \%args );
+    croak 'Missing key in parameters: issue_id' unless $args{issue_id};
+    if ( my $label_id = $args{label_id} ) {
+        return $self->request( DELETE => sprintf( '/repos/%s/%s/issues/%d/labels/%d', $args{user}, $args{repo}, $args{issue_id}, $label_id ) );
+    }
+    return $self->request( DELETE => sprintf( '/repos/%s/%s/issues/%d/labels', $args{user}, $args{repo}, $args{issue_id} ) );
+}
+
+
+sub replace {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: issue_id' unless $args{issue_id};
+    croak 'Missing key in parameters: data (arrayref)' unless ref $args{data} eq 'ARRAY';
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( PUT => sprintf( '/repos/%s/%s/issues/%d/labels', $args{user}, $args{repo}, $args{issue_id} ), $args{data} );
+}
+
+
+sub update {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: label_id' unless $args{label_id};
+    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( PATCH => sprintf( '/repos/%s/%s/labels/%d', $args{user}, $args{repo}, $args{label_id} ), $args{data} );
+}
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+=pod
+
 =head1 NAME
 
-Pithub::Issues::Labels
+Pithub::Issues::Labels - Github v3 Issue Labels API
 
 =head1 VERSION
 
-version 0.01000
+version 0.01001
 
 =head1 METHODS
 
@@ -39,16 +123,6 @@ Examples:
         data     => ['Label1', 'Label2'],
     );
 
-=cut
-
-sub add {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: issue_id' unless $args{issue_id};
-    croak 'Missing key in parameters: data (arrayref)' unless ref $args{data} eq 'ARRAY';
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/issues/%d/labels', $args{user}, $args{repo}, $args{issue_id} ), $args{data} );
-}
-
 =head2 create
 
 =over
@@ -72,15 +146,6 @@ Examples:
         }
     );
 
-=cut
-
-sub create {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/labels', $args{user}, $args{repo} ), $args{data} );
-}
-
 =head2 delete
 
 =over
@@ -101,15 +166,6 @@ Examples:
         label_id => 1,
     );
 
-=cut
-
-sub delete {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: label_id' unless $args{label_id};
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/labels/%d', $args{user}, $args{repo}, $args{label_id} ) );
-}
-
 =head2 get
 
 =over
@@ -129,15 +185,6 @@ Examples:
         user => 'plu',
         label_id => 1,
     );
-
-=cut
-
-sub get {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: label_id' unless $args{label_id};
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/labels/%d', $args{user}, $args{repo}, $args{label_id} ) );
-}
 
 =head2 list
 
@@ -186,20 +233,6 @@ Examples:
 
 =back
 
-=cut
-
-sub list {
-    my ( $self, %args ) = @_;
-    $self->_validate_user_repo_args( \%args );
-    if ( my $milestone_id = $args{milestone_id} ) {
-        return $self->request( GET => sprintf( '/repos/%s/%s/milestones/%d/labels', $args{user}, $args{repo}, $milestone_id ) );
-    }
-    elsif ( my $issue_id = $args{issue_id} ) {
-        return $self->request( GET => sprintf( '/repos/%s/%s/issues/%d/labels', $args{user}, $args{repo}, $issue_id ) );
-    }
-    return $self->request( GET => sprintf( '/repos/%s/%s/labels', $args{user}, $args{repo} ) );
-}
-
 =head2 remove
 
 =over
@@ -235,18 +268,6 @@ Examples:
 
 =back
 
-=cut
-
-sub remove {
-    my ( $self, %args ) = @_;
-    $self->_validate_user_repo_args( \%args );
-    croak 'Missing key in parameters: issue_id' unless $args{issue_id};
-    if ( my $label_id = $args{label_id} ) {
-        return $self->request( DELETE => sprintf( '/repos/%s/%s/issues/%d/labels/%d', $args{user}, $args{repo}, $args{issue_id}, $label_id ) );
-    }
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/issues/%d/labels', $args{user}, $args{repo}, $args{issue_id} ) );
-}
-
 =head2 replace
 
 =over
@@ -267,16 +288,6 @@ Examples:
         issue_id => 1,
         data     => [qw(label3 label4)],
     );
-
-=cut
-
-sub replace {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: issue_id' unless $args{issue_id};
-    croak 'Missing key in parameters: data (arrayref)' unless ref $args{data} eq 'ARRAY';
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( PUT => sprintf( '/repos/%s/%s/issues/%d/labels', $args{user}, $args{repo}, $args{issue_id} ), $args{data} );
-}
 
 =head2 update
 
@@ -302,16 +313,16 @@ Examples:
         }
     );
 
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-sub update {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: label_id' unless $args{label_id};
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/labels/%d', $args{user}, $args{repo}, $args{label_id} ), $args{data} );
-}
-
-__PACKAGE__->meta->make_immutable;
-
-1;

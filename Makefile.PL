@@ -12,7 +12,10 @@ my %WriteMakefileArgs = (
   'ABSTRACT' => 'Github v3 API',
   'AUTHOR' => 'Johannes Plunien <plu@cpan.org>',
   'BUILD_REQUIRES' => {
+    'File::Basename' => '0',
     'File::Slurp' => '0',
+    'FindBin' => '0',
+    'Test::More' => '0',
     'Test::Most' => '0'
   },
   'CONFIGURE_REQUIRES' => {
@@ -23,7 +26,12 @@ my %WriteMakefileArgs = (
   'LICENSE' => 'perl',
   'NAME' => 'Pithub',
   'PREREQ_PM' => {
+    'Carp' => '0',
+    'Class::MOP' => '0',
+    'HTTP::Headers' => '0',
     'HTTP::Message' => '0',
+    'HTTP::Request' => '0',
+    'HTTP::Response' => '0',
     'JSON::Any' => '0',
     'JSON::XS' => '0',
     'LWP::Protocol::https' => '0',
@@ -31,9 +39,10 @@ my %WriteMakefileArgs = (
     'Moose' => '0',
     'MooseX::Role::BuildInstanceOf' => '0',
     'MooseX::Types::URI' => '0',
+    'URI' => '0',
     'namespace::autoclean' => '0'
   },
-  'VERSION' => '0.01000',
+  'VERSION' => '0.01001',
   'test' => {
     'TESTS' => 't/*.t'
   }

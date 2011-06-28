@@ -1,7 +1,9 @@
 package Pithub::PullRequests;
 BEGIN {
-  $Pithub::PullRequests::VERSION = '0.01000';
+  $Pithub::PullRequests::VERSION = '0.01001';
 }
+
+# ABSTRACT: Github v3 Pull Requests API
 
 use Moose;
 use Carp qw(croak);
@@ -10,13 +12,84 @@ extends 'Pithub::Base';
 with 'MooseX::Role::BuildInstanceOf' => { target => '::Comments' };
 around qr{^merge_.*?_args$} => \&Pithub::Base::_merge_args;
 
+
+sub commits {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/%d/commits', $args{user}, $args{repo}, $args{pull_request_id} ) );
+}
+
+
+sub create {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( POST => sprintf( '/repos/%s/%s/pulls', $args{user}, $args{repo} ), $args{data} );
+}
+
+
+sub files {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/%d/files', $args{user}, $args{repo}, $args{pull_request_id} ) );
+}
+
+
+sub get {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/%d', $args{user}, $args{repo}, $args{pull_request_id} ) );
+}
+
+
+sub is_merged {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/%d/merge', $args{user}, $args{repo}, $args{pull_request_id} ) );
+}
+
+
+sub list {
+    my ( $self, %args ) = @_;
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( GET => sprintf( '/repos/%s/%s/pulls', $args{user}, $args{repo} ) );
+}
+
+
+sub merge {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( PUT => sprintf( '/repos/%s/%s/pulls/%d/merge', $args{user}, $args{repo}, $args{pull_request_id} ) );
+}
+
+
+sub update {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
+    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
+    $self->_validate_user_repo_args( \%args );
+    return $self->request( PATCH => sprintf( '/repos/%s/%s/pulls/%d', $args{user}, $args{repo}, $args{pull_request_id} ), $args{data} );
+}
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+=pod
+
 =head1 NAME
 
-Pithub::PullRequests
+Pithub::PullRequests - Github v3 Pull Requests API
 
 =head1 VERSION
 
-version 0.01000
+version 0.01001
 
 =head1 METHODS
 
@@ -39,15 +112,6 @@ Examples:
         repo            => 'Pithub',
         pull_request_id => 1
     );
-
-=cut
-
-sub commits {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/%d/commits', $args{user}, $args{repo}, $args{pull_request_id} ) );
-}
 
 =head2 create
 
@@ -74,15 +138,6 @@ Examples:
         }
     );
 
-=cut
-
-sub create {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/pulls', $args{user}, $args{repo} ), $args{data} );
-}
-
 =head2 files
 
 =over
@@ -102,15 +157,6 @@ Examples:
         repo            => 'Pithub',
         pull_request_id => 1,
     );
-
-=cut
-
-sub files {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/%d/files', $args{user}, $args{repo}, $args{pull_request_id} ) );
-}
 
 =head2 get
 
@@ -132,15 +178,6 @@ Examples:
         pull_request_id => 1,
     );
 
-=cut
-
-sub get {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/%d', $args{user}, $args{repo}, $args{pull_request_id} ) );
-}
-
 =head2 is_merged
 
 =over
@@ -161,15 +198,6 @@ Examples:
         pull_request_id => 1,
     );
 
-=cut
-
-sub is_merged {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/%d/merge', $args{user}, $args{repo}, $args{pull_request_id} ) );
-}
-
 =head2 list
 
 =over
@@ -188,14 +216,6 @@ Examples:
         user => 'plu',
         repo => 'Pithub'
     );
-
-=cut
-
-sub list {
-    my ( $self, %args ) = @_;
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/pulls', $args{user}, $args{repo} ) );
-}
 
 =head2 merge
 
@@ -216,15 +236,6 @@ Examples:
         repo            => 'Pithub',
         pull_request_id => 1,
     );
-
-=cut
-
-sub merge {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( PUT => sprintf( '/repos/%s/%s/pulls/%d/merge', $args{user}, $args{repo}, $args{pull_request_id} ) );
-}
 
 =head2 update
 
@@ -252,16 +263,16 @@ Examples:
         }
     );
 
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-sub update {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/pulls/%d', $args{user}, $args{repo}, $args{pull_request_id} ), $args{data} );
-}
-
-__PACKAGE__->meta->make_immutable;
-
-1;

@@ -1,20 +1,68 @@
 package Pithub::Users::Followers;
 BEGIN {
-  $Pithub::Users::Followers::VERSION = '0.01000';
+  $Pithub::Users::Followers::VERSION = '0.01001';
 }
+
+# ABSTRACT: Github v3 User Followers API
 
 use Moose;
 use Carp qw(croak);
 use namespace::autoclean;
 extends 'Pithub::Base';
 
+
+sub follow {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: user' unless $args{user};
+    return $self->request( PUT => sprintf( '/user/following/%s', $args{user} ) );
+}
+
+
+sub is_following {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: user' unless $args{user};
+    return $self->request( GET => sprintf( '/user/following/%s', $args{user} ) );
+}
+
+
+sub list {
+    my ( $self, %args ) = @_;
+    if ( $args{user} ) {
+        return $self->request( GET => sprintf( '/users/%s/followers', $args{user} ) );
+    }
+    return $self->request( GET => '/user/followers' );
+}
+
+
+sub list_following {
+    my ( $self, %args ) = @_;
+    if ( $args{user} ) {
+        return $self->request( GET => sprintf( '/user/%s/following', $args{user} ) );
+    }
+    return $self->request( GET => '/user/following' );
+}
+
+
+sub unfollow {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: user' unless $args{user};
+    return $self->request( DELETE => sprintf( '/user/following/%s', $args{user} ) );
+}
+
+__PACKAGE__->meta->make_immutable;
+
+1;
+
+__END__
+=pod
+
 =head1 NAME
 
-Pithub::Users::Followers
+Pithub::Users::Followers - Github v3 User Followers API
 
 =head1 VERSION
 
-version 0.01000
+version 0.01001
 
 =head1 METHODS
 
@@ -37,14 +85,6 @@ Examples:
 
     $f = Pithub::Users::Followers->new( token => 'b3c62c6' );
     $result = $f->follow( user => 'plu' );
-
-=cut
-
-sub follow {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( PUT => sprintf( '/user/following/%s', $args{user} ) );
-}
 
 =head2 is_following
 
@@ -72,14 +112,6 @@ Examples:
     elsif ( $result->code == 404 ) {
         print "plu is not following rafl\n";
     }
-
-=cut
-
-sub is_following {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( GET => sprintf( '/user/following/%s', $args{user} ) );
-}
 
 =head2 list
 
@@ -113,16 +145,6 @@ Examples:
     $f = Pithub::Users::Followers->new( token => 'b3c62c6' );
     $result = $f->list;
 
-=cut
-
-sub list {
-    my ( $self, %args ) = @_;
-    if ( $args{user} ) {
-        return $self->request( GET => sprintf( '/users/%s/followers', $args{user} ) );
-    }
-    return $self->request( GET => '/user/followers' );
-}
-
 =head2 list_following
 
 =over
@@ -155,16 +177,6 @@ Examples:
     $f = Pithub::Users::Followers->new( token => 'b3c62c6' );
     $result = $f->list_following;
 
-=cut
-
-sub list_following {
-    my ( $self, %args ) = @_;
-    if ( $args{user} ) {
-        return $self->request( GET => sprintf( '/user/%s/following', $args{user} ) );
-    }
-    return $self->request( GET => '/user/following' );
-}
-
 =head2 unfollow
 
 =over
@@ -185,14 +197,16 @@ Examples:
     $f = Pithub::Users::Followers->new;
     $result = $f->unfollow( user => 'plu' );
 
+=head1 AUTHOR
+
+Johannes Plunien <plu@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Johannes Plunien.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-sub unfollow {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( DELETE => sprintf( '/user/following/%s', $args{user} ) );
-}
-
-__PACKAGE__->meta->make_immutable;
-
-1;
