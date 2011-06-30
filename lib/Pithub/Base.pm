@@ -1,6 +1,6 @@
 package Pithub::Base;
 BEGIN {
-  $Pithub::Base::VERSION = '0.01001';
+  $Pithub::Base::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 base class for all Pithub modules
@@ -15,6 +15,13 @@ use Pithub::Result;
 use namespace::autoclean;
 
 
+has 'auto_pagination' => (
+    default => 0,
+    is      => 'rw',
+    isa     => 'Bool',
+);
+
+
 has 'api_uri' => (
     coerce   => 1,
     default  => 'https://api.github.com',
@@ -24,20 +31,30 @@ has 'api_uri' => (
 );
 
 
+has 'jsonp_callback' => (
+    clearer   => 'clear_jsonp_callback',
+    is        => 'rw',
+    isa       => 'Str',
+    predicate => 'has_jsonp_callback',
+    required  => 0,
+);
+
+
+has 'per_page' => (
+    clearer   => 'clear_per_page',
+    is        => 'rw',
+    isa       => 'Int',
+    predicate => 'has_per_page',
+    required  => 0,
+);
+
+
 has 'repo' => (
     clearer   => 'clear_repo',
     is        => 'rw',
     isa       => 'Str',
     predicate => 'has_repo',
     required  => 0,
-);
-
-
-has 'skip_request' => (
-    default  => 0,
-    is       => 'rw',
-    isa      => 'Bool',
-    required => 1,
 );
 
 
@@ -52,7 +69,7 @@ has 'token' => (
 
 has 'ua' => (
     is         => 'ro',
-    isa        => 'LWP::UserAgent',
+    isa        => 'Object',
     lazy_build => 1,
 );
 
@@ -174,8 +191,9 @@ sub request {
     my $response = Pithub::Response->new(%res_args);
 
     return Pithub::Result->new(
-        response => $response,
-        _request => sub { $self->request(@_) },
+        auto_pagination => $self->auto_pagination,
+        response        => $response,
+        _request        => sub { $self->request(@_) },
     );
 }
 
@@ -188,8 +206,9 @@ sub _merge_args {
     my ( $orig, $self ) = @_;
     my @args = $self->$orig;
     my %args = (
-        api_uri      => $self->api_uri,
-        skip_request => $self->skip_request,
+        api_uri         => $self->api_uri,
+        auto_pagination => $self->auto_pagination,
+        ua              => $self->ua,
     );
     if ( $self->has_repo ) {
         $args{repo} = $self->repo;
@@ -199,6 +218,12 @@ sub _merge_args {
     }
     if ( $self->has_user ) {
         $args{user} = $self->user;
+    }
+    if ( $self->has_per_page ) {
+        $args{per_page} = $self->per_page;
+    }
+    if ( $self->has_jsonp_callback ) {
+        $args{jsonp_callback} = $self->jsonp_callback;
     }
     return ( %args, @args );
 }
@@ -211,6 +236,16 @@ sub _prepare_request_args {
 
     my $uri = $self->api_uri->clone;
     $uri->path($path);
+
+    if ( $self->has_per_page ) {
+        my %query = ( $uri->query_form, per_page => $self->per_page );
+        $uri->query_form(%query);
+    }
+
+    if ( $self->has_jsonp_callback ) {
+        my %query = ( $uri->query_form, callback => $self->jsonp_callback );
+        $uri->query_form(%query);
+    }
 
     if ($options) {
         croak 'The parameter $options must be a hashref' unless ref $options eq 'HASH';
@@ -237,9 +272,7 @@ sub _prepare_request_args {
 sub _prepare_response_args {
     my ( $self, $request ) = @_;
     my %args = ( request => $request );
-    unless ( $self->skip_request ) {
-        $args{http_response} = $request->send;
-    }
+    $args{http_response} = $request->send;
     return %args;
 }
 
@@ -273,7 +306,7 @@ Pithub::Base - Github v3 base class for all Pithub modules
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 DESCRIPTION
 
@@ -282,6 +315,10 @@ itself. So all attributes listed here can either be set in the
 constructor or via the setter on the objects.
 
 =head1 ATTRIBUTES
+
+=head2 auto_pagination
+
+See also: L<Pithub::Result/auto_pagination>.
 
 =head2 api_uri
 
@@ -293,6 +330,84 @@ Examples:
 
     $users = Pithub::Users->new;
     $users->api_uri('https://api-foo.github.com');
+
+=head2 jsonp_callback
+
+If you want to use the response directly in JavaScript for example,
+Github supports setting a JSONP callback parameter.
+
+See also: L<http://developer.github.com/v3/#json-p-callbacks>.
+
+Examples:
+
+    $p = Pithub->new( jsonp_callback => 'loadGithubData' );
+    $result = $p->users->get( user => 'plu' );
+    print $result->raw_content;
+
+The result will look like this:
+
+    loadGithubData({
+        "meta": {
+            "status": 200,
+            "X-RateLimit-Limit": "5000",
+            "X-RateLimit-Remaining": "4661"
+        },
+        "data": {
+            "type": "User",
+            "location": "Dubai",
+            "url": "https://api.github.com/users/plu",
+            "login": "plu",
+            "name": "Johannes Plunien",
+            ...
+        }
+    })
+
+B<Be careful:> The L<content|Pithub::Result/content> method will
+try to decode the JSON into a Perl data structure. This is not
+possible if the C<< jsonp_callback >> is set:
+
+    Runtime error: malformed JSON string, neither array, object, number, string or atom,
+    at character offset 0 (before "loadGithubData( ...
+
+There are two helper methods:
+
+=over
+
+=item *
+
+B<clear_jsonp_callback>: reset the jsonp_callback attribute
+
+=item *
+
+B<has_jsonp_callback>: check if the jsonp_callback attribute is set
+
+=back
+
+=head2 per_page
+
+By default undef, so it defaults to Github's default. See also:
+L<http://developer.github.com/v3/#pagination>.
+
+Examples:
+
+    $users = Pithub::Users->new( per_page => 100 );
+
+    $users = Pithub::Users->new;
+    $users->per_page(100);
+
+There are two helper methods:
+
+=over
+
+=item *
+
+B<clear_per_page>: reset the per_page attribute
+
+=item *
+
+B<has_per_page>: check if the per_page attribute is set
+
+=back
 
 =head2 repo
 
@@ -317,22 +432,6 @@ B<clear_repo>: reset the repo attribute
 B<has_repo>: check if the repo attribute is set
 
 =back
-
-=head2 skip_request
-
-Mainly used by tests. But it might be useful to build another library
-on top of L<Pithub>.
-
-Examples:
-
-    $c = Pithub::Repos::Collaborators->new( skip_request => 1 );
-
-    # This will not make any request at all!
-    $result = $c->list( user => 'plu' );
-
-    # This will return the HTTP::Request object that has been created
-    # for this particular API call
-    $http_request = $c->request->http_request;
 
 =head2 token
 
@@ -468,10 +567,18 @@ Same as L<Pithub::GitData::Trees/get>:
     $options = {
         prepare_uri => sub {
             my ($uri) = @_;
-            $uri->query_form( recursive => 1 );
+            my %query = ( $uri->query_form, recursive => 1 );
+            $uri->query_form(%query);
         },
     };
     $result = $p->request( $method, $path, $data, $options );
+
+Always be careful using C<< prepare_uri >> and C<< query_form >>. If
+the option L</per_page> is set, you might override the pagination
+parameter. That's the reason for this construct:
+
+    my %query = ( $uri->query_form, recursive => 1 );
+    $uri->query_form(%query);
 
 This method always returns a L<Pithub::Result> object.
 

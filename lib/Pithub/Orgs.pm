@@ -1,6 +1,6 @@
 package Pithub::Orgs;
 BEGIN {
-  $Pithub::Orgs::VERSION = '0.01001';
+  $Pithub::Orgs::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Orgs API
@@ -50,7 +50,7 @@ Pithub::Orgs - Github v3 Orgs API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -64,11 +64,11 @@ Get an organization
 
     GET /orgs/:org
 
-=back
-
 Examples:
 
     $result = $p->orgs->get( org => 'CPAN-API' );
+
+=back
 
 =head2 list
 
@@ -90,11 +90,11 @@ List public and private organizations for the authenticated user.
 
     GET /user/orgs
 
-=back
-
 Examples:
 
     $result = $p->orgs->list;
+
+=back
 
 =head2 update
 
@@ -105,8 +105,6 @@ Examples:
 Edit an organization
 
     PATCH /orgs/:org
-
-=back
 
 Examples:
 
@@ -121,6 +119,8 @@ Examples:
             name          => 'github',
         }
     );
+
+=back
 
 =head1 AUTHOR
 

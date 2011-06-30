@@ -1,6 +1,6 @@
 package Pithub::Users::Followers;
 BEGIN {
-  $Pithub::Users::Followers::VERSION = '0.01001';
+  $Pithub::Users::Followers::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 User Followers API
@@ -62,7 +62,7 @@ Pithub::Users::Followers - Github v3 User Followers API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -76,8 +76,6 @@ Follow a user
 
     PUT /user/following/:user
 
-=back
-
 Examples:
 
     $p = Pithub->new( token => 'b3c62c6' );
@@ -85,6 +83,8 @@ Examples:
 
     $f = Pithub::Users::Followers->new( token => 'b3c62c6' );
     $result = $f->follow( user => 'plu' );
+
+=back
 
 =head2 is_following
 
@@ -95,8 +95,6 @@ Examples:
 Check if the authenticated user is following another given user
 
     GET /user/following/:user
-
-=back
 
 Examples:
 
@@ -112,6 +110,8 @@ Examples:
     elsif ( $result->code == 404 ) {
         print "plu is not following rafl\n";
     }
+
+=back
 
 =head2 list
 
@@ -129,8 +129,6 @@ List the authenticated user's followers:
 
     GET /user/followers
 
-=back
-
 Examples:
 
     $p = Pithub->new;
@@ -144,6 +142,8 @@ Examples:
 
     $f = Pithub::Users::Followers->new( token => 'b3c62c6' );
     $result = $f->list;
+
+=back
 
 =head2 list_following
 
@@ -161,8 +161,6 @@ List who the authenicated user is following:
 
     GET /user/following
 
-=back
-
 Examples:
 
     $p = Pithub->new;
@@ -177,6 +175,8 @@ Examples:
     $f = Pithub::Users::Followers->new( token => 'b3c62c6' );
     $result = $f->list_following;
 
+=back
+
 =head2 unfollow
 
 =over
@@ -187,8 +187,6 @@ Unfollow a user
 
     DELETE /user/following/:user
 
-=back
-
 Examples:
 
     $p = Pithub->new;
@@ -196,6 +194,8 @@ Examples:
 
     $f = Pithub::Users::Followers->new;
     $result = $f->unfollow( user => 'plu' );
+
+=back
 
 =head1 AUTHOR
 

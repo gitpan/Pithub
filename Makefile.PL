@@ -26,6 +26,7 @@ my %WriteMakefileArgs = (
   'LICENSE' => 'perl',
   'NAME' => 'Pithub',
   'PREREQ_PM' => {
+    'Array::Iterator' => '0',
     'Carp' => '0',
     'Class::MOP' => '0',
     'HTTP::Headers' => '0',
@@ -42,7 +43,7 @@ my %WriteMakefileArgs = (
     'URI' => '0',
     'namespace::autoclean' => '0'
   },
-  'VERSION' => '0.01001',
+  'VERSION' => '0.01002',
   'test' => {
     'TESTS' => 't/*.t'
   }

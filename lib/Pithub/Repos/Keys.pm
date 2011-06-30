@@ -1,6 +1,6 @@
 package Pithub::Repos::Keys;
 BEGIN {
-  $Pithub::Repos::Keys::VERSION = '0.01001';
+  $Pithub::Repos::Keys::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Repo Keys API
@@ -23,7 +23,7 @@ sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: key_id' unless $args{key_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/keys/%d', $args{user}, $args{repo}, $args{key_id} ) );
+    return $self->request( DELETE => sprintf( '/repos/%s/%s/keys/%s', $args{user}, $args{repo}, $args{key_id} ) );
 }
 
 
@@ -31,7 +31,7 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: key_id' unless $args{key_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/keys/%d', $args{user}, $args{repo}, $args{key_id} ) );
+    return $self->request( GET => sprintf( '/repos/%s/%s/keys/%s', $args{user}, $args{repo}, $args{key_id} ) );
 }
 
 
@@ -47,7 +47,7 @@ sub update {
     croak 'Missing key in parameters: key_id' unless $args{key_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/keys/%d', $args{user}, $args{repo}, $args{key_id} ), $args{data} );
+    return $self->request( PATCH => sprintf( '/repos/%s/%s/keys/%s', $args{user}, $args{repo}, $args{key_id} ), $args{data} );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -63,7 +63,7 @@ Pithub::Repos::Keys - Github v3 Repo Keys API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -77,8 +77,6 @@ Create
 
     POST /repos/:user/:repo/keys
 
-=back
-
 Examples:
 
     $result = $p->repos->keys->create(
@@ -90,6 +88,8 @@ Examples:
         },
     );
 
+=back
+
 =head2 delete
 
 =over
@@ -100,8 +100,6 @@ Delete
 
     DELETE /repos/:user/:repo/keys/:id
 
-=back
-
 Examples:
 
     $result = $p->repos->keys->delete(
@@ -109,6 +107,8 @@ Examples:
         repo   => 'Pithub',
         key_id => 1,
     );
+
+=back
 
 =head2 get
 
@@ -120,8 +120,6 @@ Get
 
     GET /repos/:user/:repo/keys/:id
 
-=back
-
 Examples:
 
     $result = $p->repos->keys->get(
@@ -129,6 +127,8 @@ Examples:
         repo   => 'Pithub',
         key_id => 1,
     );
+
+=back
 
 =head2 list
 
@@ -140,14 +140,14 @@ List
 
     GET /repos/:user/:repo/keys
 
-=back
-
 Examples:
 
     $result = $p->repos->keys->list(
         user => 'plu',
         repo => 'Pithub',
     );
+
+=back
 
 =head2 update
 
@@ -159,8 +159,6 @@ Edit
 
     PATCH /repos/:user/:repo/keys/:id
 
-=back
-
 Examples:
 
     $result = $p->repos->keys->update(
@@ -169,6 +167,8 @@ Examples:
         key_id => 1,
         data   => { title => 'some new title' },
     );
+
+=back
 
 =head1 AUTHOR
 

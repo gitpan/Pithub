@@ -1,6 +1,6 @@
 package Pithub::GitData::Commits;
 BEGIN {
-  $Pithub::GitData::Commits::VERSION = '0.01001';
+  $Pithub::GitData::Commits::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Git Data Commits API
@@ -38,7 +38,7 @@ Pithub::GitData::Commits - Github v3 Git Data Commits API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -51,8 +51,6 @@ version 0.01001
 Create a Commit
 
     POST /repos/:user/:repo/git/commits
-
-=back
 
 Examples:
 
@@ -71,6 +69,8 @@ Examples:
         }
     );
 
+=back
+
 =head2 get
 
 =over
@@ -81,8 +81,6 @@ Get a Commit
 
     GET /repos/:user/:repo/git/commits/:sha
 
-=back
-
 Examples:
 
     $result = $p->git_data->commits->get(
@@ -90,6 +88,8 @@ Examples:
         repo => 'Pithub',
         sha  => 'df21b2660fb6',
     );
+
+=back
 
 =head1 AUTHOR
 

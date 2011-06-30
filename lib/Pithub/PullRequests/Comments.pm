@@ -1,6 +1,6 @@
 package Pithub::PullRequests::Comments;
 BEGIN {
-  $Pithub::PullRequests::Comments::VERSION = '0.01001';
+  $Pithub::PullRequests::Comments::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Pull Request Comments API
@@ -16,7 +16,7 @@ sub create {
     croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/pulls/%d/comments', $args{user}, $args{repo}, $args{pull_request_id} ), $args{data} );
+    return $self->request( POST => sprintf( '/repos/%s/%s/pulls/%s/comments', $args{user}, $args{repo}, $args{pull_request_id} ), $args{data} );
 }
 
 
@@ -24,7 +24,7 @@ sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/pulls/comments/%d', $args{user}, $args{repo}, $args{comment_id} ) );
+    return $self->request( DELETE => sprintf( '/repos/%s/%s/pulls/comments/%s', $args{user}, $args{repo}, $args{comment_id} ) );
 }
 
 
@@ -32,7 +32,7 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/comments/%d', $args{user}, $args{repo}, $args{comment_id} ) );
+    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/comments/%s', $args{user}, $args{repo}, $args{comment_id} ) );
 }
 
 
@@ -40,7 +40,7 @@ sub list {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/%d/comments', $args{user}, $args{repo}, $args{pull_request_id} ) );
+    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/%s/comments', $args{user}, $args{repo}, $args{pull_request_id} ) );
 }
 
 
@@ -49,7 +49,7 @@ sub update {
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/pulls/comments/%d', $args{user}, $args{repo}, $args{comment_id} ), $args{data} );
+    return $self->request( PATCH => sprintf( '/repos/%s/%s/pulls/comments/%s', $args{user}, $args{repo}, $args{comment_id} ), $args{data} );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -65,7 +65,7 @@ Pithub::PullRequests::Comments - Github v3 Pull Request Comments API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -78,8 +78,6 @@ version 0.01001
 Create a comment
 
     POST /repos/:user/:repo/pulls/:id/comments
-
-=back
 
 Examples:
 
@@ -95,6 +93,8 @@ Examples:
         }
     );
 
+=back
+
 =head2 delete
 
 =over
@@ -105,8 +105,6 @@ Delete a comment
 
     DELETE /repos/:user/:repo/pulls/comments/:id
 
-=back
-
 Examples:
 
     $result = $p->pull_requests->comments->delete(
@@ -114,6 +112,8 @@ Examples:
         user       => 'plu',
         comment_id => 1,
     );
+
+=back
 
 =head2 get
 
@@ -125,8 +125,6 @@ Get a single comment
 
     GET /repos/:user/:repo/pulls/comments/:id
 
-=back
-
 Examples:
 
     $result = $p->pull_requests->comments->get(
@@ -134,6 +132,8 @@ Examples:
         user       => 'plu',
         comment_id => 1,
     );
+
+=back
 
 =head2 list
 
@@ -145,8 +145,6 @@ List comments on a pull request
 
     GET /repos/:user/:repo/pulls/:id/comments
 
-=back
-
 Examples:
 
     $result = $p->pull_requests->comments->list(
@@ -154,6 +152,8 @@ Examples:
         user            => 'plu',
         pull_request_id => 1,
     );
+
+=back
 
 =head2 update
 
@@ -165,8 +165,6 @@ Edit a comment
 
     PATCH /repos/:user/:repo/pulls/comments/:id
 
-=back
-
 Examples:
 
     $result = $p->pull_requests->comments->update(
@@ -175,6 +173,8 @@ Examples:
         comment_id => 1,
         data       => { body => 'some updated comment' },
     );
+
+=back
 
 =head1 AUTHOR
 

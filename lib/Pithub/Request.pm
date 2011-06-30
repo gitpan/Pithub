@@ -1,6 +1,6 @@
 package Pithub::Request;
 BEGIN {
-  $Pithub::Request::VERSION = '0.01001';
+  $Pithub::Request::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 request object
@@ -108,7 +108,7 @@ Pithub::Request - Github v3 request object
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 ATTRIBUTES
 
@@ -145,7 +145,7 @@ before you hand it over to the constructor, e.g. proxy settings.
 =head2 uri
 
 An L<URI> object containing everything necessary to make that
-particular API call, besides the body (see L</data for that>).
+particular API call, besides the body (see L</data> for that).
 
 =head1 METHODS
 

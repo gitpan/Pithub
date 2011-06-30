@@ -21,6 +21,7 @@
       },
       "runtime" : {
          "requires" : {
+            "Array::Iterator" : 0,
             "Carp" : 0,
             "Class::MOP" : 0,
             "HTTP::Headers" : 0,
@@ -57,7 +58,7 @@
          "web" : "http://github.com/plu/Pithub"
       }
    },
-   "version" : "0.01001",
+   "version" : "0.01002",
    "x_Dist_Zilla" : {
       "plugins" : [
          {
@@ -169,26 +170,6 @@
             "class" : "Dist::Zilla::Plugin::GithubMeta",
             "name" : "GithubMeta",
             "version" : "0.12"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Git::Check",
-            "name" : "@Git/Check",
-            "version" : "1.111590"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Git::Commit",
-            "name" : "@Git/Commit",
-            "version" : "1.111590"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Git::Tag",
-            "name" : "@Git/Tag",
-            "version" : "1.111590"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Git::Push",
-            "name" : "@Git/Push",
-            "version" : "1.111590"
          },
          {
             "class" : "Dist::Zilla::Plugin::Git::NextVersion",

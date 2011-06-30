@@ -1,6 +1,6 @@
 package Pithub::Repos::Forks;
 BEGIN {
-  $Pithub::Repos::Forks::VERSION = '0.01001';
+  $Pithub::Repos::Forks::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Repo Forks API
@@ -40,7 +40,7 @@ Pithub::Repos::Forks - Github v3 Repo Forks API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -53,8 +53,6 @@ version 0.01001
 Create a fork for the authenicated user.
 
     POST /repos/:user/:repo/forks
-
-=back
 
 Examples:
 
@@ -69,6 +67,8 @@ Examples:
         org  => 'CPAN-API',
     );
 
+=back
+
 =head2 list
 
 =over
@@ -79,14 +79,14 @@ List forks
 
     GET /repos/:user/:repo/forks
 
-=back
-
 Examples:
 
     $result = $p->repos->forks->list(
         user => 'plu',
         repo => 'Pithub',
     );
+
+=back
 
 =head1 AUTHOR
 

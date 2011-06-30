@@ -1,6 +1,6 @@
 package Pithub::Repos::Downloads;
 BEGIN {
-  $Pithub::Repos::Downloads::VERSION = '0.01001';
+  $Pithub::Repos::Downloads::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Repo Downloads API
@@ -20,7 +20,7 @@ sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: download_id' unless $args{download_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/downloads/%d', $args{user}, $args{repo}, $args{download_id} ) );
+    return $self->request( DELETE => sprintf( '/repos/%s/%s/downloads/%s', $args{user}, $args{repo}, $args{download_id} ) );
 }
 
 
@@ -28,7 +28,7 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: download_id' unless $args{download_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/downloads/%d', $args{user}, $args{repo}, $args{download_id} ) );
+    return $self->request( GET => sprintf( '/repos/%s/%s/downloads/%s', $args{user}, $args{repo}, $args{download_id} ) );
 }
 
 
@@ -51,7 +51,7 @@ Pithub::Repos::Downloads - Github v3 Repo Downloads API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -65,10 +65,6 @@ Create a new download
 
     POST /repos/:user/:repo/downloads
 
-=back
-
-TODO: Creating downloads is currently not supported!
-
 Examples:
 
     $result = $p->repos->downloads->create(
@@ -76,6 +72,10 @@ Examples:
         repo => 'Pithub',
         data => { name => 'some download' },
     );
+
+=back
+
+TODO: Creating downloads is currently not supported!
 
 =head2 delete
 
@@ -87,8 +87,6 @@ Delete a download
 
     DELETE /repos/:user/:repo/downloads/:id
 
-=back
-
 Examples:
 
     $result = $p->repos->downloads->delete(
@@ -96,6 +94,8 @@ Examples:
         repo        => 'Pithub',
         download_id => 1,
     );
+
+=back
 
 =head2 get
 
@@ -107,8 +107,6 @@ Get a single download
 
     GET /repos/:user/:repo/downloads/:id
 
-=back
-
 Examples:
 
     $result = $p->repos->downloads->get(
@@ -116,6 +114,8 @@ Examples:
         repo        => 'Pithub',
         download_id => 1,
     );
+
+=back
 
 =head2 list
 
@@ -127,14 +127,14 @@ List downloads for a repository
 
     GET /repos/:user/:repo/downloads
 
-=back
-
 Examples:
 
     $result = $p->repos->downloads->list(
         user => 'plu',
         repo => 'Pithub',
     );
+
+=back
 
 =head1 AUTHOR
 

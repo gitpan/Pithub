@@ -1,6 +1,6 @@
 package Pithub::Orgs::Teams;
 BEGIN {
-  $Pithub::Orgs::Teams::VERSION = '0.01001';
+  $Pithub::Orgs::Teams::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Org Teams API
@@ -15,7 +15,7 @@ sub add_member {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: team_id' unless $args{team_id};
     croak 'Missing key in parameters: user'    unless $args{user};
-    return $self->request( PUT => sprintf( '/teams/%d/members/%s', $args{team_id}, $args{user} ) );
+    return $self->request( PUT => sprintf( '/teams/%s/members/%s', $args{team_id}, $args{user} ) );
 }
 
 
@@ -23,7 +23,7 @@ sub add_repo {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: team_id' unless $args{team_id};
     croak 'Missing key in parameters: repo'    unless $args{repo};
-    return $self->request( PUT => sprintf( '/teams/%d/repos/%s', $args{team_id}, $args{repo} ) );
+    return $self->request( PUT => sprintf( '/teams/%s/repos/%s', $args{team_id}, $args{repo} ) );
 }
 
 
@@ -38,14 +38,14 @@ sub create {
 sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: team_id' unless $args{team_id};
-    return $self->request( DELETE => sprintf( '/teams/%d', $args{team_id} ) );
+    return $self->request( DELETE => sprintf( '/teams/%s', $args{team_id} ) );
 }
 
 
 sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: team_id' unless $args{team_id};
-    return $self->request( GET => sprintf( '/teams/%d', $args{team_id} ) );
+    return $self->request( GET => sprintf( '/teams/%s', $args{team_id} ) );
 }
 
 
@@ -53,7 +53,7 @@ sub get_repo {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: team_id' unless $args{team_id};
     croak 'Missing key in parameters: repo'    unless $args{repo};
-    return $self->request( GET => sprintf( '/teams/%d/repos/%s', $args{team_id}, $args{repo} ) );
+    return $self->request( GET => sprintf( '/teams/%s/repos/%s', $args{team_id}, $args{repo} ) );
 }
 
 
@@ -61,7 +61,7 @@ sub is_member {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: team_id' unless $args{team_id};
     croak 'Missing key in parameters: user'    unless $args{user};
-    return $self->request( GET => sprintf( '/teams/%d/members/%s', $args{team_id}, $args{user} ) );
+    return $self->request( GET => sprintf( '/teams/%s/members/%s', $args{team_id}, $args{user} ) );
 }
 
 
@@ -75,14 +75,14 @@ sub list {
 sub list_members {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: team_id' unless $args{team_id};
-    return $self->request( GET => sprintf( '/teams/%d/members', $args{team_id} ) );
+    return $self->request( GET => sprintf( '/teams/%s/members', $args{team_id} ) );
 }
 
 
 sub list_repos {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: team_id' unless $args{team_id};
-    return $self->request( GET => sprintf( '/teams/%d/repos', $args{team_id} ) );
+    return $self->request( GET => sprintf( '/teams/%s/repos', $args{team_id} ) );
 }
 
 
@@ -90,7 +90,7 @@ sub remove_member {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: team_id' unless $args{team_id};
     croak 'Missing key in parameters: user'    unless $args{user};
-    return $self->request( DELETE => sprintf( '/teams/%d/members/%s', $args{team_id}, $args{user} ) );
+    return $self->request( DELETE => sprintf( '/teams/%s/members/%s', $args{team_id}, $args{user} ) );
 }
 
 
@@ -98,7 +98,7 @@ sub remove_repo {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: team_id' unless $args{team_id};
     croak 'Missing key in parameters: repo'    unless $args{repo};
-    return $self->request( DELETE => sprintf( '/teams/%d/repos/%s', $args{team_id}, $args{repo} ) );
+    return $self->request( DELETE => sprintf( '/teams/%s/repos/%s', $args{team_id}, $args{repo} ) );
 }
 
 
@@ -106,7 +106,7 @@ sub update {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: team_id' unless $args{team_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    return $self->request( PATCH => sprintf( '/teams/%d', $args{team_id} ), $args{data} );
+    return $self->request( PATCH => sprintf( '/teams/%s', $args{team_id} ), $args{data} );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -122,7 +122,7 @@ Pithub::Orgs::Teams - Github v3 Org Teams API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -136,14 +136,14 @@ team is associated with.
 
     PUT /teams/:id/members/:user
 
-=back
-
 Examples:
 
     $result = $p->orgs->teams->add_member(
         team_id => 1,
         user    => 'plu',
     );
+
+=back
 
 =head2 add_repo
 
@@ -154,14 +154,14 @@ an owner of the org that the team is associated with.
 
     PUT /teams/:id/repos/:repo
 
-=back
-
 Examples:
 
     $result = $p->orgs->teams->add_repo(
         team_id => 1,
         repo    => 'some_repo',
     );
+
+=back
 
 =head2 create
 
@@ -171,8 +171,6 @@ In order to create a team, the authenticated user must be an
 owner of the given organization.
 
     POST /orgs/:org/teams
-
-=back
 
 Examples:
 
@@ -185,6 +183,8 @@ Examples:
         }
     );
 
+=back
+
 =head2 delete
 
 =over
@@ -194,11 +194,11 @@ of the org that the team is associated with.
 
     DELETE /teams/:id
 
-=back
-
 Examples:
 
     $result = $p->orgs->teams->delete( team_id => 1 );
+
+=back
 
 =head2 get
 
@@ -208,11 +208,11 @@ Get team
 
     GET /teams/:id
 
-=back
-
 Examples:
 
     $result = $p->orgs->teams->get( team_id => 1 );
+
+=back
 
 =head2 get_repo
 
@@ -222,14 +222,14 @@ Get team repo
 
     GET /teams/:id/repos/:repo
 
-=back
-
 Examples:
 
     $result = $p->orgs->teams->get_repo(
         team_id => 1,
         repo    => 'some_repo',
     );
+
+=back
 
 =head2 is_member
 
@@ -240,14 +240,14 @@ user must be a member of the team.
 
     GET /teams/:id/members/:user
 
-=back
-
 Examples:
 
     $result = $p->orgs->teams->is_member(
         team_id => 1,
         user    => 'plu',
     );
+
+=back
 
 =head2 list
 
@@ -257,11 +257,11 @@ List teams
 
     GET /orgs/:org/teams
 
-=back
-
 Examples:
 
     $result = $p->orgs->teams->list( org => 'CPAN-API' );
+
+=back
 
 =head2 list_members
 
@@ -272,11 +272,11 @@ a member of the team.
 
     GET /teams/:id/members
 
-=back
-
 Examples:
 
     $result = $p->orgs->teams->list_members( team_id => 1 );
+
+=back
 
 =head2 list_repos
 
@@ -286,11 +286,11 @@ List team repos
 
     GET /teams/:id/repos
 
-=back
-
 Examples:
 
     $result = $p->orgs->teams->list_repos( team_id => 1 );
+
+=back
 
 =head2 remove_member
 
@@ -303,14 +303,14 @@ it just remove them from the team.
 
     DELETE /teams/:id/members/:user
 
-=back
-
 Examples:
 
     $result = $p->orgs->teams->remove_member(
         team_id => 1,
         user    => 'plu',
     );
+
+=back
 
 =head2 remove_repo
 
@@ -321,14 +321,14 @@ an owner of the org that the team is associated with.
 
     DELETE /teams/:id/repos/:repo
 
-=back
-
 Examples:
 
     $result = $p->orgs->teams->remove_repo(
         team_id => 1,
         repo    => 'some_repo',
     );
+
+=back
 
 =head2 update
 
@@ -339,8 +339,6 @@ of the org that the team is associated with.
 
     PATCH /teams/:id
 
-=back
-
 Examples:
 
     $result = $p->orgs->teams->update(
@@ -350,6 +348,8 @@ Examples:
             permission => 'push',
         }
     );
+
+=back
 
 =head1 AUTHOR
 

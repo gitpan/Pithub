@@ -1,6 +1,6 @@
 package Pithub::Response;
 BEGIN {
-  $Pithub::Response::VERSION = '0.01001';
+  $Pithub::Response::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 response object
@@ -28,14 +28,6 @@ has 'http_response' => (
     required => 0,
 );
 
-
-sub parse_response {
-    my ( $self, $str ) = @_;
-    my $res = HTTP::Response->parse($str);
-    $self->http_response($res);
-    return $res;
-}
-
 __PACKAGE__->meta->make_immutable;
 
 1;
@@ -49,7 +41,7 @@ Pithub::Response - Github v3 response object
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 ATTRIBUTES
 
@@ -77,12 +69,6 @@ B<content>: http_response->content
 B<success>: http_response->is_cuess
 
 =back
-
-=head1 METHODS
-
-=head2 parse_response
-
-Utility method.
 
 =head1 AUTHOR
 

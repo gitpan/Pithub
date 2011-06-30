@@ -1,14 +1,22 @@
 package Pithub::Result;
 BEGIN {
-  $Pithub::Result::VERSION = '0.01001';
+  $Pithub::Result::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 result object
 
 use Moose;
+use Array::Iterator;
 use JSON::Any;
 use URI;
 use namespace::autoclean;
+
+
+has 'auto_pagination' => (
+    default => 0,
+    is      => 'rw',
+    isa     => 'Bool',
+);
 
 
 has 'content' => (
@@ -65,6 +73,13 @@ has '_request' => (
     required => 1,
 );
 
+# required for next
+has '_iterator' => (
+    is         => 'ro',
+    isa        => 'Array::Iterator',
+    lazy_build => 1,
+);
+
 has '_json' => (
     is         => 'ro',
     isa        => 'JSON::Any',
@@ -79,10 +94,52 @@ sub first_page {
 }
 
 
+sub get_page {
+    my ( $self, $page ) = @_;
+
+    # First we need to get an URI we can work with and replace
+    # the page GET parameter properly with the given value. If
+    # we cannot get the first or last page URI, then there is
+    # only one page.
+    my $uri_str = $self->first_page_uri || $self->last_page_uri;
+    return unless $uri_str;
+
+    my $uri   = URI->new($uri_str);
+    my %query = $uri->query_form;
+
+    $query{page} = $page;
+
+    my $options = {
+        prepare_uri => sub {
+            my ($u) = @_;
+            %query = ( $u->query_form, %query );
+            $u->query_form(%query);
+        },
+    };
+
+    return $self->_request->( GET => $uri->path, undef, $options );
+}
+
+
 sub last_page {
     my ($self) = @_;
     return unless $self->last_page_uri;
     return $self->_paginate( $self->last_page_uri );
+}
+
+
+sub next {
+    my ($self) = @_;
+    my $row = $self->_iterator->getNext;
+    return $row if $row;
+    if ( $self->auto_pagination ) {
+        my $result = $self->next_page;
+        return unless $result;
+        $self->_reset;
+        $self->{response} = $result->response;
+        return $self->_iterator->getNext;
+    }
+    return;
 }
 
 
@@ -123,6 +180,13 @@ sub _build_first_page_uri {
     return shift->_get_link_header('first');
 }
 
+sub _build__iterator {
+    my ($self) = @_;
+    my $content = $self->content;
+    $content = [$content] unless ref $content eq 'ARRAY';
+    return Array::Iterator->new($content);
+}
+
 sub _build_last_page_uri {
     return shift->_get_link_header('last');
 }
@@ -143,7 +207,8 @@ sub _build__json {
 sub _get_link_header {
     my ( $self, $type ) = @_;
     return $self->{_get_link_header}{$type} if $self->{_get_link_header}{$type};
-    my $link = $self->response->http_response->header('Link') or return;
+    my $link = $self->response->http_response->header('Link');
+    return unless $link;
     foreach my $item ( split /,/, $link ) {
         my @result = $item =~ /<([^>]+)>; rel="([^"]+)"/g;
         $self->{_get_link_header}{ $result[1] } = $result[0];
@@ -155,9 +220,24 @@ sub _paginate {
     my ( $self, $uri_str ) = @_;
     my $uri     = URI->new($uri_str);
     my $options = {
-        prepare_uri => sub { shift->query_form( $uri->query_form ) }
+        prepare_uri => sub {
+            my ($u) = @_;
+            my %query = ( $u->query_form, $uri->query_form );
+            $u->query_form(%query);
+        },
     };
     return $self->_request->( GET => $uri->path, undef, $options );
+}
+
+sub _reset {
+    my ($self) = @_;
+    $self->clear_content;
+    $self->clear_first_page_uri;
+    $self->clear_last_page_uri;
+    $self->clear_next_page_uri;
+    $self->clear_prev_page_uri;
+    $self->_clear_iterator;
+    delete $self->{_get_link_header};
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -173,9 +253,42 @@ Pithub::Result - Github v3 result object
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 ATTRIBUTES
+
+=head2 auto_pagination
+
+If you set this to true and use the L</next> method to iterate
+over the result rows, it will call automatically L</next_page>
+for you until you got all the results. Be careful using this
+feature, if there are 100 pages, this will make 100 API calls.
+By default it's off. Instead of setting it per L<Pithub::Result>
+you can also set it directly on any of the L<Pithub> API objects.
+
+Examples:
+
+    $r = Pithub::Repos->new;
+    $result = $r->list( user => 'rjbs' );
+
+    # This would just show the first 30 by default
+    while ( my $row = $result->next ) {
+        printf "%s: %s\n", $row->{name}, $row->{description};
+    }
+
+    # Let's do the same thing using auto_pagination to fetch all
+    $result = $r->list( user => 'rjbs' );
+    $result->auto_pagination(1);
+    while ( my $row = $result->next ) {
+        printf "%s: %s\n", $row->{name}, $row->{description};
+    }
+
+    # Turn auto_pagination on for all L<Pithub::Result> objects
+    $p = Pithub::Repos->new( auto_pagination => 1 );
+    $result = $r->list( user => 'rjbs' );
+    while ( my $row = $result->next ) {
+        printf "%s: %s\n", $row->{name}, $row->{description};
+    }
 
 =head2 content
 
@@ -235,11 +348,34 @@ Get the L<Pithub::Result> of the first page. Returns undef if there
 is no first page (if you're on the first page already or if there
 is no pages at all).
 
+=head2 get_page
+
+Get the L<Pithub::Result> for a specific page. The parameter is not
+validated, if you hit a page that does not exist, the Github API will
+tell you so. If there is only one page, this method will return
+undef, no matter which page you ask for, even for page 1.
+
 =head2 last_page
 
 Get the L<Pithub::Result> of the last page. Returns undef if there
 is no last page (if you're on the last page already or if there
 is only one page or no pages at all).
+
+=head2 next
+
+Most of the results returned by the Github API calls are arrayrefs
+of hashrefs. The data structures can be retrieved directly by
+calling L</content>. Besides that it's possible to iterate over
+the results using this method.
+
+Examples:
+
+    $r = Pithub::Repos->new;
+    $result = $r->list( user => 'rjbs' );
+
+    while ( my $row = $result->next ) {
+        printf "%s: %s\n", $row->{name}, $row->{description};
+    }
 
 =head2 next_page
 
@@ -253,13 +389,14 @@ Examples:
 =item *
 
 List all followers in order, from the first one on the first
-page to the last one on the last page.
+page to the last one on the last page. See also
+L</auto_pagination>.
 
     $followers = Pithub->new->users->followers;
     $result = $followers->list( user => 'rjbs' );
     do {
         if ( $result->success ) {
-            foreach my $row ( @{ $result->content } ) {
+            while ( my $row = $result->next ) {
                 printf "%s\n", $row->{login};
             }
         }
@@ -282,13 +419,14 @@ Examples:
 =item *
 
 List all followers in reverse order, from the last one on the last
-page to the first one on the first page.
+page to the first one on the first page. See also
+L</auto_pagination>.
 
     $followers = Pithub->new->users->followers;
     $result = $followers->list( user => 'rjbs' )->last_page;    # this makes two requests!
     do {
         if ( $result->success ) {
-            foreach my $row ( reverse @{ $result->content } ) {
+            while ( my $row = $result->next ) {
                 printf "%s\n", $row->{login};
             }
         }

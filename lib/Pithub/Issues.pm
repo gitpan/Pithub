@@ -1,6 +1,6 @@
 package Pithub::Issues;
 BEGIN {
-  $Pithub::Issues::VERSION = '0.01001';
+  $Pithub::Issues::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Issues API
@@ -28,7 +28,7 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: issue_id' unless $args{issue_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/issues/%d', $args{user}, $args{repo}, $args{issue_id} ) );
+    return $self->request( GET => sprintf( '/repos/%s/%s/issues/%s', $args{user}, $args{repo}, $args{issue_id} ) );
 }
 
 
@@ -44,7 +44,7 @@ sub update {
     croak 'Missing key in parameters: issue_id' unless $args{issue_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/issues/%d', $args{user}, $args{repo}, $args{issue_id} ), $args{data} );
+    return $self->request( PATCH => sprintf( '/repos/%s/%s/issues/%s', $args{user}, $args{repo}, $args{issue_id} ), $args{data} );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -60,7 +60,7 @@ Pithub::Issues - Github v3 Issues API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -73,8 +73,6 @@ version 0.01001
 Create an issue
 
     POST /repos/:user/:repo/issues
-
-=back
 
 Examples:
 
@@ -90,6 +88,8 @@ Examples:
         }
     );
 
+=back
+
 =head2 get
 
 =over
@@ -100,8 +100,6 @@ Get a single issue
 
     GET /repos/:user/:repo/issues/:id
 
-=back
-
 Examples:
 
     $result = $p->issues->get(
@@ -109,6 +107,8 @@ Examples:
         repo => 'Pithub',
         issue_id => 1,
     );
+
+=back
 
 =head2 list
 
@@ -120,14 +120,14 @@ List issues for a repository
 
     GET /repos/:user/:repo/issues
 
-=back
-
 Examples:
 
     $result = $p->issues->list(
         user => 'plu',
         repo => 'Pithub',
     );
+
+=back
 
 =head2 update
 
@@ -138,8 +138,6 @@ Examples:
 Edit an issue
 
     PATCH /repos/:user/:repo/issues/:id
-
-=back
 
 Examples:
 
@@ -156,6 +154,8 @@ Examples:
             title     => 'Found a bug'
         }
     );
+
+=back
 
 =head1 AUTHOR
 

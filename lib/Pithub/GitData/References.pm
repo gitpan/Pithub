@@ -1,6 +1,6 @@
 package Pithub::GitData::References;
 BEGIN {
-  $Pithub::GitData::References::VERSION = '0.01001';
+  $Pithub::GitData::References::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Git Data References API
@@ -58,7 +58,7 @@ Pithub::GitData::References - Github v3 Git Data References API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -72,8 +72,6 @@ Create a Reference
 
     POST /repos/:user/:repo/git/refs
 
-=back
-
 Examples:
 
     $result = $p->git_data->references->create(
@@ -84,6 +82,8 @@ Examples:
             sha => '827efc6d56897b048c772eb4087f854f46256132' .
         }
     );
+
+=back
 
 Parameters in C<< data >> hashref:
 
@@ -111,8 +111,6 @@ Get a Reference
 
     GET /repos/:user/:repo/git/refs/:ref
 
-=back
-
 Examples:
 
     $result = $p->git_data->references->get(
@@ -120,6 +118,8 @@ Examples:
         repo => 'Pithub',
         ref  => 'heads/master'
     );
+
+=back
 
 The key B<ref> must be formatted as C<< heads/branch >>, not just
 C<< branch >>. For example, the call to get the data for a branch
@@ -154,8 +154,6 @@ tag references, you can call:
 
     GET /repos/:user/:repo/git/refs/tags
 
-=back
-
 Examples:
 
     $result = $p->git_data->references->list(
@@ -163,6 +161,8 @@ Examples:
         repo => 'Pithub',
         ref  => 'tags',
     );
+
+=back
 
 =head2 update
 
@@ -173,8 +173,6 @@ Examples:
 Update a Reference
 
     PATCH /repos/:user/:repo/git/refs/:ref
-
-=back
 
 Examples:
 
@@ -187,6 +185,8 @@ Examples:
             sha   => 'aa218f56b14c9653891f9e74264a383fa43fefbd',
         }
     );
+
+=back
 
 Parameters in C<< data >> hashref:
 

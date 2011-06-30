@@ -1,6 +1,6 @@
 package Pithub::Users::Keys;
 BEGIN {
-  $Pithub::Users::Keys::VERSION = '0.01001';
+  $Pithub::Users::Keys::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 User Keys API
@@ -21,14 +21,14 @@ sub create {
 sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: key_id' unless $args{key_id};
-    return $self->request( DELETE => sprintf( '/user/keys/%d', $args{key_id} ) );
+    return $self->request( DELETE => sprintf( '/user/keys/%s', $args{key_id} ) );
 }
 
 
 sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: key_id' unless $args{key_id};
-    return $self->request( GET => sprintf( '/user/keys/%d', $args{key_id} ) );
+    return $self->request( GET => sprintf( '/user/keys/%s', $args{key_id} ) );
 }
 
 
@@ -42,7 +42,7 @@ sub update {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: key_id' unless $args{key_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    return $self->request( PATCH => sprintf( '/user/keys/%d', $args{key_id} ), $args{data} );
+    return $self->request( PATCH => sprintf( '/user/keys/%s', $args{key_id} ), $args{data} );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -58,7 +58,7 @@ Pithub::Users::Keys - Github v3 User Keys API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -71,8 +71,6 @@ version 0.01001
 Create a public key
 
     POST /user/keys
-
-=back
 
 Examples:
 
@@ -92,6 +90,8 @@ Examples:
         }
     );
 
+=back
+
 =head2 delete
 
 =over
@@ -102,8 +102,6 @@ Delete a public key
 
     DELETE /user/keys/:id
 
-=back
-
 Examples:
 
     $p = Pithub->new( token => 'b3c62c6' );
@@ -111,6 +109,8 @@ Examples:
 
     $k = Pithub::Users::Keys->new( token => 'b3c62c6' );
     $result = $k->delete( key_id => 123 );
+
+=back
 
 =head2 get
 
@@ -122,8 +122,6 @@ Get a single public key
 
     GET /user/keys/:id
 
-=back
-
 Examples:
 
     $p = Pithub->new( token => 'b3c62c6' );
@@ -131,6 +129,8 @@ Examples:
 
     $k = Pithub::Users::Keys->new( token => 'b3c62c6' );
     $result = $k->get( key_id => 123 );
+
+=back
 
 =head2 list
 
@@ -142,8 +142,6 @@ List public keys for a user
 
     GET /user/keys
 
-=back
-
 Examples:
 
     $p = Pithub->new( token => 'b3c62c6' );
@@ -151,6 +149,8 @@ Examples:
 
     $k = Pithub::Users::Keys->new( token => 'b3c62c6' );
     $result = $k->list;
+
+=back
 
 =head2 update
 
@@ -161,8 +161,6 @@ Examples:
 Update a public key
 
     PATCH /user/keys/:id
-
-=back
 
 Examples:
 
@@ -183,6 +181,8 @@ Examples:
             key   => 'ssh-rsa AAA...',
         }
     );
+
+=back
 
 =head1 AUTHOR
 

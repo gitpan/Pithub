@@ -1,6 +1,6 @@
 package Pithub::Users::Emails;
 BEGIN {
-  $Pithub::Users::Emails::VERSION = '0.01001';
+  $Pithub::Users::Emails::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 User Emails API
@@ -43,7 +43,7 @@ Pithub::Users::Emails - Github v3 User Emails API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -57,8 +57,6 @@ Add email address(es)
 
     POST /user/emails
 
-=back
-
 Examples:
 
     $p = Pithub->new( token => 'b3c62c6' );
@@ -68,6 +66,8 @@ Examples:
     $e = Pithub::Users::Emails->new( token => 'b3c62c6' );
     $result = $e->add( data => ['plu@cpan.org'] );
     $result = $e->add( data => [ 'plu@cpan.org', 'plu@pqpq.de' ] );
+
+=back
 
 =head2 delete
 
@@ -79,8 +79,6 @@ Delete email address(es)
 
     DELETE /user/emails
 
-=back
-
 Examples:
 
     $p = Pithub->new( token => 'b3c62c6' );
@@ -90,6 +88,8 @@ Examples:
     $e = Pithub::Users::Emails->new( token => 'b3c62c6' );
     $result = $e->delete( data => ['plu@cpan.org'] );
     $result = $e->delete( data => [ 'plu@cpan.org', 'plu@pqpq.de' ] );
+
+=back
 
 =head2 list
 
@@ -101,8 +101,6 @@ List email addresses for a user
 
     GET /user/emails
 
-=back
-
 Examples:
 
     $p = Pithub->new( token => 'b3c62c6' );
@@ -110,6 +108,8 @@ Examples:
 
     $e = Pithub::Users::Emails->new( token => 'b3c62c6' );
     $result = $e->list;
+
+=back
 
 =head1 AUTHOR
 

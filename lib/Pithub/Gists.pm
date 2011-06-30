@@ -1,6 +1,6 @@
 package Pithub::Gists;
 BEGIN {
-  $Pithub::Gists::VERSION = '0.01001';
+  $Pithub::Gists::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Gists API
@@ -23,28 +23,28 @@ sub create {
 sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: gist_id' unless $args{gist_id};
-    return $self->request( DELETE => sprintf( '/gists/%d', $args{gist_id} ) );
+    return $self->request( DELETE => sprintf( '/gists/%s', $args{gist_id} ) );
 }
 
 
 sub fork {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: gist_id' unless $args{gist_id};
-    return $self->request( POST => sprintf( '/gists/%d/fork', $args{gist_id} ) );
+    return $self->request( POST => sprintf( '/gists/%s/fork', $args{gist_id} ) );
 }
 
 
 sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: gist_id' unless $args{gist_id};
-    return $self->request( GET => sprintf( '/gists/%d', $args{gist_id} ) );
+    return $self->request( GET => sprintf( '/gists/%s', $args{gist_id} ) );
 }
 
 
 sub is_starred {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: gist_id' unless $args{gist_id};
-    return $self->request( GET => sprintf( '/gists/%d/star', $args{gist_id} ) );
+    return $self->request( GET => sprintf( '/gists/%s/star', $args{gist_id} ) );
 }
 
 
@@ -66,14 +66,14 @@ sub list {
 sub star {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: gist_id' unless $args{gist_id};
-    return $self->request( PUT => sprintf( '/gists/%d/star', $args{gist_id} ) );
+    return $self->request( PUT => sprintf( '/gists/%s/star', $args{gist_id} ) );
 }
 
 
 sub unstar {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: gist_id' unless $args{gist_id};
-    return $self->request( DELETE => sprintf( '/gists/%d/star', $args{gist_id} ) );
+    return $self->request( DELETE => sprintf( '/gists/%s/star', $args{gist_id} ) );
 }
 
 
@@ -81,7 +81,7 @@ sub update {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: gist_id' unless $args{gist_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    return $self->request( PATCH => sprintf( '/gists/%d', $args{gist_id} ), $args{data} );
+    return $self->request( PATCH => sprintf( '/gists/%s', $args{gist_id} ), $args{data} );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -97,7 +97,7 @@ Pithub::Gists - Github v3 Gists API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -111,8 +111,6 @@ Create a gist
 
     POST /gists
 
-=back
-
 Examples:
 
     $result = $p->gists->create(
@@ -122,6 +120,8 @@ Examples:
             files       => { 'file1.txt' => { content => 'String file content' } }
         }
     );
+
+=back
 
 =head2 delete
 
@@ -133,11 +133,11 @@ Delete a gist
 
     DELETE /gists/:id
 
-=back
-
 Examples:
 
     $result = $p->gists->delete( gist_id => 784612 );
+
+=back
 
 =head2 fork
 
@@ -149,11 +149,11 @@ Fork a gist
 
     POST /gists/:id/fork
 
-=back
-
 Examples:
 
     $result = $p->gists->fork( gist_id => 784612 );
+
+=back
 
 =head2 get
 
@@ -165,11 +165,11 @@ Get a single gist
 
     GET /gists/:id
 
-=back
-
 Examples:
 
     $result = $p->gists->get( gist_id => 784612 );
+
+=back
 
 =head2 is_starred
 
@@ -181,11 +181,11 @@ Check if a gist is starred
 
     GET /gists/:id/star
 
-=back
-
 Examples:
 
     $result = $p->gists->is_starred( gist_id => 784612 );
+
+=back
 
 =head2 list
 
@@ -197,6 +197,10 @@ List a user’s gists:
 
     GET /users/:user/gists
 
+Examples:
+
+    $result = $p->gists->list( user => 'plu' );
+
 =item *
 
 List the authenticated user’s gists or if called anonymously,
@@ -204,11 +208,19 @@ this will returns all public gists:
 
     GET /gists
 
+Examples:
+
+    $result = $p->gists->list;
+
 =item *
 
 List all public gists:
 
     GET /gists/public
+
+Examples:
+
+    $result = $p->gists->list( public => 1 );
 
 =item *
 
@@ -220,18 +232,7 @@ List the authenticated user’s starred gists:
 
 Examples:
 
-    # List a user’s gists:
-    $result = $p->gists->list( user => 'plu' );
-
-    # List the authenticated user’s gists or if called anonymously,
-    # this will returns all public gists:
-    $result = $p->gists->list;
-
-    # List the authenticated user’s starred gists:
     $result = $p->gists->list( starred => 1 );
-
-    # List all public gists:
-    $result = $p->gists->list( public => 1 );
 
 =head2 star
 
@@ -243,11 +244,11 @@ Star a gist
 
     PUT /gists/:id/star
 
-=back
-
 Examples:
 
     $result = $p->gists->star( gist_id => 784612 );
+
+=back
 
 =head2 unstar
 
@@ -259,11 +260,11 @@ Unstar a gist
 
     DELETE /gists/:id/star
 
-=back
-
 Examples:
 
     $result = $p->gists->unstar( gist_id => 784612 );
+
+=back
 
 =head2 update
 
@@ -275,14 +276,14 @@ Edit a gist
 
     PATCH /gists/:id
 
-=back
-
 Examples:
 
     $result = $p->gists->update(
         gist_id => 784612,
         data    => { description => 'bar foo' }
     );
+
+=back
 
 =head1 AUTHOR
 

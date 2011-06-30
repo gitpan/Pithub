@@ -1,6 +1,6 @@
 package Pithub::Issues::Milestones;
 BEGIN {
-  $Pithub::Issues::Milestones::VERSION = '0.01001';
+  $Pithub::Issues::Milestones::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Issue Milestones API
@@ -23,7 +23,7 @@ sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: milestone_id' unless $args{milestone_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/milestones/%d', $args{user}, $args{repo}, $args{milestone_id} ) );
+    return $self->request( DELETE => sprintf( '/repos/%s/%s/milestones/%s', $args{user}, $args{repo}, $args{milestone_id} ) );
 }
 
 
@@ -31,7 +31,7 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: milestone_id' unless $args{milestone_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/milestones/%d', $args{user}, $args{repo}, $args{milestone_id} ) );
+    return $self->request( GET => sprintf( '/repos/%s/%s/milestones/%s', $args{user}, $args{repo}, $args{milestone_id} ) );
 }
 
 
@@ -47,7 +47,7 @@ sub update {
     croak 'Missing key in parameters: milestone_id' unless $args{milestone_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/milestones/%d', $args{user}, $args{repo}, $args{milestone_id} ), $args{data} );
+    return $self->request( PATCH => sprintf( '/repos/%s/%s/milestones/%s', $args{user}, $args{repo}, $args{milestone_id} ), $args{data} );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -63,7 +63,7 @@ Pithub::Issues::Milestones - Github v3 Issue Milestones API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -76,8 +76,6 @@ version 0.01001
 Create a milestone
 
     POST /repos/:user/:repo/milestones
-
-=back
 
 Examples:
 
@@ -92,6 +90,8 @@ Examples:
         }
     );
 
+=back
+
 =head2 delete
 
 =over
@@ -102,8 +102,6 @@ Delete a milestone
 
     DELETE /repos/:user/:repo/milestones/:id
 
-=back
-
 Examples:
 
     $result = $p->issues->milestones->delete(
@@ -111,6 +109,8 @@ Examples:
         user => 'plu',
         milestone_id => 1,
     );
+
+=back
 
 =head2 get
 
@@ -122,8 +122,6 @@ Get a single milestone
 
     GET /repos/:user/:repo/milestones/:id
 
-=back
-
 Examples:
 
     $result = $p->issues->milestones->get(
@@ -131,6 +129,8 @@ Examples:
         user => 'plu',
         milestone_id => 1,
     );
+
+=back
 
 =head2 list
 
@@ -142,14 +142,14 @@ List milestones for an issue
 
     GET /repos/:user/:repo/milestones
 
-=back
-
 Examples:
 
     $result = $p->issues->milestones->list(
         repo => 'Pithub',
         user => 'plu',
     );
+
+=back
 
 =head2 update
 
@@ -160,8 +160,6 @@ Examples:
 Update a milestone
 
     PATCH /repos/:user/:repo/milestones/:id
-
-=back
 
 Examples:
 
@@ -175,6 +173,8 @@ Examples:
             title       => 'String'
         }
     );
+
+=back
 
 =head1 AUTHOR
 

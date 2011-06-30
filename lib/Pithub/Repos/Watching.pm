@@ -1,6 +1,6 @@
 package Pithub::Repos::Watching;
 BEGIN {
-  $Pithub::Repos::Watching::VERSION = '0.01001';
+  $Pithub::Repos::Watching::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Repo Watching API
@@ -60,7 +60,7 @@ Pithub::Repos::Watching - Github v3 Repo Watching API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -74,14 +74,14 @@ Check if you are watching a repo
 
     GET /user/watched/:user/:repo
 
-=back
-
 Examples:
 
     $result = $p->repos->watching->is_watching(
         repo => 'Pithub',
         user => 'plu',
     );
+
+=back
 
 =head2 list_repos
 
@@ -119,14 +119,14 @@ List watchers
 
     GET /repos/:user/:repo/watchers
 
-=back
-
 Examples:
 
     $result = $p->repos->watching->list(
         user => 'plu',
         repo => 'Pithub',
     );
+
+=back
 
 =head2 start_watching
 
@@ -138,14 +138,14 @@ Watch a repo
 
     PUT /user/watched/:user/:repo
 
-=back
-
 Examples:
 
     $result = $p->repos->watching->start_watching(
         user => 'plu',
         repo => 'Pithub',
     );
+
+=back
 
 =head2 stop_watching
 
@@ -157,14 +157,14 @@ Stop watching a repo
 
     DELETE /user/watched/:user/:repo
 
-=back
-
 Examples:
 
     $result = $p->repos->watching->stop_watching(
         user => 'plu',
         repo => 'Pithub',
     );
+
+=back
 
 =head1 AUTHOR
 

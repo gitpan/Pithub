@@ -1,6 +1,6 @@
 package Pithub::Repos::Commits;
 BEGIN {
-  $Pithub::Repos::Commits::VERSION = '0.01001';
+  $Pithub::Repos::Commits::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Repo Commits API
@@ -24,7 +24,7 @@ sub delete_comment {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/comments/%d', $args{user}, $args{repo}, $args{comment_id} ) );
+    return $self->request( DELETE => sprintf( '/repos/%s/%s/comments/%s', $args{user}, $args{repo}, $args{comment_id} ) );
 }
 
 
@@ -82,7 +82,7 @@ Pithub::Repos::Commits - Github v3 Repo Commits API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -96,8 +96,6 @@ Create a commit comment
 
     POST /repos/:user/:repo/commits/:sha/comments
 
-=back
-
 Examples:
 
     $result = $p->repos->commits->create_comment(
@@ -106,6 +104,8 @@ Examples:
         sha  => 'df21b2660fb6',
         data => { body => 'some comment' },
     );
+
+=back
 
 =head2 delete_comment
 
@@ -117,8 +117,6 @@ Delete a commit comment
 
     DELETE /repos/:user/:repo/comments/:id
 
-=back
-
 Examples:
 
     $result = $p->repos->commits->delete_comment(
@@ -126,6 +124,8 @@ Examples:
         repo       => 'Pithub',
         comment_id => 1,
     );
+
+=back
 
 =head2 get
 
@@ -137,8 +137,6 @@ Get a single commit
 
     GET /repos/:user/:repo/commits/:sha
 
-=back
-
 Examples:
 
     $result = $p->repos->commits->get(
@@ -146,6 +144,8 @@ Examples:
         repo => 'Pithub',
         sha  => 'df21b2660fb6',
     );
+
+=back
 
 =head2 get_comment
 
@@ -157,8 +157,6 @@ Get a single commit comment
 
     GET /repos/:user/:repo/comments/:id
 
-=back
-
 Examples:
 
     $result = $p->repos->commits->get_comment(
@@ -166,6 +164,8 @@ Examples:
         repo       => 'Pithub',
         comment_id => 1,
     );
+
+=back
 
 =head2 list
 
@@ -177,14 +177,14 @@ List commits on a repository
 
     GET /repos/:user/:repo/commits
 
-=back
-
 Examples:
 
     $result = $p->repos->commits->list(
         user => 'plu',
         repo => 'Pithub',
     );
+
+=back
 
 =head2 list_comments
 
@@ -212,8 +212,6 @@ List comments for a single commit
 
     GET /repos/:user/:repo/commits/:sha/comments
 
-=back
-
 Examples:
 
     $result = $p->repos->commits->list_comments(
@@ -221,6 +219,8 @@ Examples:
         repo => 'Pithub',
         sha  => 'df21b2660fb6',
     );
+
+=back
 
 =head2 update_comment
 
@@ -232,8 +232,6 @@ Update a commit comment
 
     PATCH /repos/:user/:repo/comments/:id
 
-=back
-
 Examples:
 
     $result = $p->repos->commits->update_comment(
@@ -242,6 +240,8 @@ Examples:
         comment_id => 1,
         data       => { body => 'updated comment' },
     );
+
+=back
 
 =head1 AUTHOR
 

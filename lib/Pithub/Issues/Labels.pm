@@ -1,6 +1,6 @@
 package Pithub::Issues::Labels;
 BEGIN {
-  $Pithub::Issues::Labels::VERSION = '0.01001';
+  $Pithub::Issues::Labels::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Issue Labels API
@@ -16,7 +16,7 @@ sub add {
     croak 'Missing key in parameters: issue_id' unless $args{issue_id};
     croak 'Missing key in parameters: data (arrayref)' unless ref $args{data} eq 'ARRAY';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/issues/%d/labels', $args{user}, $args{repo}, $args{issue_id} ), $args{data} );
+    return $self->request( POST => sprintf( '/repos/%s/%s/issues/%s/labels', $args{user}, $args{repo}, $args{issue_id} ), $args{data} );
 }
 
 
@@ -32,7 +32,7 @@ sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: label_id' unless $args{label_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/labels/%d', $args{user}, $args{repo}, $args{label_id} ) );
+    return $self->request( DELETE => sprintf( '/repos/%s/%s/labels/%s', $args{user}, $args{repo}, $args{label_id} ) );
 }
 
 
@@ -40,7 +40,7 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: label_id' unless $args{label_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/labels/%d', $args{user}, $args{repo}, $args{label_id} ) );
+    return $self->request( GET => sprintf( '/repos/%s/%s/labels/%s', $args{user}, $args{repo}, $args{label_id} ) );
 }
 
 
@@ -48,10 +48,10 @@ sub list {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
     if ( my $milestone_id = $args{milestone_id} ) {
-        return $self->request( GET => sprintf( '/repos/%s/%s/milestones/%d/labels', $args{user}, $args{repo}, $milestone_id ) );
+        return $self->request( GET => sprintf( '/repos/%s/%s/milestones/%s/labels', $args{user}, $args{repo}, $milestone_id ) );
     }
     elsif ( my $issue_id = $args{issue_id} ) {
-        return $self->request( GET => sprintf( '/repos/%s/%s/issues/%d/labels', $args{user}, $args{repo}, $issue_id ) );
+        return $self->request( GET => sprintf( '/repos/%s/%s/issues/%s/labels', $args{user}, $args{repo}, $issue_id ) );
     }
     return $self->request( GET => sprintf( '/repos/%s/%s/labels', $args{user}, $args{repo} ) );
 }
@@ -62,9 +62,9 @@ sub remove {
     $self->_validate_user_repo_args( \%args );
     croak 'Missing key in parameters: issue_id' unless $args{issue_id};
     if ( my $label_id = $args{label_id} ) {
-        return $self->request( DELETE => sprintf( '/repos/%s/%s/issues/%d/labels/%d', $args{user}, $args{repo}, $args{issue_id}, $label_id ) );
+        return $self->request( DELETE => sprintf( '/repos/%s/%s/issues/%s/labels/%s', $args{user}, $args{repo}, $args{issue_id}, $label_id ) );
     }
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/issues/%d/labels', $args{user}, $args{repo}, $args{issue_id} ) );
+    return $self->request( DELETE => sprintf( '/repos/%s/%s/issues/%s/labels', $args{user}, $args{repo}, $args{issue_id} ) );
 }
 
 
@@ -73,7 +73,7 @@ sub replace {
     croak 'Missing key in parameters: issue_id' unless $args{issue_id};
     croak 'Missing key in parameters: data (arrayref)' unless ref $args{data} eq 'ARRAY';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PUT => sprintf( '/repos/%s/%s/issues/%d/labels', $args{user}, $args{repo}, $args{issue_id} ), $args{data} );
+    return $self->request( PUT => sprintf( '/repos/%s/%s/issues/%s/labels', $args{user}, $args{repo}, $args{issue_id} ), $args{data} );
 }
 
 
@@ -82,7 +82,7 @@ sub update {
     croak 'Missing key in parameters: label_id' unless $args{label_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/labels/%d', $args{user}, $args{repo}, $args{label_id} ), $args{data} );
+    return $self->request( PATCH => sprintf( '/repos/%s/%s/labels/%s', $args{user}, $args{repo}, $args{label_id} ), $args{data} );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -98,7 +98,7 @@ Pithub::Issues::Labels - Github v3 Issue Labels API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -112,8 +112,6 @@ Add labels to an issue
 
     POST /repos/:user/:repo/issues/:id/labels
 
-=back
-
 Examples:
 
     $result = $p->issues->labels->add(
@@ -122,6 +120,8 @@ Examples:
         issue_id => 1,
         data     => ['Label1', 'Label2'],
     );
+
+=back
 
 =head2 create
 
@@ -132,8 +132,6 @@ Examples:
 Create a label
 
     POST /repos/:user/:repo/labels
-
-=back
 
 Examples:
 
@@ -146,6 +144,8 @@ Examples:
         }
     );
 
+=back
+
 =head2 delete
 
 =over
@@ -156,8 +156,6 @@ Delete a label
 
     DELETE /repos/:user/:repo/labels/:id
 
-=back
-
 Examples:
 
     $result = $p->issues->labels->delete(
@@ -165,6 +163,8 @@ Examples:
         user     => 'plu',
         label_id => 1,
     );
+
+=back
 
 =head2 get
 
@@ -176,8 +176,6 @@ Get a single label
 
     GET /repos/:user/:repo/labels/:id
 
-=back
-
 Examples:
 
     $result = $p->issues->labels->get(
@@ -185,6 +183,8 @@ Examples:
         user => 'plu',
         label_id => 1,
     );
+
+=back
 
 =head2 list
 
@@ -278,8 +278,6 @@ Replace all labels for an issue
 
     PUT /repos/:user/:repo/issues/:id/labels
 
-=back
-
 Examples:
 
     $result = $p->issues->labels->replace(
@@ -288,6 +286,8 @@ Examples:
         issue_id => 1,
         data     => [qw(label3 label4)],
     );
+
+=back
 
 =head2 update
 
@@ -298,8 +298,6 @@ Examples:
 Update a label
 
     PATCH /repos/:user/:repo/labels/:id
-
-=back
 
 Examples:
 
@@ -312,6 +310,8 @@ Examples:
             name  => 'API',
         }
     );
+
+=back
 
 =head1 AUTHOR
 

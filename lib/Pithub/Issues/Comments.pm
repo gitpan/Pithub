@@ -1,6 +1,6 @@
 package Pithub::Issues::Comments;
 BEGIN {
-  $Pithub::Issues::Comments::VERSION = '0.01001';
+  $Pithub::Issues::Comments::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Issue Comments API
@@ -16,7 +16,7 @@ sub create {
     croak 'Missing key in parameters: issue_id' unless $args{issue_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/issues/%d/comments', $args{user}, $args{repo}, $args{issue_id} ), $args{data} );
+    return $self->request( POST => sprintf( '/repos/%s/%s/issues/%s/comments', $args{user}, $args{repo}, $args{issue_id} ), $args{data} );
 }
 
 
@@ -24,7 +24,7 @@ sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/issues/comments/%d', $args{user}, $args{repo}, $args{comment_id} ) );
+    return $self->request( DELETE => sprintf( '/repos/%s/%s/issues/comments/%s', $args{user}, $args{repo}, $args{comment_id} ) );
 }
 
 
@@ -32,7 +32,7 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/issues/comments/%d', $args{user}, $args{repo}, $args{comment_id} ) );
+    return $self->request( GET => sprintf( '/repos/%s/%s/issues/comments/%s', $args{user}, $args{repo}, $args{comment_id} ) );
 }
 
 
@@ -40,7 +40,7 @@ sub list {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: issue_id' unless $args{issue_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/issues/%d/comments', $args{user}, $args{repo}, $args{issue_id} ) );
+    return $self->request( GET => sprintf( '/repos/%s/%s/issues/%s/comments', $args{user}, $args{repo}, $args{issue_id} ) );
 }
 
 
@@ -49,7 +49,7 @@ sub update {
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/issues/comments/%d', $args{user}, $args{repo}, $args{comment_id} ), $args{data} );
+    return $self->request( PATCH => sprintf( '/repos/%s/%s/issues/comments/%s', $args{user}, $args{repo}, $args{comment_id} ), $args{data} );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -65,7 +65,7 @@ Pithub::Issues::Comments - Github v3 Issue Comments API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -79,8 +79,6 @@ Create a comment
 
     POST /repos/:user/:repo/issues/:id/comments
 
-=back
-
 Examples:
 
     $result = $p->issues->comments->create(
@@ -89,6 +87,8 @@ Examples:
         issue_id => 1,
         data     => { body => 'some comment' }
     );
+
+=back
 
 =head2 delete
 
@@ -100,8 +100,6 @@ Delete a comment
 
     DELETE /repos/:user/:repo/issues/comments/:id
 
-=back
-
 Examples:
 
     $result = $p->issues->comments->delete(
@@ -109,6 +107,8 @@ Examples:
         user       => 'plu',
         comment_id => 1,
     );
+
+=back
 
 =head2 get
 
@@ -120,8 +120,6 @@ Get a single comment
 
     GET /repos/:user/:repo/issues/comments/:id
 
-=back
-
 Examples:
 
     $result = $p->issues->comments->get(
@@ -129,6 +127,8 @@ Examples:
         user       => 'plu',
         comment_id => 1,
     );
+
+=back
 
 =head2 list
 
@@ -140,8 +140,6 @@ List comments on an issue
 
     GET /repos/:user/:repo/issues/:id/comments
 
-=back
-
 Examples:
 
     $result = $p->issues->comments->list(
@@ -149,6 +147,8 @@ Examples:
         user     => 'plu',
         issue_id => 1,
     );
+
+=back
 
 =head2 update
 
@@ -160,8 +160,6 @@ Edit a comment
 
     PATCH /repos/:user/:repo/issues/comments/:id
 
-=back
-
 Examples:
 
     $result = $p->issues->comments->update(
@@ -170,6 +168,8 @@ Examples:
         comment_id => 1,
         data       => { body => 'some comment' },
     );
+
+=back
 
 =head1 AUTHOR
 

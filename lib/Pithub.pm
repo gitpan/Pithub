@@ -1,6 +1,6 @@
 package Pithub;
 BEGIN {
-  $Pithub::VERSION = '0.01001';
+  $Pithub::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 API
@@ -32,7 +32,7 @@ Pithub - Github v3 API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 SYNOPSIS
 

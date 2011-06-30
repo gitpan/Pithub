@@ -1,6 +1,6 @@
 package Pithub::GitData::Trees;
 BEGIN {
-  $Pithub::GitData::Trees::VERSION = '0.01001';
+  $Pithub::GitData::Trees::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Git Data Trees API
@@ -28,7 +28,8 @@ sub get {
     if ( $args{recursive} ) {
         $options->{prepare_uri} = sub {
             my ($uri) = @_;
-            $uri->query_form( recursive => 1 );
+            my %query = ( $uri->query_form, recursive => 1 );
+            $uri->query_form(%query);
         };
     }
     return $self->request( GET => $path, undef, $options );
@@ -47,7 +48,7 @@ Pithub::GitData::Trees - Github v3 Git Data Trees API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -60,8 +61,6 @@ version 0.01001
 Create a Tree
 
     POST /repos/:user/:repo/git/trees
-
-=back
 
 Examples:
 
@@ -79,6 +78,8 @@ Examples:
             ]
         }
     );
+
+=back
 
 Parameters in C<< data >> hashref:
 
@@ -145,7 +146,7 @@ Get a Tree Recursively
 
     GET /repos/:user/:repo/git/trees/:sha?recursive=1
 
-=back
+Examples:
 
     $result = $p->git_data->trees->get(
         user      => 'plu',
@@ -153,6 +154,8 @@ Get a Tree Recursively
         sha       => 'df21b2660fb6',
         recursive => 1,
     );
+
+=back
 
 =head1 AUTHOR
 

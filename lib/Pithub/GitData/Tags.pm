@@ -1,6 +1,6 @@
 package Pithub::GitData::Tags;
 BEGIN {
-  $Pithub::GitData::Tags::VERSION = '0.01001';
+  $Pithub::GitData::Tags::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Git Data Tags API
@@ -39,7 +39,7 @@ Pithub::GitData::Tags - Github v3 Git Data Tags API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -60,8 +60,6 @@ call would be unnecessary.
 
     POST /repos/:user/:repo/git/tags
 
-=back
-
 Examples:
 
     # TODO: verify I got the parameters right:
@@ -81,6 +79,8 @@ Examples:
             type    => 'commit',
         }
     );
+
+=back
 
 Parameters in C<< data >> hashref:
 
@@ -129,8 +129,6 @@ Get a Tag
 
     GET /repos/:user/:repo/git/tags/:sha
 
-=back
-
 Examples:
 
     $result = $p->git_data->tags->get(
@@ -138,6 +136,8 @@ Examples:
         repo => 'Pithub',
         sha  => 'df21b2660fb6',
     );
+
+=back
 
 =head1 AUTHOR
 

@@ -1,6 +1,6 @@
 package Pithub::GitData::Blobs;
 BEGIN {
-  $Pithub::GitData::Blobs::VERSION = '0.01001';
+  $Pithub::GitData::Blobs::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Git Data Blobs API
@@ -39,7 +39,7 @@ Pithub::GitData::Blobs - Github v3 Git Data Blobs API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -53,8 +53,6 @@ Create a Blob
 
     POST /repos/:user/:repo/git/blobs
 
-=back
-
 Examples:
 
     $result = $p->git_data->blobs->create(
@@ -66,6 +64,8 @@ Examples:
         }
     );
 
+=back
+
 =head2 get
 
 =over
@@ -76,8 +76,6 @@ Get a Blob
 
     GET /repos/:user/:repo/git/blobs/:sha
 
-=back
-
 Examples:
 
     $result = $p->git_data->blobs->get(
@@ -85,6 +83,8 @@ Examples:
         repo => 'Pithub',
         sha  => 'df21b2660fb6',
     );
+
+=back
 
 =head1 AUTHOR
 

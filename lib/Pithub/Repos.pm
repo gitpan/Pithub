@@ -1,6 +1,6 @@
 package Pithub::Repos;
 BEGIN {
-  $Pithub::Repos::VERSION = '0.01001';
+  $Pithub::Repos::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Repos API
@@ -109,7 +109,7 @@ Pithub::Repos - Github v3 Repos API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -122,8 +122,6 @@ version 0.01001
 List Branches
 
     GET /repos/:user/:repo/branches
-
-=back
 
 Examples:
 
@@ -145,6 +143,8 @@ Examples:
     $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
     $result = $r->repos->branches;
 
+=back
+
 =head2 contributors
 
 =over
@@ -154,8 +154,6 @@ Examples:
 List contributors
 
     GET /repos/:user/:repo/contributors
-
-=back
 
 Examples:
 
@@ -177,6 +175,8 @@ Examples:
     $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
     $result = $r->repos->contributors;
 
+=back
+
 =head2 create
 
 =over
@@ -187,6 +187,10 @@ Create a new repository for the authenticated user.
 
     POST /user/repos
 
+Examples:
+
+    $result = $p->repos->create( { name => 'some-repo' } );
+
 =item *
 
 Create a new repository in this organization. The authenticated user
@@ -194,16 +198,11 @@ must be a member of this organization.
 
     POST /orgs/:org/repos
 
-=back
-
 Examples:
 
-    # create a repo for the authenticated user
-    $result = $p->repos->create( { name => 'some-repo' } );
-
-    # create a repo for an organization (the authenticated user must
-    # belong to this organization)
     $result = $p->repos->create( 'CPAN-API' => { name => 'some-repo' } );
+
+=back
 
 =head2 get
 
@@ -214,8 +213,6 @@ Examples:
 Get a repo
 
     GET /repos/:user/:repo
-
-=back
 
 Examples:
 
@@ -237,6 +234,8 @@ Examples:
     $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
     $result = $r->repos->get;
 
+=back
+
 =head2 languages
 
 =over
@@ -246,8 +245,6 @@ Examples:
 List languages
 
     GET /repos/:user/:repo/languages
-
-=back
 
 Examples:
 
@@ -268,6 +265,8 @@ Examples:
 
     $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
     $result = $r->repos->languages;
+
+=back
 
 =head2 list
 
@@ -291,13 +290,13 @@ List repositories for the specified org.
 
     GET /orgs/:org/repos
 
-=back
-
 Examples:
 
     $result = $p->repos->list( user => 'plu' );
     $result = $p->repos->list( org => 'CPAN-API' );
     $result = $p->repos->list;
+
+=back
 
 =head2 tags
 
@@ -308,8 +307,6 @@ Examples:
 List Tags
 
     GET /repos/:user/:repo/tags
-
-=back
 
 Examples:
 
@@ -331,6 +328,8 @@ Examples:
     $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
     $result = $r->repos->tags;
 
+=back
+
 =head2 teams
 
 =over
@@ -340,8 +339,6 @@ Examples:
 List Teams
 
     GET /repos/:user/:repo/teams
-
-=back
 
 Examples:
 
@@ -363,6 +360,8 @@ Examples:
     $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
     $result = $r->repos->teams;
 
+=back
+
 =head2 update
 
 =over
@@ -373,12 +372,12 @@ Edit
 
     PATCH /repos/:user/:repo
 
-=back
-
 Examples:
 
     # update a repo for the authenticated user
     $result = $p->repos->update( Pithub => { description => 'Github API v3' } );
+
+=back
 
 =head1 AUTHOR
 

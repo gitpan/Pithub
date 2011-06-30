@@ -1,6 +1,6 @@
 package Pithub::Orgs::Members;
 BEGIN {
-  $Pithub::Orgs::Members::VERSION = '0.01001';
+  $Pithub::Orgs::Members::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Org Members API
@@ -77,7 +77,7 @@ Pithub::Orgs::Members - Github v3 Org Members API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -91,14 +91,14 @@ Conceal a user's membership
 
     DELETE /orgs/:org/public_members/:user
 
-=back
-
 Examples:
 
     $result = $p->orgs->members->conceal(
         org  => 'CPAN-API',
         user => 'plu',
     );
+
+=back
 
 =head2 delete
 
@@ -112,14 +112,14 @@ repositories.
 
     DELETE /orgs/:org/members/:user
 
-=back
-
 Examples:
 
     $result = $p->orgs->members->delete(
         org  => 'CPAN-API',
         user => 'plu',
     );
+
+=back
 
 =head2 is_member
 
@@ -131,14 +131,14 @@ Check if a user is a member of an organization
 
     GET /orgs/:org/members/:user
 
-=back
-
 Examples:
 
     $result = $p->orgs->members->is_member(
         org  => 'CPAN-API',
         user => 'plu',
     );
+
+=back
 
 =head2 is_public
 
@@ -150,14 +150,14 @@ Get if a user is a public member
 
     GET /orgs/:org/public_members/:user
 
-=back
-
 Examples:
 
     $result = $p->orgs->members->is_public(
         org  => 'CPAN-API',
         user => 'plu',
     );
+
+=back
 
 =head2 list
 
@@ -173,11 +173,11 @@ members are returned.
 
     GET /orgs/:org/members
 
-=back
-
 Examples:
 
     $result = $p->orgs->members->list( org => 'CPAN-API' );
+
+=back
 
 =head2 list_public
 
@@ -190,11 +190,11 @@ publicized or not.
 
     GET /orgs/:org/public_members
 
-=back
-
 Examples:
 
     $result = $p->orgs->members->list_public( org => 'CPAN-API' );
+
+=back
 
 =head2 publicize
 
@@ -206,14 +206,14 @@ Publicize a user's membership
 
     PUT /orgs/:org/public_members/:user
 
-=back
-
 Examples:
 
     $result = $p->orgs->members->publicize(
         org  => 'CPAN-API',
         user => 'plu',
     );
+
+=back
 
 =head1 AUTHOR
 

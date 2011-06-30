@@ -1,6 +1,6 @@
 package Pithub::Repos::Collaborators;
 BEGIN {
-  $Pithub::Repos::Collaborators::VERSION = '0.01001';
+  $Pithub::Repos::Collaborators::VERSION = '0.01002';
 }
 
 # ABSTRACT: Github v3 Repo Collaborators API
@@ -54,7 +54,7 @@ Pithub::Repos::Collaborators - Github v3 Repo Collaborators API
 
 =head1 VERSION
 
-version 0.01001
+version 0.01002
 
 =head1 METHODS
 
@@ -68,8 +68,6 @@ Add collaborator
 
     PUT /repos/:user/:repo/collaborators/:user
 
-=back
-
 Examples:
 
     $result = $p->repos->collaborators->add(
@@ -77,6 +75,8 @@ Examples:
         repo         => 'Pithub',
         collaborator => 'rbo',
     );
+
+=back
 
 =head2 is_collaborator
 
@@ -87,8 +87,6 @@ Examples:
 Get
 
     GET /repos/:user/:repo/collaborators/:user
-
-=back
 
 Examples:
 
@@ -105,6 +103,8 @@ Examples:
         print "rbo is not added as collaborator to Pithub\n";
     }
 
+=back
+
 =head2 list
 
 =over
@@ -115,14 +115,14 @@ List
 
     GET /repos/:user/:repo/collaborators
 
-=back
-
 Examples:
 
     $result = $p->repos->collaborators->list(
         user => 'plu',
         repo => 'Pithub',
     );
+
+=back
 
 =head2 remove
 
@@ -134,8 +134,6 @@ Remove collaborator
 
     DELETE /repos/:user/:repo/collaborators/:user
 
-=back
-
 Examples:
 
     $result = $p->repos->collaborators->remove(
@@ -143,6 +141,8 @@ Examples:
         repo         => 'Pithub',
         collaborator => 'rbo',
     );
+
+=back
 
 =head1 AUTHOR
 
