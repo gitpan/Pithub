@@ -1,6 +1,6 @@
 package Pithub::Response;
 BEGIN {
-  $Pithub::Response::VERSION = '0.01002';
+  $Pithub::Response::VERSION = '0.01003';
 }
 
 # ABSTRACT: Github v3 response object
@@ -41,7 +41,7 @@ Pithub::Response - Github v3 response object
 
 =head1 VERSION
 
-version 0.01002
+version 0.01003
 
 =head1 ATTRIBUTES
 

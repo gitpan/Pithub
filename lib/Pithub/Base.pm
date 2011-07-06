@@ -1,6 +1,6 @@
 package Pithub::Base;
 BEGIN {
-  $Pithub::Base::VERSION = '0.01002';
+  $Pithub::Base::VERSION = '0.01003';
 }
 
 # ABSTRACT: Github v3 base class for all Pithub modules
@@ -156,6 +156,7 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^POST /orgs/[^/]+/repos$},
     qr{^POST /orgs/[^/]+/teams$},
     qr{^POST /repos/[^/]+/[^/]+/commits/[^/]+/comments$},
+    qr{^POST /repos/[^/]+/[^/]+/downloads$},
     qr{^POST /repos/[^/]+/[^/]+/forks},
     qr{^POST /repos/[^/]+/[^/]+/git/blobs$},
     qr{^POST /repos/[^/]+/[^/]+/git/commits$},
@@ -254,7 +255,7 @@ sub _prepare_request_args {
     }
 
     if ( $self->_token_required( $method, $path ) && !$self->has_token ) {
-        croak "Access token required for: ${method} ${path}";
+        croak sprintf "Access token required for: %s %s (%s)", $method, $path, $uri;
     }
 
     my %args = (
@@ -306,7 +307,7 @@ Pithub::Base - Github v3 base class for all Pithub modules
 
 =head1 VERSION
 
-version 0.01002
+version 0.01003
 
 =head1 DESCRIPTION
 

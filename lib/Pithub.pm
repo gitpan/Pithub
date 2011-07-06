@@ -1,6 +1,6 @@
 package Pithub;
 BEGIN {
-  $Pithub::VERSION = '0.01002';
+  $Pithub::VERSION = '0.01003';
 }
 
 # ABSTRACT: Github v3 API
@@ -32,30 +32,26 @@ Pithub - Github v3 API
 
 =head1 VERSION
 
-version 0.01002
+version 0.01003
 
 =head1 SYNOPSIS
 
     use Pithub;
     use Data::Dumper;
 
-    $result = Pithub->new->repos->get( user => 'plu', repo => 'Pithub' );
-    print Dumper $result->content;
+    $p = Pithub->new;
+    $result = $p->repos->get( user => 'plu', repo => 'Pithub' );
 
-    $result = Pithub->new( user => 'plu' )->repos->get( repo => 'Pithub' );
-    print Dumper $result->content;
+    # $result->content is either an arrayref or an hashref
+    # depending on the API call that has been made
+    printf "%s\n", $result->content->{html_url};     # prints https://github.com/plu/Pithub
+    printf "%s\n", $result->content->{clone_url};    # prints https://github.com/plu/Pithub.git
 
-    $result = Pithub->new( user => 'plu', repo => 'Pithub' )->repos->get;
-    print Dumper $result->content;
-
-    $result = Pithub::Repos->new->get( user => 'plu', repo => 'Pithub' );
-    print Dumper $result->content;
-
-    $result = Pithub::Repos->new( user => 'plu' )->get( repo => 'Pithub' );
-    print Dumper $result->content;
-
-    $result = Pithub::Repos->new( user => 'plu', repo => 'Pithub' )->get;
-    print Dumper $result->content;
+    # if the result is an arrayref, you can use the result iterator
+    $result = $p->repos->list( user => 'plu' );
+    while ( my $row = $result->next ) {
+        printf "%s\n", $row->{name};
+    }
 
 =head1 WARNING
 

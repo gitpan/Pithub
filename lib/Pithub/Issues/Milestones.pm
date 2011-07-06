@@ -1,6 +1,6 @@
 package Pithub::Issues::Milestones;
 BEGIN {
-  $Pithub::Issues::Milestones::VERSION = '0.01002';
+  $Pithub::Issues::Milestones::VERSION = '0.01003';
 }
 
 # ABSTRACT: Github v3 Issue Milestones API
@@ -63,7 +63,7 @@ Pithub::Issues::Milestones - Github v3 Issue Milestones API
 
 =head1 VERSION
 
-version 0.01002
+version 0.01003
 
 =head1 METHODS
 

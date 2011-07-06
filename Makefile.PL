@@ -32,6 +32,7 @@ my %WriteMakefileArgs = (
     'HTTP::Headers' => '0',
     'HTTP::Message' => '0',
     'HTTP::Request' => '0',
+    'HTTP::Request::Common' => '0',
     'HTTP::Response' => '0',
     'JSON::Any' => '0',
     'JSON::XS' => '0',
@@ -43,7 +44,7 @@ my %WriteMakefileArgs = (
     'URI' => '0',
     'namespace::autoclean' => '0'
   },
-  'VERSION' => '0.01002',
+  'VERSION' => '0.01003',
   'test' => {
     'TESTS' => 't/*.t'
   }

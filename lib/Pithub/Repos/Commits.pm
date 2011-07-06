@@ -1,6 +1,6 @@
 package Pithub::Repos::Commits;
 BEGIN {
-  $Pithub::Repos::Commits::VERSION = '0.01002';
+  $Pithub::Repos::Commits::VERSION = '0.01003';
 }
 
 # ABSTRACT: Github v3 Repo Commits API
@@ -82,7 +82,7 @@ Pithub::Repos::Commits - Github v3 Repo Commits API
 
 =head1 VERSION
 
-version 0.01002
+version 0.01003
 
 =head1 METHODS
 
@@ -195,7 +195,8 @@ Examples:
 List commit comments for a repository
 
 Commit Comments leverage these custom mime types. You can read more
-about the use of mimes types in the API here. TODO: Link github API
+about the use of mimes types in the API here. See also:
+L<http://developer.github.com/v3/mimes/>.
 
     GET /repos/:user/:repo/comments
 

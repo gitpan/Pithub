@@ -1,6 +1,6 @@
 package Pithub::Result;
 BEGIN {
-  $Pithub::Result::VERSION = '0.01002';
+  $Pithub::Result::VERSION = '0.01003';
 }
 
 # ABSTRACT: Github v3 result object
@@ -85,6 +85,27 @@ has '_json' => (
     isa        => 'JSON::Any',
     lazy_build => 1,
 );
+
+
+sub count {
+    my ($self) = @_;
+    return 0 unless $self->success;
+    my $content = $self->content;
+    if ( ref $content eq 'HASH' && scalar keys %$content == 0 ) {
+        return 0;
+    }
+    return $self->_iterator->getLength;
+}
+
+
+sub first {
+    my ($self) = @_;
+    my $content = $self->content;
+    if ( ref $content eq 'ARRAY' ) {
+        return $content->[0];
+    }
+    return $content;
+}
 
 
 sub first_page {
@@ -253,7 +274,7 @@ Pithub::Result - Github v3 result object
 
 =head1 VERSION
 
-version 0.01002
+version 0.01003
 
 =head1 ATTRIBUTES
 
@@ -341,6 +362,17 @@ B<success>: response->success
 =back
 
 =head1 METHODS
+
+=head2 count
+
+Returns the count of the elements in L</content>. If the result is
+not an arrayref but a hashref, it will still return C<< 1 >>. Some
+calls return an empty hashref, for those calls it returns C<< 0 >>.
+
+=head2 first
+
+Return the first element from L</content> if L</content> is an
+arrayref. If it's a hashref, it returns just that.
 
 =head2 first_page
 

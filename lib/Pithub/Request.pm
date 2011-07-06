@@ -1,6 +1,6 @@
 package Pithub::Request;
 BEGIN {
-  $Pithub::Request::VERSION = '0.01002';
+  $Pithub::Request::VERSION = '0.01003';
 }
 
 # ABSTRACT: Github v3 request object
@@ -86,6 +86,8 @@ sub _build_http_request {
         $request->content($json);
     }
 
+    $request->header( 'Content-Length' => length $request->content );
+
     return $request;
 }
 
@@ -108,7 +110,7 @@ Pithub::Request - Github v3 request object
 
 =head1 VERSION
 
-version 0.01002
+version 0.01003
 
 =head1 ATTRIBUTES
 
