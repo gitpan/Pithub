@@ -1,6 +1,6 @@
 package Pithub::Users::Emails;
 BEGIN {
-  $Pithub::Users::Emails::VERSION = '0.01003';
+  $Pithub::Users::Emails::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 User Emails API
@@ -14,20 +14,32 @@ extends 'Pithub::Base';
 sub add {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: data (arrayref)' unless ref $args{data} eq 'ARRAY';
-    return $self->request( POST => '/user/emails', $args{data} );
+    return $self->request(
+        method => 'POST',
+        path   => '/user/emails',
+        %args,
+    );
 }
 
 
 sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: data (arrayref)' unless ref $args{data} eq 'ARRAY';
-    return $self->request( DELETE => '/user/emails', $args{data} );
+    return $self->request(
+        method => 'DELETE',
+        path   => '/user/emails',
+        %args,
+    );
 }
 
 
 sub list {
-    my ($self) = @_;
-    return $self->request( GET => '/user/emails' );
+    my ( $self, %args ) = @_;
+    return $self->request(
+        method => 'GET',
+        path   => '/user/emails',
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -43,7 +55,7 @@ Pithub::Users::Emails - Github v3 User Emails API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -59,13 +71,8 @@ Add email address(es)
 
 Examples:
 
-    $p = Pithub->new( token => 'b3c62c6' );
-    $result = $p->users->emails->add( data => ['plu@cpan.org'] );
-    $result = $p->users->emails->add( data => [ 'plu@cpan.org', 'plu@pqpq.de' ] );
-
-    $e = Pithub::Users::Emails->new( token => 'b3c62c6' );
-    $result = $e->add( data => ['plu@cpan.org'] );
-    $result = $e->add( data => [ 'plu@cpan.org', 'plu@pqpq.de' ] );
+    my $e = Pithub::Users::Emails->new( token => 'b3c62c6' );
+    my $result = $e->add( data => [ 'plu@cpan.org', 'plu@pqpq.de' ] );
 
 =back
 
@@ -81,13 +88,8 @@ Delete email address(es)
 
 Examples:
 
-    $p = Pithub->new( token => 'b3c62c6' );
-    $result = $p->users->emails->delete( data => ['plu@cpan.org'] );
-    $result = $p->users->emails->delete( data => [ 'plu@cpan.org', 'plu@pqpq.de' ] );
-
-    $e = Pithub::Users::Emails->new( token => 'b3c62c6' );
-    $result = $e->delete( data => ['plu@cpan.org'] );
-    $result = $e->delete( data => [ 'plu@cpan.org', 'plu@pqpq.de' ] );
+    my $e = Pithub::Users::Emails->new( token => 'b3c62c6' );
+    my $result = $e->delete( data => [ 'plu@cpan.org', 'plu@pqpq.de' ] );
 
 =back
 
@@ -103,11 +105,8 @@ List email addresses for a user
 
 Examples:
 
-    $p = Pithub->new( token => 'b3c62c6' );
-    $result = $p->users->emails->list;
-
-    $e = Pithub::Users::Emails->new( token => 'b3c62c6' );
-    $result = $e->list;
+    my $e = Pithub::Users::Emails->new( token => 'b3c62c6' );
+    my $result = $e->list;
 
 =back
 

@@ -1,6 +1,6 @@
 package Pithub::Users::Followers;
 BEGIN {
-  $Pithub::Users::Followers::VERSION = '0.01003';
+  $Pithub::Users::Followers::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 User Followers API
@@ -14,39 +14,67 @@ extends 'Pithub::Base';
 sub follow {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( PUT => sprintf( '/user/following/%s', $args{user} ) );
+    return $self->request(
+        method => 'PUT',
+        path   => sprintf( '/user/following/%s', delete $args{user} ),
+        %args,
+    );
 }
 
 
 sub is_following {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( GET => sprintf( '/user/following/%s', $args{user} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/user/following/%s', delete $args{user} ),
+        %args,
+    );
 }
 
 
 sub list {
     my ( $self, %args ) = @_;
     if ( $args{user} ) {
-        return $self->request( GET => sprintf( '/users/%s/followers', $args{user} ) );
+        return $self->request(
+            method => 'GET',
+            path   => sprintf( '/users/%s/followers', delete $args{user} ),
+            %args,
+        );
     }
-    return $self->request( GET => '/user/followers' );
+    return $self->request(
+        method => 'GET',
+        path   => '/user/followers',
+        %args,
+    );
 }
 
 
 sub list_following {
     my ( $self, %args ) = @_;
     if ( $args{user} ) {
-        return $self->request( GET => sprintf( '/user/%s/following', $args{user} ) );
+        return $self->request(
+            method => 'GET',
+            path   => sprintf( '/users/%s/following', delete $args{user} ),
+            %args,
+        );
     }
-    return $self->request( GET => '/user/following' );
+    return $self->request(
+        method => 'GET',
+        path   => '/user/following',
+        %args,
+    );
 }
 
 
 sub unfollow {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( DELETE => sprintf( '/user/following/%s', $args{user} ) );
+    return $self->request(
+        method => 'DELETE',
+        path   => sprintf( '/user/following/%s', delete $args{user} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -62,7 +90,7 @@ Pithub::Users::Followers - Github v3 User Followers API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -78,11 +106,8 @@ Follow a user
 
 Examples:
 
-    $p = Pithub->new( token => 'b3c62c6' );
-    $result = $p->users->followers->follow( user => 'plu' );
-
-    $f = Pithub::Users::Followers->new( token => 'b3c62c6' );
-    $result = $f->follow( user => 'plu' );
+    my $f = Pithub::Users::Followers->new( token => 'b3c62c6' );
+    my $result = $f->follow( user => 'plu' );
 
 =back
 
@@ -98,11 +123,8 @@ Check if the authenticated user is following another given user
 
 Examples:
 
-    $p = Pithub->new( token => 'b3c62c6' );
-    $result = $p->users->followers->is_following( user => 'rafl' );
-
-    $f = Pithub::Users::Followers->new( token => 'b3c62c6' );
-    $result = $f->is_following( user => 'rafl' );
+    my $f = Pithub::Users::Followers->new( token => 'b3c62c6' );
+    my $result = $f->is_following( user => 'rafl' );
 
     if ( $result->is_success ) {
         print "plu is following rafl\n";
@@ -123,6 +145,11 @@ List a user's followers:
 
     GET /users/:user/followers
 
+Examples:
+
+    my $f = Pithub::Users::Followers->new;
+    my $result = $f->list( user => 'plu' );
+
 =item *
 
 List the authenticated user's followers:
@@ -131,17 +158,8 @@ List the authenticated user's followers:
 
 Examples:
 
-    $p = Pithub->new;
-    $result = $p->users->followers->list( user => 'plu' );
-
-    $f = Pithub::Users::Followers->new;
-    $result = $f->list( user => 'plu' );
-
-    $p = Pithub->new( token => 'b3c62c6' );
-    $result = $p->users->followers->list;
-
-    $f = Pithub::Users::Followers->new( token => 'b3c62c6' );
-    $result = $f->list;
+    my $f = Pithub::Users::Followers->new( token => 'b3c62c6' );
+    my $result = $f->list;
 
 =back
 
@@ -155,6 +173,11 @@ List who a user is following:
 
     GET /users/:user/following
 
+Examples:
+
+    my $f = Pithub::Users::Followers->new;
+    my $result = $f->list_following( user => 'plu' );
+
 =item *
 
 List who the authenicated user is following:
@@ -163,17 +186,8 @@ List who the authenicated user is following:
 
 Examples:
 
-    $p = Pithub->new;
-    $result = $p->users->followers->list_following( user => 'plu' );
-
-    $f = Pithub::Users::Followers->new;
-    $result = $f->list_following( user => 'plu' );
-
-    $p = Pithub->new( token => 'b3c62c6' );
-    $result = $p->users->followers->list_following;
-
-    $f = Pithub::Users::Followers->new( token => 'b3c62c6' );
-    $result = $f->list_following;
+    my $f = Pithub::Users::Followers->new( token => 'b3c62c6' );
+    my $result = $f->list_following;
 
 =back
 
@@ -189,11 +203,8 @@ Unfollow a user
 
 Examples:
 
-    $p = Pithub->new;
-    $result = $p->users->followers->unfollow( user => 'plu' );
-
-    $f = Pithub::Users::Followers->new;
-    $result = $f->unfollow( user => 'plu' );
+    my $f = Pithub::Users::Followers->new;
+    my $result = $f->unfollow( user => 'plu' );
 
 =back
 

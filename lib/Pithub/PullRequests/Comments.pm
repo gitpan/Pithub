@@ -1,6 +1,6 @@
 package Pithub::PullRequests::Comments;
 BEGIN {
-  $Pithub::PullRequests::Comments::VERSION = '0.01003';
+  $Pithub::PullRequests::Comments::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Pull Request Comments API
@@ -16,7 +16,11 @@ sub create {
     croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/pulls/%s/comments', $args{user}, $args{repo}, $args{pull_request_id} ), $args{data} );
+    return $self->request(
+        method => 'POST',
+        path   => sprintf( '/repos/%s/%s/pulls/%s/comments', delete $args{user}, delete $args{repo}, delete $args{pull_request_id} ),
+        %args
+    );
 }
 
 
@@ -24,7 +28,11 @@ sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/pulls/comments/%s', $args{user}, $args{repo}, $args{comment_id} ) );
+    return $self->request(
+        method => 'DELETE',
+        path   => sprintf( '/repos/%s/%s/pulls/comments/%s', delete $args{user}, delete $args{repo}, delete $args{comment_id} ),
+        %args,
+    );
 }
 
 
@@ -32,7 +40,11 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/comments/%s', $args{user}, $args{repo}, $args{comment_id} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/pulls/comments/%s', delete $args{user}, delete $args{repo}, delete $args{comment_id} ),
+        %args,
+    );
 }
 
 
@@ -40,7 +52,11 @@ sub list {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/%s/comments', $args{user}, $args{repo}, $args{pull_request_id} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/pulls/%s/comments', delete $args{user}, delete $args{repo}, delete $args{pull_request_id} ),
+        %args,
+    );
 }
 
 
@@ -49,7 +65,11 @@ sub update {
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/pulls/comments/%s', $args{user}, $args{repo}, $args{comment_id} ), $args{data} );
+    return $self->request(
+        method => 'PATCH',
+        path   => sprintf( '/repos/%s/%s/pulls/comments/%s', delete $args{user}, delete $args{repo}, delete $args{comment_id} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -65,7 +85,7 @@ Pithub::PullRequests::Comments - Github v3 Pull Request Comments API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -81,7 +101,8 @@ Create a comment
 
 Examples:
 
-    $result = $p->pull_requests->comments->create(
+    my $c = Pithub::PullRequests::Comments->new;
+    my $result = $c->create(
         repo            => 'Pithub',
         user            => 'plu',
         pull_request_id => 1,
@@ -107,7 +128,8 @@ Delete a comment
 
 Examples:
 
-    $result = $p->pull_requests->comments->delete(
+    my $c = Pithub::PullRequests::Comments->new;
+    my $result = $c->delete(
         repo       => 'Pithub',
         user       => 'plu',
         comment_id => 1,
@@ -127,7 +149,8 @@ Get a single comment
 
 Examples:
 
-    $result = $p->pull_requests->comments->get(
+    my $c = Pithub::PullRequests::Comments->new;
+    my $result = $c->get(
         repo       => 'Pithub',
         user       => 'plu',
         comment_id => 1,
@@ -147,7 +170,8 @@ List comments on a pull request
 
 Examples:
 
-    $result = $p->pull_requests->comments->list(
+    my $c = Pithub::PullRequests::Comments->new;
+    my $result = $c->list(
         repo            => 'Pithub',
         user            => 'plu',
         pull_request_id => 1,
@@ -167,7 +191,8 @@ Edit a comment
 
 Examples:
 
-    $result = $p->pull_requests->comments->update(
+    my $c = Pithub::PullRequests::Comments->new;
+    my $result = $c->update(
         repo       => 'Pithub',
         user       => 'plu',
         comment_id => 1,

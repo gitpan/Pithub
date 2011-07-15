@@ -1,6 +1,6 @@
 package Pithub::GitData::Blobs;
 BEGIN {
-  $Pithub::GitData::Blobs::VERSION = '0.01003';
+  $Pithub::GitData::Blobs::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Git Data Blobs API
@@ -15,7 +15,11 @@ sub create {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/git/blobs', $args{user}, $args{repo} ), $args{data} );
+    return $self->request(
+        method => 'POST',
+        path   => sprintf( '/repos/%s/%s/git/blobs', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
@@ -23,7 +27,11 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: sha' unless $args{sha};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/git/blobs/%s', $args{user}, $args{repo}, $args{sha} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/git/blobs/%s', delete $args{user}, delete $args{repo}, delete $args{sha} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -39,7 +47,14 @@ Pithub::GitData::Blobs - Github v3 Git Data Blobs API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
+
+=head1 DESCRIPTION
+
+Since blobs can be any arbitrary binary data, the input and responses
+for the blob api takes an encoding parameter that can be either
+C<< utf-8 >> or C<< base64 >>. If your data cannot be losslessly sent
+as a UTF-8 string, you can base64 encode it.
 
 =head1 METHODS
 
@@ -53,9 +68,40 @@ Create a Blob
 
     POST /repos/:user/:repo/git/blobs
 
+Parameters:
+
+=over
+
+=item *
+
+B<user>: mandatory string
+
+=item *
+
+B<repo>: mandatory string
+
+=item *
+
+B<data>: mandatory hashref, having following keys:
+
+=over
+
+=item *
+
+B<content>: mandatory string
+
+=item *
+
+B<encoding>: mandatory string, C<< utf-8 >> or C<< base64 >>
+
+=back
+
+=back
+
 Examples:
 
-    $result = $p->git_data->blobs->create(
+    my $b = Pithub::GitData::Blobs->new;
+    my $result = $b->create(
         user => 'plu',
         repo => 'Pithub',
         data => {
@@ -63,6 +109,12 @@ Examples:
             encoding => 'utf-8',
         }
     );
+
+Response: C<< Status: 201 Created >>
+
+    {
+        "sha": "3a0f86fb8db8eea7ccbb9a95f325ddbedfb25e15"
+    }
 
 =back
 
@@ -76,13 +128,39 @@ Get a Blob
 
     GET /repos/:user/:repo/git/blobs/:sha
 
+Parameters:
+
+=over
+
+=item *
+
+B<user>: mandatory string
+
+=item *
+
+B<repo>: mandatory string
+
+=item *
+
+B<sha>: mandatory string
+
+=back
+
 Examples:
 
-    $result = $p->git_data->blobs->get(
+    my $b = Pithub::GitData::Blobs->new;
+    my $result = $b->get(
         user => 'plu',
         repo => 'Pithub',
-        sha  => 'df21b2660fb6',
+        sha  => 'b7cdea6830e128bc16c2b75efd99842d971666e2',
     );
+
+Response: C<< Status: 200 OK >>
+
+    {
+        "content": "Content of the blob",
+        "encoding": "utf-8"
+    }
 
 =back
 

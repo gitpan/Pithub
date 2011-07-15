@@ -1,6 +1,6 @@
 package Pithub::Issues::Milestones;
 BEGIN {
-  $Pithub::Issues::Milestones::VERSION = '0.01003';
+  $Pithub::Issues::Milestones::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Issue Milestones API
@@ -15,7 +15,11 @@ sub create {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/milestones', $args{user}, $args{repo} ), $args{data} );
+    return $self->request(
+        method => 'POST',
+        path   => sprintf( '/repos/%s/%s/milestones', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
@@ -23,7 +27,11 @@ sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: milestone_id' unless $args{milestone_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/milestones/%s', $args{user}, $args{repo}, $args{milestone_id} ) );
+    return $self->request(
+        method => 'DELETE',
+        path   => sprintf( '/repos/%s/%s/milestones/%s', delete $args{user}, delete $args{repo}, delete $args{milestone_id} ),
+        %args,
+    );
 }
 
 
@@ -31,14 +39,22 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: milestone_id' unless $args{milestone_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/milestones/%s', $args{user}, $args{repo}, $args{milestone_id} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/milestones/%s', delete $args{user}, delete $args{repo}, delete $args{milestone_id} ),
+        %args
+    );
 }
 
 
 sub list {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/milestones', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/milestones', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
@@ -47,7 +63,11 @@ sub update {
     croak 'Missing key in parameters: milestone_id' unless $args{milestone_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/milestones/%s', $args{user}, $args{repo}, $args{milestone_id} ), $args{data} );
+    return $self->request(
+        method => 'PATCH',
+        path   => sprintf( '/repos/%s/%s/milestones/%s', delete $args{user}, delete $args{repo}, delete $args{milestone_id} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -63,7 +83,7 @@ Pithub::Issues::Milestones - Github v3 Issue Milestones API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -79,7 +99,8 @@ Create a milestone
 
 Examples:
 
-    $result = $p->issues->milestones->create(
+    my $m = Pithub::Issues::Milestones->new;
+    my $result = $m->create(
         repo => 'Pithub',
         user => 'plu',
         data => {
@@ -104,7 +125,8 @@ Delete a milestone
 
 Examples:
 
-    $result = $p->issues->milestones->delete(
+    my $m = Pithub::Issues::Milestones->new;
+    my $result = $m->delete(
         repo => 'Pithub',
         user => 'plu',
         milestone_id => 1,
@@ -124,7 +146,8 @@ Get a single milestone
 
 Examples:
 
-    $result = $p->issues->milestones->get(
+    my $m = Pithub::Issues::Milestones->new;
+    my $result = $m->get(
         repo => 'Pithub',
         user => 'plu',
         milestone_id => 1,
@@ -144,7 +167,8 @@ List milestones for an issue
 
 Examples:
 
-    $result = $p->issues->milestones->list(
+    my $m = Pithub::Issues::Milestones->new;
+    my $result = $m->list(
         repo => 'Pithub',
         user => 'plu',
     );
@@ -163,7 +187,8 @@ Update a milestone
 
 Examples:
 
-    $result = $p->issues->milestones->update(
+    my $m = Pithub::Issues::Milestones->new;
+    my $result = $m->update(
         repo => 'Pithub',
         user => 'plu',
         data => {

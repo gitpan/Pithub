@@ -35,7 +35,7 @@ BEGIN {
         );
         is $result->request->method, 'POST', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content,
           '{"body":"I\'m having a problem with this.","assignee":"octocat","milestone":1,"title":"Found a bug","labels":["Label1","Label2"]}',
           'HTTP body';
@@ -54,22 +54,32 @@ BEGIN {
         my $result = $obj->get( issue_id => 123 );
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues/123', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
 
 # Pithub::Issues->list
 {
-    my $obj = Pithub::Test->create( 'Pithub::Issues', user => 'foo', repo => 'bar' );
-
-    isa_ok $obj, 'Pithub::Issues';
-
     {
+        my $obj = Pithub::Test->create( 'Pithub::Issues', user => 'foo', repo => 'bar' );
+        isa_ok $obj, 'Pithub::Issues';
         my $result = $obj->list;
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
+        is $http_request->content, '', 'HTTP body';
+    }
+
+    {
+        my $obj = Pithub::Test->create('Pithub::Issues');
+        isa_ok $obj, 'Pithub::Issues';
+        throws_ok { $obj->list; } qr{Access token required for: GET /issues}, 'Token required';
+        ok $obj->token(123), 'Token set';
+        my $result = $obj->list;
+        is $result->request->method, 'GET', 'HTTP method';
+        is $result->request->uri->path, '/issues', 'HTTP path';
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -101,7 +111,7 @@ BEGIN {
         );
         is $result->request->method, 'PATCH', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues/123', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content,
           '{"body":"I\'m having a problem with this.","assignee":"octocat","milestone":1,"title":"Found a bug","labels":["Label1","Label2"],"state":"open"}',
           'HTTP body';
@@ -117,7 +127,8 @@ BEGIN {
     throws_ok { $obj->create } qr{Missing key in parameters: issue_id}, 'No parameters';
     throws_ok { $obj->create( issue_id => 1 ) } qr{Missing key in parameters: data \(hashref\)}, 'No data parameter';
     throws_ok { $obj->create( issue_id => 1, data => 5 ) } qr{Missing key in parameters: data \(hashref\)}, 'Wrong data parameter';
-    throws_ok { $obj->create( issue_id => 1, data => { foo => 123 } ); } qr{Access token required for: POST /repos/foo/bar/issues/1/comments\s+}, 'Token required';
+    throws_ok { $obj->create( issue_id => 1, data => { foo => 123 } ); } qr{Access token required for: POST /repos/foo/bar/issues/1/comments\s+},
+      'Token required';
 
     ok $obj->token(123), 'Token set';
 
@@ -128,7 +139,7 @@ BEGIN {
         );
         is $result->request->method, 'POST', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues/123/comments', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '{"body":"comment"}', 'HTTP body';
     }
 }
@@ -148,7 +159,7 @@ BEGIN {
         my $result = $obj->delete( comment_id => 123, );
         is $result->request->method, 'DELETE', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues/comments/123', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -165,7 +176,7 @@ BEGIN {
         my $result = $obj->get( comment_id => 123, );
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues/comments/123', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -182,7 +193,7 @@ BEGIN {
         my $result = $obj->list( issue_id => 123, );
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues/123/comments', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -207,7 +218,7 @@ BEGIN {
         );
         is $result->request->method, 'PATCH', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues/comments/123', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '{"body":"comment"}', 'HTTP body';
     }
 }
@@ -224,7 +235,7 @@ BEGIN {
         my $result = $obj->get( event_id => 123, );
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues/events/123', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -239,7 +250,7 @@ BEGIN {
         my $result = $obj->list;
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues/events', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 
@@ -247,7 +258,7 @@ BEGIN {
         my $result = $obj->list( issue_id => 123, );
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues/123/events', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -274,7 +285,7 @@ BEGIN {
         );
         is $result->request->method, 'POST', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues/123/labels', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '["label1","label2"]', 'HTTP body';
     }
 }
@@ -300,7 +311,7 @@ BEGIN {
         );
         is $result->request->method, 'POST', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/labels', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '{"color":"FFFFFF","name":"label1"}', 'HTTP body';
     }
 }
@@ -311,16 +322,16 @@ BEGIN {
 
     isa_ok $obj, 'Pithub::Issues::Labels';
 
-    throws_ok { $obj->delete } qr{Missing key in parameters: label_id}, 'No parameters';
-    throws_ok { $obj->delete( label_id => 123 ); } qr{Access token required for: DELETE /repos/foo/bar/labels/123\s+}, 'Token required';
+    throws_ok { $obj->delete } qr{Missing key in parameters: label}, 'No parameters';
+    throws_ok { $obj->delete( label => 123 ); } qr{Access token required for: DELETE /repos/foo/bar/labels/123\s+}, 'Token required';
 
     ok $obj->token(123), 'Token set';
 
     {
-        my $result = $obj->delete( label_id => 123 );
+        my $result = $obj->delete( label => 123 );
         is $result->request->method, 'DELETE', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/labels/123', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -331,13 +342,13 @@ BEGIN {
 
     isa_ok $obj, 'Pithub::Issues::Labels';
 
-    throws_ok { $obj->get } qr{Missing key in parameters: label_id}, 'No parameters';
+    throws_ok { $obj->get } qr{Missing key in parameters: label}, 'No parameters';
 
     {
-        my $result = $obj->get( label_id => 'bug' );
+        my $result = $obj->get( label => 'bug' );
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/labels/bug', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -352,7 +363,7 @@ BEGIN {
         my $result = $obj->list;
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/labels', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 
@@ -360,7 +371,7 @@ BEGIN {
         my $result = $obj->list( issue_id => 123 );
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues/123/labels', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 
@@ -368,7 +379,7 @@ BEGIN {
         my $result = $obj->list( milestone_id => 123 );
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/milestones/123/labels', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -381,7 +392,8 @@ BEGIN {
 
     throws_ok { $obj->remove } qr{Missing key in parameters: issue_id}, 'No parameters';
     throws_ok { $obj->remove( issue_id => 123 ); } qr{Access token required for: DELETE /repos/foo/bar/issues/123/labels\s+}, 'Token required';
-    throws_ok { $obj->remove( issue_id => 123, label_id => 456 ); } qr{Access token required for: DELETE /repos/foo/bar/issues/123/labels/456\s+}, 'Token required';
+    throws_ok { $obj->remove( issue_id => 123, label => 456 ); } qr{Access token required for: DELETE /repos/foo/bar/issues/123/labels/456\s+},
+      'Token required';
 
     ok $obj->token(123), 'Token set';
 
@@ -389,15 +401,15 @@ BEGIN {
         my $result = $obj->remove( issue_id => 123 );
         is $result->request->method, 'DELETE', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues/123/labels', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 
     {
-        my $result = $obj->remove( issue_id => 123, label_id => 456 );
+        my $result = $obj->remove( issue_id => 123, label => 456 );
         is $result->request->method, 'DELETE', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues/123/labels/456', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -424,7 +436,7 @@ BEGIN {
         );
         is $result->request->method, 'PUT', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/issues/123/labels', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '["label1","label2"]', 'HTTP body';
     }
 }
@@ -435,23 +447,23 @@ BEGIN {
 
     isa_ok $obj, 'Pithub::Issues::Labels';
 
-    throws_ok { $obj->update } qr{Missing key in parameters: label_id}, 'No parameters';
-    throws_ok { $obj->update( label_id => 123, data => 5 ) } qr{Missing key in parameters: data \(hashref\)}, 'Wrong data parameter';
-    throws_ok { $obj->update( label_id => 123, data => { name => 'foo' } ); } qr{Access token required for: PATCH /repos/foo/bar/labels/123\s+}, 'Token required';
+    throws_ok { $obj->update } qr{Missing key in parameters: label}, 'No parameters';
+    throws_ok { $obj->update( label => 123, data => 5 ) } qr{Missing key in parameters: data \(hashref\)}, 'Wrong data parameter';
+    throws_ok { $obj->update( label => 123, data => { name => 'foo' } ); } qr{Access token required for: PATCH /repos/foo/bar/labels/123\s+}, 'Token required';
 
     ok $obj->token(123), 'Token set';
 
     {
         my $result = $obj->update(
-            label_id => 123,
-            data     => {
+            label => 123,
+            data  => {
                 name  => 'label2',
                 color => 'FF0000',
             }
         );
         is $result->request->method, 'PATCH', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/labels/123', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '{"color":"FF0000","name":"label2"}', 'HTTP body';
     }
 }
@@ -479,7 +491,7 @@ BEGIN {
         );
         is $result->request->method, 'POST', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/milestones', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '{"title":"String","due_on":"Time","description":"String","state":"open or closed"}', 'HTTP body';
     }
 }
@@ -499,7 +511,7 @@ BEGIN {
         my $result = $obj->delete( milestone_id => 123 );
         is $result->request->method, 'DELETE', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/milestones/123', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -516,7 +528,7 @@ BEGIN {
         my $result = $obj->get( milestone_id => 123 );
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/milestones/123', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -531,7 +543,7 @@ BEGIN {
         my $result = $obj->list;
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/milestones', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -562,7 +574,7 @@ BEGIN {
         );
         is $result->request->method, 'PATCH', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/milestones/123', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '{"title":"String","due_on":"Time","description":"String","state":"open or closed"}', 'HTTP body';
     }
 }

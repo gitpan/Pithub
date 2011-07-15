@@ -1,6 +1,6 @@
 package Pithub::Users::Keys;
 BEGIN {
-  $Pithub::Users::Keys::VERSION = '0.01003';
+  $Pithub::Users::Keys::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 User Keys API
@@ -14,27 +14,43 @@ extends 'Pithub::Base';
 sub create {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    return $self->request( POST => '/user/keys', $args{data} );
+    return $self->request(
+        method => 'POST',
+        path   => '/user/keys',
+        %args,
+    );
 }
 
 
 sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: key_id' unless $args{key_id};
-    return $self->request( DELETE => sprintf( '/user/keys/%s', $args{key_id} ) );
+    return $self->request(
+        method => 'DELETE',
+        path   => sprintf( '/user/keys/%s', delete $args{key_id} ),
+        %args,
+    );
 }
 
 
 sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: key_id' unless $args{key_id};
-    return $self->request( GET => sprintf( '/user/keys/%s', $args{key_id} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/user/keys/%s', delete $args{key_id} ),
+        %args,
+    );
 }
 
 
 sub list {
-    my ($self) = @_;
-    return $self->request( GET => '/user/keys' );
+    my ( $self, %args ) = @_;
+    return $self->request(
+        method => 'GET',
+        path   => '/user/keys',
+        %args,
+    );
 }
 
 
@@ -42,7 +58,11 @@ sub update {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: key_id' unless $args{key_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    return $self->request( PATCH => sprintf( '/user/keys/%s', $args{key_id} ), $args{data} );
+    return $self->request(
+        method => 'PATCH',
+        path   => sprintf( '/user/keys/%s', delete $args{key_id} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -58,7 +78,7 @@ Pithub::Users::Keys - Github v3 User Keys API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -74,16 +94,8 @@ Create a public key
 
 Examples:
 
-    $p = Pithub->new( token => 'b3c62c6' );
-    $result = $p->users->keys->create(
-        data => {
-            title => 'plu@localhost',
-            key   => 'ssh-rsa AAA...',
-        }
-    );
-
-    $k = Pithub::Users::Keys->new( token => 'b3c62c6' );
-    $result = $k->create(
+    my $k = Pithub::Users::Keys->new( token => 'b3c62c6' );
+    my $result = $k->create(
         data => {
             title => 'plu@localhost',
             key   => 'ssh-rsa AAA...',
@@ -104,11 +116,8 @@ Delete a public key
 
 Examples:
 
-    $p = Pithub->new( token => 'b3c62c6' );
-    $result = $p->users->keys->delete( key_id => 123 );
-
-    $k = Pithub::Users::Keys->new( token => 'b3c62c6' );
-    $result = $k->delete( key_id => 123 );
+    my $k = Pithub::Users::Keys->new( token => 'b3c62c6' );
+    my $result = $k->delete( key_id => 123 );
 
 =back
 
@@ -124,11 +133,8 @@ Get a single public key
 
 Examples:
 
-    $p = Pithub->new( token => 'b3c62c6' );
-    $result = $p->users->keys->get( key_id => 123 );
-
-    $k = Pithub::Users::Keys->new( token => 'b3c62c6' );
-    $result = $k->get( key_id => 123 );
+    my $k = Pithub::Users::Keys->new( token => 'b3c62c6' );
+    my $result = $k->get( key_id => 123 );
 
 =back
 
@@ -144,11 +150,8 @@ List public keys for a user
 
 Examples:
 
-    $p = Pithub->new( token => 'b3c62c6' );
-    $result = $p->users->keys->list;
-
-    $k = Pithub::Users::Keys->new( token => 'b3c62c6' );
-    $result = $k->list;
+    my $k = Pithub::Users::Keys->new( token => 'b3c62c6' );
+    my $result = $k->list;
 
 =back
 
@@ -164,17 +167,8 @@ Update a public key
 
 Examples:
 
-    $p = Pithub->new( token => 'b3c62c6' );
-    $result = $p->users->keys->update(
-        key_id => 123,
-        data => {
-            title => 'plu@localhost',
-            key   => 'ssh-rsa AAA...',
-        }
-    );
-
-    $k = Pithub::Users::Keys->new( token => 'b3c62c6' );
-    $result = $k->update(
+    my $k = Pithub::Users::Keys->new( token => 'b3c62c6' );
+    my $result = $k->update(
         key_id => 123,
         data => {
             title => 'plu@localhost',

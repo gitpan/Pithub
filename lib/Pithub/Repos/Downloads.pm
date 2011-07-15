@@ -1,6 +1,6 @@
 package Pithub::Repos::Downloads;
 BEGIN {
-  $Pithub::Repos::Downloads::VERSION = '0.01003';
+  $Pithub::Repos::Downloads::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Repo Downloads API
@@ -16,7 +16,11 @@ sub create {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/downloads', $args{user}, $args{repo} ), $args{data} );
+    return $self->request(
+        method => 'POST',
+        path   => sprintf( '/repos/%s/%s/downloads', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
@@ -24,7 +28,11 @@ sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: download_id' unless $args{download_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/downloads/%s', $args{user}, $args{repo}, $args{download_id} ) );
+    return $self->request(
+        method => 'DELETE',
+        path   => sprintf( '/repos/%s/%s/downloads/%s', delete $args{user}, delete $args{repo}, delete $args{download_id} ),
+        %args,
+    );
 }
 
 
@@ -32,14 +40,22 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: download_id' unless $args{download_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/downloads/%s', $args{user}, $args{repo}, $args{download_id} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/downloads/%s', delete $args{user}, delete $args{repo}, delete $args{download_id} ),
+        %args,
+    );
 }
 
 
 sub list {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/downloads', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/downloads', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
@@ -82,7 +98,7 @@ Pithub::Repos::Downloads - Github v3 Repo Downloads API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -101,7 +117,8 @@ L</upload> to upload the file to Amazon S3.
 
 Examples:
 
-    $result = $p->repos->downloads->create(
+    my $d = Pithub::Repos::Downloads->new;
+    my $result = $d->create(
         user => 'plu',
         repo => 'Pithub',
         data => {
@@ -112,7 +129,7 @@ Examples:
         },
     );
 
-    $p->repos->downloads->upload(
+    $d->upload(
         result => $result,
         file   => '/path/to/file',
     );
@@ -131,7 +148,8 @@ Delete a download
 
 Examples:
 
-    $result = $p->repos->downloads->delete(
+    my $d = Pithub::Repos::Downloads->new;
+    my $result = $d->delete(
         user        => 'plu',
         repo        => 'Pithub',
         download_id => 1,
@@ -151,7 +169,8 @@ Get a single download
 
 Examples:
 
-    $result = $p->repos->downloads->get(
+    my $d = Pithub::Repos::Downloads->new;
+    my $result = $d->get(
         user        => 'plu',
         repo        => 'Pithub',
         download_id => 1,
@@ -171,7 +190,8 @@ List downloads for a repository
 
 Examples:
 
-    $result = $p->repos->downloads->list(
+    my $d = Pithub::Repos::Downloads->new;
+    my $result = $d->list(
         user => 'plu',
         repo => 'Pithub',
     );

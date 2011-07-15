@@ -1,6 +1,6 @@
 package Pithub::Repos::Forks;
 BEGIN {
-  $Pithub::Repos::Forks::VERSION = '0.01003';
+  $Pithub::Repos::Forks::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Repo Forks API
@@ -14,17 +14,30 @@ extends 'Pithub::Base';
 sub create {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    if ( my $org = $args{org} ) {
-        return $self->request( POST => sprintf( '/repos/%s/%s/forks', $args{user}, $args{repo} ), { org => $org } );
+    if ( my $org = delete $args{org} ) {
+        return $self->request(
+            method => 'POST',
+            path   => sprintf( '/repos/%s/%s/forks', delete $args{user}, delete $args{repo} ),
+            data => { org => $org },
+            %args,
+        );
     }
-    return $self->request( POST => sprintf( '/repos/%s/%s/forks', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'POST',
+        path   => sprintf( '/repos/%s/%s/forks', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
 sub list {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/forks', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/forks', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -40,7 +53,7 @@ Pithub::Repos::Forks - Github v3 Repo Forks API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -56,12 +69,14 @@ Create a fork for the authenicated user.
 
 Examples:
 
-    $result = $p->repos->forks->create(
+    my $f = Pithub::Repos::Forks->new;
+    my $result = $f->create(
         user => 'plu',
         repo => 'Pithub',
     );
 
-    $result = $p->repos->forks->create(
+    # or fork to an org
+    my $result = $f->create(
         user => 'plu',
         repo => 'Pithub',
         org  => 'CPAN-API',
@@ -81,7 +96,8 @@ List forks
 
 Examples:
 
-    $result = $p->repos->forks->list(
+    my $f = Pithub::Repos::Forks->new;
+    my $result = $f->list(
         user => 'plu',
         repo => 'Pithub',
     );

@@ -1,6 +1,6 @@
 package Pithub::Issues::Events;
 BEGIN {
-  $Pithub::Issues::Events::VERSION = '0.01003';
+  $Pithub::Issues::Events::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Issue Events API
@@ -15,17 +15,29 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: event_id' unless $args{event_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/issues/events/%s', $args{user}, $args{repo}, $args{event_id} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/issues/events/%s', delete $args{user}, delete $args{repo}, delete $args{event_id} ),
+        %args,
+    );
 }
 
 
 sub list {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    if ( my $issue_id = $args{issue_id} ) {
-        return $self->request( GET => sprintf( '/repos/%s/%s/issues/%s/events', $args{user}, $args{repo}, $issue_id ) );
+    if ( my $issue_id = delete $args{issue_id} ) {
+        return $self->request(
+            method => 'GET',
+            path   => sprintf( '/repos/%s/%s/issues/%s/events', delete $args{user}, delete $args{repo}, $issue_id ),
+            %args,
+        );
     }
-    return $self->request( GET => sprintf( '/repos/%s/%s/issues/events', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/issues/events', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -41,7 +53,7 @@ Pithub::Issues::Events - Github v3 Issue Events API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -57,7 +69,8 @@ Get a single event
 
 Examples:
 
-    $result = $p->issues->events->get(
+    my $e = Pithub::Issues::Events->new;
+    my $result = $e->get(
         repo     => 'Pithub',
         user     => 'plu',
         event_id => 1,
@@ -77,7 +90,8 @@ List events for an issue
 
 Examples:
 
-    $result = $p->issues->events->list(
+    my $e = Pithub::Issues::Events->new;
+    my $result = $e->list(
         repo     => 'Pithub',
         user     => 'plu',
         issue_id => 1,
@@ -91,7 +105,8 @@ List events for a repository
 
 Examples:
 
-    $result = $p->issues->events->list(
+    my $e = Pithub::Issues::Events->new;
+    my $result = $e->list(
         repo => 'Pithub',
         user => 'plu',
     );

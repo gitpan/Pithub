@@ -15,6 +15,7 @@ my %WriteMakefileArgs = (
     'File::Basename' => '0',
     'File::Slurp' => '0',
     'FindBin' => '0',
+    'HTTP::Response' => '0',
     'Test::More' => '0',
     'Test::Most' => '0'
   },
@@ -33,7 +34,6 @@ my %WriteMakefileArgs = (
     'HTTP::Message' => '0',
     'HTTP::Request' => '0',
     'HTTP::Request::Common' => '0',
-    'HTTP::Response' => '0',
     'JSON::Any' => '0',
     'JSON::XS' => '0',
     'LWP::Protocol::https' => '0',
@@ -44,9 +44,9 @@ my %WriteMakefileArgs = (
     'URI' => '0',
     'namespace::autoclean' => '0'
   },
-  'VERSION' => '0.01003',
+  'VERSION' => '0.01004',
   'test' => {
-    'TESTS' => 't/*.t'
+    'TESTS' => 't/*.t t/live/*.t'
   }
 );
 

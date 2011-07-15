@@ -1,6 +1,6 @@
 package Pithub::Orgs;
 BEGIN {
-  $Pithub::Orgs::VERSION = '0.01003';
+  $Pithub::Orgs::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Orgs API
@@ -17,16 +17,28 @@ around qr{^merge_.*?_args$}          => \&Pithub::Base::_merge_args;
 sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: org' unless $args{org};
-    return $self->request( GET => sprintf( '/orgs/%s', $args{org} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/orgs/%s', delete $args{org} ),
+        %args,
+    );
 }
 
 
 sub list {
     my ( $self, %args ) = @_;
-    if ( my $user = $args{user} ) {
-        return $self->request( GET => sprintf( '/users/%s/orgs', $args{user} ) );
+    if ( my $user = delete $args{user} ) {
+        return $self->request(
+            method => 'GET',
+            path   => sprintf( '/users/%s/orgs', $user ),
+            %args,
+        );
     }
-    return $self->request( GET => '/user/orgs' );
+    return $self->request(
+        method => 'GET',
+        path   => '/user/orgs',
+        %args,
+    );
 }
 
 
@@ -34,7 +46,11 @@ sub update {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: org' unless $args{org};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    return $self->request( PATCH => sprintf( '/orgs/%s', $args{org} ), $args{data} );
+    return $self->request(
+        method => 'PATCH',
+        path   => sprintf( '/orgs/%s', delete $args{org} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -50,7 +66,7 @@ Pithub::Orgs - Github v3 Orgs API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -66,7 +82,8 @@ Get an organization
 
 Examples:
 
-    $result = $p->orgs->get( org => 'CPAN-API' );
+    my $o = Pithub::Orgs->new;
+    my $result = $o->get( org => 'CPAN-API' );
 
 =back
 
@@ -82,7 +99,8 @@ List all public organizations for a user.
 
 Examples:
 
-    $result = $p->orgs->list( user => 'plu' );
+    my $o = Pithub::Orgs->new;
+    my $result = $o->list( user => 'plu' );
 
 =item *
 
@@ -92,7 +110,8 @@ List public and private organizations for the authenticated user.
 
 Examples:
 
-    $result = $p->orgs->list;
+    my $o = Pithub::Orgs->new;
+    my $result = $o->list;
 
 =back
 
@@ -108,7 +127,8 @@ Edit an organization
 
 Examples:
 
-    $result = $p->orgs->update(
+    my $o = Pithub::Orgs->new;
+    my $result = $o->update(
         org  => 'CPAN-API',
         data => {
             billing_email => 'support@github.com',

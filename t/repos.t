@@ -29,7 +29,7 @@ BEGIN {
         my $result = $obj->create( data => { foo => 1 } );
         is $result->request->method, 'POST', 'HTTP method';
         is $result->request->uri->path, '/user/repos', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '{"foo":1}', 'HTTP body';
     }
 
@@ -37,7 +37,7 @@ BEGIN {
         my $result = $obj->create( org => 'foobarorg', data => { bar => 1 } );
         is $result->request->method, 'POST', 'HTTP method';
         is $result->request->uri->path, '/orgs/foobarorg/repos', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '{"bar":1}', 'HTTP body';
     }
 }
@@ -52,7 +52,7 @@ BEGIN {
         my $result = $obj->get;
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -103,21 +103,20 @@ BEGIN {
 
 # Pithub::Repos->update
 {
-    my $obj = Pithub::Test->create('Pithub::Repos');
+    my $obj = Pithub::Test->create( 'Pithub::Repos', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos';
 
     throws_ok { $obj->update( data => 5 ) } qr{Missing key in parameters: data \(hashref\)}, 'Wrong data parameter';
-    throws_ok { $obj->update( data => { foo => 'bar' } ) } qr{Missing key in parameters: repo}, 'Missing repo parameter';
-    throws_ok { $obj->update( repo => 'bar', data => { foo => 1 } ) } qr{Access token required for: PATCH /user/repos/bar}, 'Token required';
+    throws_ok { $obj->update( data => { foo => 1 } ) } qr{Access token required for: PATCH /repos/foo/bar}, 'Token required';
 
     ok $obj->token(123), 'Token set';
 
     {
-        my $result = $obj->update( repo => 'foobarorg', data => { foo => 1 } );
+        my $result = $obj->update( user => 'bla', repo => 'fasel', data => { foo => 1 } );
         is $result->request->method, 'PATCH', 'HTTP method';
-        is $result->request->uri->path, '/user/repos/foobarorg', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        is $result->request->uri->path, '/repos/bla/fasel', 'HTTP path';
+        my $http_request = $result->request;
         is $http_request->content, '{"foo":1}', 'HTTP body';
     }
 }
@@ -191,7 +190,7 @@ BEGIN {
         my $result = $obj->create_comment( sha => 123, data => { body => 'some comment' } );
         is $result->request->method, 'POST', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/commits/123/comments', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '{"body":"some comment"}', 'HTTP body';
     }
 }
@@ -281,7 +280,7 @@ BEGIN {
         my $result = $obj->update_comment( comment_id => 123, data => { body => 'some comment' } );
         is $result->request->method, 'PATCH', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/comments/123', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '{"body":"some comment"}', 'HTTP body';
     }
 }
@@ -395,7 +394,7 @@ BEGIN {
         my $result = $obj->create;
         is $result->request->method, 'POST', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/forks', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 
@@ -403,7 +402,7 @@ BEGIN {
         my $result = $obj->create( org => 'foobarorg' );
         is $result->request->method, 'POST', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/forks', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '{"org":"foobarorg"}', 'HTTP body';
     }
 }
@@ -426,7 +425,7 @@ BEGIN {
         my $result = $obj->create( data => { title => 'some key' } );
         is $result->request->method, 'POST', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/keys', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '{"title":"some key"}', 'HTTP body';
     }
 }
@@ -446,7 +445,7 @@ BEGIN {
         my $result = $obj->delete( key_id => 123 );
         is $result->request->method, 'DELETE', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/keys/123', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -466,7 +465,7 @@ BEGIN {
         my $result = $obj->get( key_id => 123 );
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/keys/123', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -490,7 +489,7 @@ BEGIN {
         my $result = $obj->update( key_id => 123, data => { title => 'some key' } );
         is $result->request->method, 'PATCH', 'HTTP method';
         is $result->request->uri->path, '/repos/foo/bar/keys/123', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '{"title":"some key"}', 'HTTP body';
     }
 }
@@ -509,7 +508,7 @@ BEGIN {
         my $result = $obj->is_watching;
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/user/watched/foo/bar', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -526,7 +525,7 @@ BEGIN {
         my $result = $obj->list_repos( user => 'bla' );
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/users/bla/watched', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 
@@ -535,7 +534,7 @@ BEGIN {
         my $result = $obj->list_repos;
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/user/watched', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -554,7 +553,7 @@ BEGIN {
         my $result = $obj->start_watching;
         is $result->request->method, 'PUT', 'HTTP method';
         is $result->request->uri->path, '/user/watched/foo/bar', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }
@@ -573,7 +572,7 @@ BEGIN {
         my $result = $obj->stop_watching;
         is $result->request->method, 'DELETE', 'HTTP method';
         is $result->request->uri->path, '/user/watched/foo/bar', 'HTTP path';
-        my $http_request = $result->request->http_request;
+        my $http_request = $result->request;
         is $http_request->content, '', 'HTTP body';
     }
 }

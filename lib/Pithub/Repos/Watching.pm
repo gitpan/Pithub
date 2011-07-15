@@ -1,6 +1,6 @@
 package Pithub::Repos::Watching;
 BEGIN {
-  $Pithub::Repos::Watching::VERSION = '0.01003';
+  $Pithub::Repos::Watching::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Repo Watching API
@@ -14,37 +14,61 @@ extends 'Pithub::Base';
 sub is_watching {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/user/watched/%s/%s', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/user/watched/%s/%s', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
 sub list_repos {
     my ( $self, %args ) = @_;
-    if ( my $user = $args{user} ) {
-        return $self->request( GET => sprintf( '/users/%s/watched', $args{user} ) );
+    if ( my $user = delete $args{user} ) {
+        return $self->request(
+            method => 'GET',
+            path   => sprintf( '/users/%s/watched', $user ),
+            %args,
+        );
     }
-    return $self->request( GET => '/user/watched' );
+    return $self->request(
+        method => 'GET',
+        path   => '/user/watched',
+        %args,
+    );
 }
 
 
 sub list {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/watchers', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/watchers', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
 sub start_watching {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PUT => sprintf( '/user/watched/%s/%s', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'PUT',
+        path   => sprintf( '/user/watched/%s/%s', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
 sub stop_watching {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/user/watched/%s/%s', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'DELETE',
+        path   => sprintf( '/user/watched/%s/%s', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -60,7 +84,7 @@ Pithub::Repos::Watching - Github v3 Repo Watching API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -76,7 +100,8 @@ Check if you are watching a repo
 
 Examples:
 
-    $result = $p->repos->watching->is_watching(
+    my $w = Pithub::Repos::Watching->new;
+    my $result = $w->is_watching(
         repo => 'Pithub',
         user => 'plu',
     );
@@ -95,7 +120,8 @@ List repos being watched by a user
 
 Examples:
 
-    $result = $p->repos->watching->list_repos( user => 'plu' );
+    my $w = Pithub::Repos::Watching->new;
+    my $result = $w->list_repos( user => 'plu' );
 
 =item *
 
@@ -105,7 +131,8 @@ List repos being watched by the authenticated user
 
 Examples:
 
-    $result = $p->repos->watching->list_repos;
+    my $w = Pithub::Repos::Watching->new;
+    my $result = $w->list_repos;
 
 =back
 
@@ -121,7 +148,8 @@ List watchers
 
 Examples:
 
-    $result = $p->repos->watching->list(
+    my $w = Pithub::Repos::Watching->new;
+    my $result = $w->list(
         user => 'plu',
         repo => 'Pithub',
     );
@@ -140,7 +168,8 @@ Watch a repo
 
 Examples:
 
-    $result = $p->repos->watching->start_watching(
+    my $w = Pithub::Repos::Watching->new;
+    my $result = $w->start_watching(
         user => 'plu',
         repo => 'Pithub',
     );
@@ -159,7 +188,8 @@ Stop watching a repo
 
 Examples:
 
-    $result = $p->repos->watching->stop_watching(
+    my $w = Pithub::Repos::Watching->new;
+    my $result = $w->stop_watching(
         user => 'plu',
         repo => 'Pithub',
     );

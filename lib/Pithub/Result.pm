@@ -1,6 +1,6 @@
 package Pithub::Result;
 BEGIN {
-  $Pithub::Result::VERSION = '0.01003';
+  $Pithub::Result::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 result object
@@ -59,10 +59,10 @@ has 'response' => (
         code        => 'code',
         raw_content => 'content',
         request     => 'request',
-        success     => 'success',
+        success     => 'is_success',
     },
     is       => 'ro',
-    isa      => 'Pithub::Response',
+    isa      => 'HTTP::Response',
     required => 1,
 );
 
@@ -131,14 +131,18 @@ sub get_page {
     $query{page} = $page;
 
     my $options = {
-        prepare_uri => sub {
-            my ($u) = @_;
-            %query = ( $u->query_form, %query );
-            $u->query_form(%query);
+        prepare_request => sub {
+            my ($request) = @_;
+            %query = ( $request->uri->query_form, %query );
+            $request->uri->query_form(%query);
         },
     };
 
-    return $self->_request->( GET => $uri->path, undef, $options );
+    return $self->_request->(
+        method  => 'GET',
+        path    => $uri->path,
+        options => $options,
+    );
 }
 
 
@@ -180,13 +184,13 @@ sub prev_page {
 
 sub ratelimit {
     my ($self) = @_;
-    return $self->response->http_response->header('X-RateLimit-Limit');
+    return $self->response->header('X-RateLimit-Limit');
 }
 
 
 sub ratelimit_remaining {
     my ($self) = @_;
-    return $self->response->http_response->header('X-RateLimit-Remaining');
+    return $self->response->header('X-RateLimit-Remaining');
 }
 
 sub _build_content {
@@ -228,7 +232,7 @@ sub _build__json {
 sub _get_link_header {
     my ( $self, $type ) = @_;
     return $self->{_get_link_header}{$type} if $self->{_get_link_header}{$type};
-    my $link = $self->response->http_response->header('Link');
+    my $link = $self->response->header('Link');
     return unless $link;
     foreach my $item ( split /,/, $link ) {
         my @result = $item =~ /<([^>]+)>; rel="([^"]+)"/g;
@@ -241,13 +245,17 @@ sub _paginate {
     my ( $self, $uri_str ) = @_;
     my $uri     = URI->new($uri_str);
     my $options = {
-        prepare_uri => sub {
-            my ($u) = @_;
-            my %query = ( $u->query_form, $uri->query_form );
-            $u->query_form(%query);
+        prepare_request => sub {
+            my ($request) = @_;
+            my %query = ( $request->uri->query_form, $uri->query_form );
+            $request->uri->query_form(%query);
         },
     };
-    return $self->_request->( GET => $uri->path, undef, $options );
+    return $self->_request->(
+        method  => 'GET',
+        path    => $uri->path,
+        options => $options,
+    );
 }
 
 sub _reset {
@@ -274,7 +282,13 @@ Pithub::Result - Github v3 result object
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
+
+=head1 DESCRIPTION
+
+Every method call which maps directly to a Github API call returns a
+L<Pithub::Result> object. Once you got the result object, you can
+set L<attributes|/ATTRIBUTES> on them or call L<methods|/METHODS>.
 
 =head1 ATTRIBUTES
 
@@ -289,8 +303,8 @@ you can also set it directly on any of the L<Pithub> API objects.
 
 Examples:
 
-    $r = Pithub::Repos->new;
-    $result = $r->list( user => 'rjbs' );
+    my $r = Pithub::Repos->new;
+    my $result = $r->list( user => 'rjbs' );
 
     # This would just show the first 30 by default
     while ( my $row = $result->next ) {
@@ -305,8 +319,8 @@ Examples:
     }
 
     # Turn auto_pagination on for all L<Pithub::Result> objects
-    $p = Pithub::Repos->new( auto_pagination => 1 );
-    $result = $r->list( user => 'rjbs' );
+    my $p = Pithub::Repos->new( auto_pagination => 1 );
+    my $result = $p->list( user => 'rjbs' );
     while ( my $row = $result->next ) {
         printf "%s: %s\n", $row->{name}, $row->{description};
     }
@@ -314,7 +328,7 @@ Examples:
 =head2 content
 
 The decoded JSON response. May be an arrayref or hashref, depending
-on the API call.
+on the API call. For some calls there is no content at all.
 
 =head2 first_page_uri
 
@@ -338,28 +352,7 @@ page. This can return undef.
 
 =head2 response
 
-The L<Pithub::Response> object. There are following delegate methods
-installed for convenience:
-
-=over
-
-=item *
-
-B<code>: response->code
-
-=item *
-
-B<raw_content>: response->content
-
-=item *
-
-B<request>: response->request
-
-=item *
-
-B<success>: response->success
-
-=back
+The L<HTTP::Response> object.
 
 =head1 METHODS
 
@@ -402,8 +395,8 @@ the results using this method.
 
 Examples:
 
-    $r = Pithub::Repos->new;
-    $result = $r->list( user => 'rjbs' );
+    my $r = Pithub::Repos->new;
+    my $result = $r->list( user => 'rjbs' );
 
     while ( my $row = $result->next ) {
         printf "%s: %s\n", $row->{name}, $row->{description};
@@ -424,8 +417,8 @@ List all followers in order, from the first one on the first
 page to the last one on the last page. See also
 L</auto_pagination>.
 
-    $followers = Pithub->new->users->followers;
-    $result = $followers->list( user => 'rjbs' );
+    my $followers = Pithub->new->users->followers;
+    my $result = $followers->list( user => 'rjbs' );
     do {
         if ( $result->success ) {
             while ( my $row = $result->next ) {
@@ -435,7 +428,9 @@ L</auto_pagination>.
     } while $result = $result->next_page;
 
 The nature of the implementation requires you here to do a
-C<< do { ... } while ... >> loop.
+C<< do { ... } while ... >> loop. If you're going to fetch
+all results of all pages, I suggest to use the
+L</auto_pagination> feature, it's much more convenient.
 
 =back
 
@@ -454,8 +449,8 @@ List all followers in reverse order, from the last one on the last
 page to the first one on the first page. See also
 L</auto_pagination>.
 
-    $followers = Pithub->new->users->followers;
-    $result = $followers->list( user => 'rjbs' )->last_page;    # this makes two requests!
+    my $followers = Pithub->new->users->followers;
+    my $result = $followers->list( user => 'rjbs' )->last_page;    # this makes two requests!
     do {
         if ( $result->success ) {
             while ( my $row = $result->next ) {

@@ -1,6 +1,6 @@
 package Pithub::GitData::Tags;
 BEGIN {
-  $Pithub::GitData::Tags::VERSION = '0.01003';
+  $Pithub::GitData::Tags::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Git Data Tags API
@@ -15,7 +15,11 @@ sub create {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/git/tags', $args{user}, $args{repo} ), $args{data} );
+    return $self->request(
+        method => 'POST',
+        path   => sprintf( '/repos/%s/%s/git/tags', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
@@ -23,7 +27,11 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: sha' unless $args{sha};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/git/tags/%s', $args{user}, $args{repo}, $args{sha} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/git/tags/%s', delete $args{user}, delete $args{repo}, delete $args{sha} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -39,7 +47,12 @@ Pithub::GitData::Tags - Github v3 Git Data Tags API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
+
+=head1 DESCRIPTION
+
+This tags api only deals with tag objects - so only annotated tags,
+not lightweight tags.
 
 =head1 METHODS
 
@@ -60,62 +73,103 @@ call would be unnecessary.
 
     POST /repos/:user/:repo/git/tags
 
-Examples:
-
-    # TODO: verify I got the parameters right:
-    # 'tagger.name' vs tagger.name
-    $result = $p->git_data->tags->create(
-        user => 'plu',
-        repo => 'Pithub',
-        data => {
-            tagger => {
-                date  => '2010-04-10T14:10:01-07:00',
-                email => 'plu@cpan.org',
-                name  => 'Johannes Plunien',
-            },
-            message => 'Tagged v0.1',
-            object  => '827efc6d56897b048c772eb4087f854f46256132',
-            tag     => 'v0.1',
-            type    => 'commit',
-        }
-    );
-
-=back
-
-Parameters in C<< data >> hashref:
-
-Parameters
+Parameters:
 
 =over
 
 =item *
 
-B<tag>: String of the tag
+B<user>: mandatory string
 
 =item *
 
-B<message>: String of the tag message
+B<repo>: mandatory string
 
 =item *
 
-B<object>: String of the SHA of the git object this is tagging
+B<data>: mandatory hashref, having following keys:
+
+=over
 
 =item *
 
-B<type>: String of the type of the object we’re tagging.
-Normally this is a commit but it can also be a tree or a blob.
+B<tag>: mandatory string of the tag
 
 =item *
 
-B<tagger.name>: String of the name of the author of the tag
+B<message>: mandatory string of the tag message
 
 =item *
 
-B<tagger.email>: String of the email of the author of the tag
+B<object>: mandatory stringof the SHA of the git object this is tagging
 
 =item *
 
-B<tagger.date>: Timestamp of when this object was tagged
+B<type>: mandatory string of the type of the object we're tagging.
+Normally this is a C<< commit >> but it can also be a C<< tree >>
+or a C<< blob >>.
+
+=item *
+
+B<tagger>: mandatory hashref, having following keys:
+
+=over
+
+=item *
+
+B<name>: string of the name of the author of the tag
+
+=item *
+
+B<email>: string of the email of the author of the tag
+
+=item *
+
+B<date>: timestamp of when this commit was tagged
+
+=back
+
+=back
+
+=back
+
+Examples:
+
+    my $t = Pithub::GitData::Tags->new;
+    my $result = $t->create(
+        user => 'plu',
+        repo => 'Pithub',
+        data => {
+            tagger => {
+                date  => '2011-06-17T14:53:35-07:00',
+                email => 'schacon@gmail.com',
+                name  => 'Scott Chacon',
+            },
+            message => 'initial version',
+            object  => 'c3d0be41ecbe669545ee3e94d31ed9a4bc91ee3c',
+            tag     => 'v0.0.1',
+            type    => 'commit',
+        }
+    );
+
+Response: C<< Status: 201 Created >>
+
+    {
+        "tag": "v0.0.1",
+        "sha": "940bd336248efae0f9ee5bc7b2d5c985887b16ac",
+        "url": "https://api.github.com/repos/octocat/Hello-World/git/tags/940bd336248efae0f9ee5bc7b2d5c985887b16ac",
+        "message": "initial version\n",
+        "tagger": {
+            "name": "Scott Chacon",
+            "email": "schacon@gmail.com",
+            "date": "2011-06-17T14:53:35-07:00"
+        },
+        "object": {
+            "type": "commit",
+            "sha": "c3d0be41ecbe669545ee3e94d31ed9a4bc91ee3c",
+            "url": "https://api.github.com/repos/octocat/Hello-World/git/commits/c3d0be41ecbe669545ee3e94d31ed9a4bc91ee3c"
+        }
+    }
 
 =back
 
@@ -129,13 +183,51 @@ Get a Tag
 
     GET /repos/:user/:repo/git/tags/:sha
 
+Parameters:
+
+=over
+
+=item *
+
+B<user>: mandatory string
+
+=item *
+
+B<repo>: mandatory string
+
+=item *
+
+B<sha>: mandatory string
+
+=back
+
 Examples:
 
-    $result = $p->git_data->tags->get(
+    my $t = Pithub::GitData::Tags->new;
+    my $result = $t->get(
         user => 'plu',
         repo => 'Pithub',
         sha  => 'df21b2660fb6',
     );
+
+Response: C<< Status: 200 OK >>
+
+    {
+        "tag": "v0.0.1",
+        "sha": "940bd336248efae0f9ee5bc7b2d5c985887b16ac",
+        "url": "https://api.github.com/repos/octocat/Hello-World/git/tags/940bd336248efae0f9ee5bc7b2d5c985887b16ac",
+        "message": "initial version\n",
+        "tagger": {
+            "name": "Scott Chacon",
+            "email": "schacon@gmail.com",
+            "date": "2011-06-17T14:53:35-07:00"
+        },
+        "object": {
+            "type": "commit",
+            "sha": "c3d0be41ecbe669545ee3e94d31ed9a4bc91ee3c",
+            "url": "https://api.github.com/repos/octocat/Hello-World/git/commits/c3d0be41ecbe669545ee3e94d31ed9a4bc91ee3c"
+        }
+    }
 
 =back
 

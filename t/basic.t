@@ -8,133 +8,304 @@ BEGIN {
     use_ok('Pithub');
 }
 
-my %accessors = (
-    gists => {
-        isa       => 'Pithub::Gists',
-        accessors => { comments => 'Pithub::Gists::Comments' }
+my @tree = (
+    {
+        accessor => 'gists',
+        isa      => 'Pithub::Gists',
+        methods  => [qw(create delete fork get is_starred list star unstar update)],
+        subtree  => [
+            {
+                accessor => 'comments',
+                isa      => 'Pithub::Gists::Comments',
+                methods  => [qw(create delete get list update)],
+            },
+        ],
     },
-    git_data => {
-        isa       => 'Pithub::GitData',
-        accessors => {
-            blobs      => 'Pithub::GitData::Blobs',
-            commits    => 'Pithub::GitData::Commits',
-            references => 'Pithub::GitData::References',
-            tags       => 'Pithub::GitData::Tags',
-            trees      => 'Pithub::GitData::Trees',
-        }
+    {
+        accessor => 'git_data',
+        isa      => 'Pithub::GitData',
+        methods  => [],
+        subtree  => [
+            {
+                accessor => 'blobs',
+                isa      => 'Pithub::GitData::Blobs',
+                methods  => [qw(create get)],
+            },
+            {
+                accessor => 'commits',
+                isa      => 'Pithub::GitData::Commits',
+                methods  => [qw(create get)],
+            },
+            {
+                accessor => 'references',
+                isa      => 'Pithub::GitData::References',
+                methods  => [qw(create get list update)],
+            },
+            {
+                accessor => 'tags',
+                isa      => 'Pithub::GitData::Tags',
+                methods  => [qw(create get)],
+            },
+            {
+                accessor => 'trees',
+                isa      => 'Pithub::GitData::Trees',
+                methods  => [qw(create get)],
+            },
+        ],
     },
-    issues => {
-        isa       => 'Pithub::Issues',
-        accessors => {
-            comments   => 'Pithub::Issues::Comments',
-            events     => 'Pithub::Issues::Events',
-            labels     => 'Pithub::Issues::Labels',
-            milestones => 'Pithub::Issues::Milestones',
-        }
+    {
+        accessor => 'issues',
+        isa      => 'Pithub::Issues',
+        methods  => [qw(create get list update)],
+        subtree  => [
+            {
+                accessor => 'comments',
+                isa      => 'Pithub::Issues::Comments',
+                methods  => [qw(create delete get list update)],
+            },
+            {
+                accessor => 'events',
+                isa      => 'Pithub::Issues::Events',
+                methods  => [qw(get list)],
+            },
+            {
+                accessor => 'labels',
+                isa      => 'Pithub::Issues::Labels',
+                methods  => [qw(add create delete get list remove replace update)],
+            },
+            {
+                accessor => 'milestones',
+                isa      => 'Pithub::Issues::Milestones',
+                methods  => [qw(create delete get list update)],
+            },
+        ],
     },
-    orgs => {
-        isa       => 'Pithub::Orgs',
-        accessors => {
-            members => 'Pithub::Orgs::Members',
-            teams   => 'Pithub::Orgs::Teams',
-        }
+    {
+        accessor => 'orgs',
+        isa      => 'Pithub::Orgs',
+        methods  => [qw(get list update)],
+        subtree  => [
+            {
+                accessor => 'members',
+                isa      => 'Pithub::Orgs::Members',
+                methods  => [qw(conceal delete is_member is_public list list_public publicize)],
+            },
+            {
+                accessor => 'teams',
+                isa      => 'Pithub::Orgs::Teams',
+                methods  => [qw(add_member add_repo create delete get has_repo is_member list list_members list_repos remove_member remove_repo update)],
+            },
+        ],
     },
-    pull_requests => {
-        isa       => 'Pithub::PullRequests',
-        accessors => { comments => 'Pithub::PullRequests::Comments' }
+    {
+        accessor => 'pull_requests',
+        isa      => 'Pithub::PullRequests',
+        methods  => [qw(commits create files get is_merged list merge update)],
+        subtree  => [
+            {
+                accessor => 'comments',
+                isa      => 'Pithub::PullRequests::Comments',
+                methods  => [qw(create delete get list update)],
+            },
+        ],
     },
-    repos => {
-        isa       => 'Pithub::Repos',
-        accessors => {
-            collaborators => 'Pithub::Repos::Collaborators',
-            commits       => 'Pithub::Repos::Commits',
-            downloads     => 'Pithub::Repos::Downloads',
-            forks         => 'Pithub::Repos::Forks',
-            keys          => 'Pithub::Repos::Keys',
-            watching      => 'Pithub::Repos::Watching',
-        }
+    {
+        accessor => 'repos',
+        isa      => 'Pithub::Repos',
+        methods  => [qw(branches contributors create get languages list tags teams update)],
+        subtree  => [
+            {
+                accessor => 'collaborators',
+                isa      => 'Pithub::Repos::Collaborators',
+                methods  => [qw(add is_collaborator list remove)],
+            },
+            {
+                accessor => 'commits',
+                isa      => 'Pithub::Repos::Commits',
+                methods  => [qw(create_comment delete_comment get get_comment list list_comments update_comment)],
+            },
+            {
+                accessor => 'downloads',
+                isa      => 'Pithub::Repos::Downloads',
+                methods  => [qw(create delete get list upload)],
+            },
+            {
+                accessor => 'forks',
+                isa      => 'Pithub::Repos::Forks',
+                methods  => [qw(create list)],
+            },
+            {
+                accessor => 'keys',
+                isa      => 'Pithub::Repos::Keys',
+                methods  => [qw(create delete get list update)],
+            },
+            {
+                accessor => 'watching',
+                isa      => 'Pithub::Repos::Watching',
+                methods  => [qw(is_watching list_repos list start_watching stop_watching)],
+            },
+        ],
     },
-    users => {
-        isa       => 'Pithub::Users',
-        accessors => {
-            emails    => 'Pithub::Users::Emails',
-            followers => 'Pithub::Users::Followers',
-            keys      => 'Pithub::Users::Keys',
-        }
+    {
+        accessor => 'users',
+        isa      => 'Pithub::Users',
+        methods  => [qw(get update)],
+        subtree  => [
+            {
+                accessor => 'emails',
+                isa      => 'Pithub::Users::Emails',
+                methods  => [qw(add delete list)],
+            },
+            {
+                accessor => 'followers',
+                isa      => 'Pithub::Users::Followers',
+                methods  => [qw(follow is_following list list_following unfollow)],
+            },
+            {
+                accessor => 'keys',
+                isa      => 'Pithub::Users::Keys',
+                methods  => [qw(create delete get list update)],
+            },
+        ],
     },
 );
 
-{
-    my $p = Pithub->new( user => 'plu', repo => 'Pithub', token => 123 );
+sub validate_tree {
+    my (%args) = @_;
 
-    isa_ok $p, 'Pithub';
+    my $obj   = $args{obj};
+    my $tests = $args{tests};
+    my $tree  = $args{tree};
 
-    while ( my ( $main_accessor, $sub ) = each %accessors ) {
-        isa_ok $p->$main_accessor, $sub->{isa};
-        while ( my ( $sub_accessor, $isa ) = each %{ $sub->{accessors} } ) {
-            isa_ok $p->$main_accessor->$sub_accessor, $isa;
-            is $p->$main_accessor->user, 'plu', "Parameter user was curried to ${main_accessor}";
-            is $p->$main_accessor->$sub_accessor->user, 'plu', "Parameter user was curried to ${main_accessor}->${sub_accessor}";
-            is $p->$main_accessor->repo, 'Pithub', "Parameter repo was curried to ${main_accessor}";
-            is $p->$main_accessor->$sub_accessor->repo, 'Pithub', "Parameter repo was curried to ${main_accessor}->${sub_accessor}";
-            is $p->$main_accessor->token, 123, "Parameter token was curried to ${main_accessor}";
-            is $p->$main_accessor->$sub_accessor->token, 123, "Parameter token was curried to ${main_accessor}->${sub_accessor}";
-        }
+    foreach my $node (@$tree) {
+        my $accessor = $node->{accessor};
+        $tests->( $node, $obj );
+        validate_tree(
+            tree  => $node->{subtree},
+            obj   => $obj->$accessor,
+            tests => $tests,
+        ) if $node->{subtree};
     }
 }
 
-# Once again, this time we do not currie the user, repo and token attribute
+# Make sure all attributes get curried down the objects
 {
-    my $p = Pithub->new;
+    my %attributes = (
+        api_uri         => 'http://foo.com',
+        auto_pagination => 1,
+        jsonp_callback  => 'evil',
+        per_page        => 42,
+        prepare_request => sub { },
+        repo            => 'Pithub',
+        token           => 123,
+        ua              => Pithub::Test::UA->new,
+        user            => 'plu',
+    );
 
-    while ( my ( $main_accessor, $sub ) = each %accessors ) {
-        isa_ok $p->$main_accessor, $sub->{isa};
-        while ( my ( $sub_accessor, $isa ) = each %{ $sub->{accessors} } ) {
-            isa_ok $p->$main_accessor->$sub_accessor, $isa;
-            is $p->$main_accessor->user, undef, "Parameter user was not curried to ${main_accessor}";
-            is $p->$main_accessor->$sub_accessor->user, undef, "Parameter user was not curried to ${main_accessor}->${sub_accessor}";
-            is $p->$main_accessor->repo, undef, "Parameter repo was not curried to ${main_accessor}";
-            is $p->$main_accessor->$sub_accessor->repo, undef, "Parameter repo was not curried to ${main_accessor}->${sub_accessor}";
-            is $p->$main_accessor->token, undef, "Parameter token was not curried to ${main_accessor}";
-            is $p->$main_accessor->$sub_accessor->token, undef, "Parameter token was curried to ${main_accessor}->${sub_accessor}";
+    validate_tree(
+        tree  => \@tree,
+        obj   => Pithub->new(%attributes),
+        tests => sub {
+            my ( $node, $obj ) = @_;
+
+            my $accessor = $node->{accessor};
+            my $methods  = $node->{methods};
+
+            can_ok $obj, $accessor;
+            isa_ok $obj->$accessor, $node->{isa};
+            can_ok $obj->$accessor, @$methods if @{ $methods || [] };
+
+            foreach my $attr ( keys %attributes ) {
+                is $obj->$attr, $attributes{$attr}, "Attribute ${attr} was curried to ${obj}";
+            }
+
+            # the following arguments are in no way real world arguments, it's just to
+            # satisfy -every- method with those arguments!
+            foreach my $method (@$methods) {
+                next if $node->{isa} eq 'Pithub::Repos::Downloads' and $method eq 'upload';
+
+                my $result;
+                my $data = {};
+
+                # unfortunately the API expects arrayrefs on a very few calls
+                $data = []
+                  if ( $node->{isa} eq 'Pithub::Users::Emails' and grep $_ eq $method, qw(add delete) )
+                  or ( $node->{isa} eq 'Pithub::Issues::Labels' and grep $_ eq $method, qw(add replace) );
+
+                lives_ok {
+                    $result = $obj->$accessor->$method(
+                        collaborator => 1,
+                        comment_id   => 1,
+                        data         => $data,
+                        download_id  => 1,
+                        event_id     => 1,
+                        gist_id      => 1,
+                        issue_id     => 1,
+                        key_id       => 1,
+                        label        => 1,
+                        milestone_id => 1,
+                        options      => {
+                            prepare_request => sub {
+                                shift->header( 'Accept' => 'foo.bar' );
+                            },
+                        },
+                        org             => 1,
+                        pull_request_id => 1,
+                        ref             => 1,
+                        repo            => 1,
+                        sha             => 1,
+                        team_id         => 1,
+                        user            => 1,
+                    );
+                }
+                "Calling $node->{isa}->$method with pseudo arguments";
+
+                is $result->request->header('Accept'), 'foo.bar', "$node->{isa}->$method options prepare_request set";
+            }
         }
-    }
+    );
+
+    validate_tree(
+        tree  => \@tree,
+        obj   => Pithub->new,
+        tests => sub {
+            my ( $node, $obj ) = @_;
+            foreach my $attr ( keys %attributes ) {
+                isnt $obj->$attr, $attributes{$attr}, "Attribute ${attr} was not curried to ${obj}";
+            }
+        }
+    );
 }
 
 {
-    my $p = Pithub->new( ua => Pithub::Test::UA->new );
+    my $p = Pithub::Test->create('Pithub');
 
     isa_ok $p, 'Pithub';
 
-    throws_ok { $p->request } qr{Missing mandatory parameters: \$method, \$path}, 'Not given any parameters';
-    throws_ok { $p->request( xxx => '/bar' ) } qr{Invalid method: xxx}, 'Not a valid HTTP method';
-    lives_ok { $p->request( GET => 'bar' ) } 'Correct parameters do not throw an exception';
+    throws_ok { $p->request } qr{Missing mandatory key in parameters: method}, 'Not given any parameters';
+    throws_ok { $p->request( method => 'GET' ) } qr{Missing mandatory key in parameters: path}, 'Parameter path missing';
+    throws_ok { $p->request( method => 'xxx', path => '/bar' ) } qr{Invalid method: xxx}, 'Not a valid HTTP method';
+    lives_ok { $p->request( method => 'GET', path => 'bar' ) } 'Correct parameters do not throw an exception';
 
-    throws_ok { $p->request( GET => '/bar', undef, [] ) }
-    qr{The parameter \$options must be a hashref},
-      '$options must be a hashref';
+    throws_ok { $p->request( method => 'GET', path => '/bar', options => [] ) }
+    qr{The key options must be a hashref},
+      'options must be a hashref';
 
-    throws_ok { $p->request( GET => '/bar', undef, { prepare_uri => 1 } ) }
-    qr{The key prepare_uri in the \$options hashref must be a coderef},
-      'prepare_uri must be a coderef';
+    throws_ok { $p->request( method => 'GET', path => '/bar', options => { prepare_request => 1 } ) }
+    qr{The key prepare_request in the options hashref must be a coderef},
+      'prepare_request must be a coderef';
 
-    lives_ok { $p->request( GET => 'bar', undef, {} ) } 'Empty options hashref';
+    lives_ok { $p->request( method => 'GET', path => 'bar', options => {} ) } 'Empty options hashref';
 
-    my $result       = $p->request( GET => '/bar' );
+    my $result       = $p->request( method => 'GET', path => '/bar' );
     my $response     = $result->response;
-    my $request      = $response->request;
-    my $http_request = $request->http_request;
+    my $http_request = $response->request;
 
     isa_ok $result,       'Pithub::Result';
-    isa_ok $response,     'Pithub::Response';
-    isa_ok $request,      'Pithub::Request';
+    isa_ok $response,     'HTTP::Response';
     isa_ok $http_request, 'HTTP::Request';
 
-    is $result->request, $request, 'Shortcut to the Pithub::Request object';
-    is $request->method, 'GET', 'The HTTP method was set in the Pithub::Request object';
-    is $request->uri->path, '/bar', 'The HTTP path was set in the Pithub::Request object';
-    is $request->has_data, '',    'There was no data set in the Pithub::Request object';
-    is $request->data,     undef, 'The data hashref is undef';
+    is $http_request->content, '', 'The data hashref is undef';
 
     is $http_request->uri->path, '/bar', 'The HTTP path was set in the HTTP::Request object';
     is $http_request->header('Authorization'), undef, 'Authorization header was not set in the HTTP::Request object';
@@ -143,20 +314,20 @@ my %accessors = (
 }
 
 {
-    my $p = Pithub->new( ua => Pithub::Test::UA->new );
+    my $p = Pithub::Test->create('Pithub');
     $p->token('123');
-    my $request = $p->request( POST => '/foo', { some => 'data' } )->request;
-    eq_or_diff $request->data, { some => 'data' }, 'The data hashref was set in the request object';
-    is $request->http_request->header('Authorization'), 'token 123', 'Authorization header was set in the HTTP::Request object';
+    my $request = $p->request( method => 'POST', path => '/foo', data => { some => 'data' } )->request;
+    eq_or_diff $request->content, '{"some":"data"}', 'The JSON content was set in the request object';
+    is $request->header('Authorization'), 'token 123', 'Authorization header was set in the HTTP::Request object';
     ok $p->clear_token, 'Access token clearer';
     is $p->token, undef, 'No token set anymore';
-    $request = $p->request( POST => '/foo', { some => 'data' } )->request;
-    is $request->http_request->header('Authorization'), undef, 'Authorization header was not set in the HTTP::Request object';
+    $request = $p->request( method => 'POST', path => '/foo', data => { some => 'data' } )->request;
+    is $request->header('Authorization'), undef, 'Authorization header was not set in the HTTP::Request object';
 }
 
 {
-    my $p = Pithub->new( ua => Pithub::Test::UA->new );
-    my $result = $p->request( GET => '/error/notfound' );
+    my $p = Pithub::Test->create('Pithub');
+    my $result = $p->request( method => 'GET', path => '/error/notfound' );
 
     is $result->code,    404, 'HTTP status is 404';
     is $result->success, '',  'Unsuccessful response';
@@ -173,7 +344,7 @@ my %accessors = (
 }
 
 {
-    my $p = Pithub->new( ua => Pithub::Test::UA->new );
+    my $p = Pithub::Test->create('Pithub');
     my $result = $p->users->followers->list( user => 'miyagawa' );
 
     is $result->count,          30,                                                        'Count accessor';
@@ -192,7 +363,7 @@ my %accessors = (
 }
 
 {
-    my $p = Pithub->new( ua => Pithub::Test::UA->new );
+    my $p = Pithub::Test->create('Pithub');
     my $result = $p->users->followers->list( user => 'miyagawa' )->get_page(3);
 
     is $result->first_page_uri, 'https://api.github.com/users/miyagawa/followers?page=1',  'First page link on third page';
@@ -207,7 +378,7 @@ my %accessors = (
 }
 
 {
-    my $p = Pithub->new( ua => Pithub::Test::UA->new );
+    my $p = Pithub::Test->create('Pithub');
     my $result = $p->users->followers->list( user => 'miyagawa' )->get_page(26);
 
     is $result->first_page->request->uri, 'https://api.github.com/users/miyagawa/followers?page=1',  'First page call';
@@ -220,7 +391,7 @@ my %accessors = (
 }
 
 {
-    my $p = Pithub->new( ua => Pithub::Test::UA->new, per_page => 1 );
+    my $p = Pithub::Test->create( 'Pithub', per_page => 1 );
     my $result = $p->users->followers->list( user => 'miyagawa' );
 
     is $result->next_page->request->uri, 'https://api.github.com/users/miyagawa/followers?page=2&per_page=1',   'Next page call';
@@ -233,7 +404,7 @@ my %accessors = (
 }
 
 {
-    my $p = Pithub->new( ua => Pithub::Test::UA->new );
+    my $p = Pithub::Test->create('Pithub');
     my $result = $p->users->get( user => 'plu' );
 
     is $result->first_page, undef, 'First page call';
@@ -246,14 +417,14 @@ my %accessors = (
 }
 
 {
-    my $p = Pithub->new( ua => Pithub::Test::UA->new, jsonp_callback => 'foo' );
-    my $result = $p->request( GET => '/foo' );
+    my $p = Pithub::Test->create( 'Pithub', jsonp_callback => 'foo' );
+    my $result = $p->request( method => 'GET', path => '/foo' );
     is $result->request->uri->query, 'callback=foo', 'The callback parameter was set';
 }
 
 {
-    my $p = Pithub->new( ua => Pithub::Test::UA->new );
-    my $result = $p->request( GET => '/orgs/CPAN-API/repos' );
+    my $p = Pithub::Test->create('Pithub');
+    my $result = $p->request( method => 'GET', path => '/orgs/CPAN-API/repos' );
 
     my @expectations = (
         'https://github.com/CPAN-API/cpan-api',        'https://github.com/CPAN-API/search-metacpan-org',
@@ -271,8 +442,8 @@ my %accessors = (
 }
 
 {
-    my $p = Pithub->new( ua => Pithub::Test::UA->new );
-    my $result = $p->request( GET => '/users/plu' );
+    my $p = Pithub::Test->create('Pithub');
+    my $result = $p->request( method => 'GET', path => '/users/plu' );
 
     my $row = $result->next;
     is $row->{id}, 31597, 'Row data found';
@@ -283,7 +454,7 @@ my %accessors = (
 }
 
 {
-    my $p = Pithub->new( ua => Pithub::Test::UA->new, per_page => 15 );
+    my $p = Pithub::Test->create( 'Pithub', per_page => 15 );
     my $result = $p->users->followers->list( user => 'plu' );
     $result->auto_pagination(1);
     my @followers = ();
@@ -294,13 +465,51 @@ my %accessors = (
 }
 
 {
-    my $p = Pithub->new( ua => Pithub::Test::UA->new, per_page => 15, auto_pagination => 1 );
+    my $p = Pithub::Test->create( 'Pithub', per_page => 15, auto_pagination => 1 );
     my $result = $p->users->followers->list( user => 'plu' );
     my @followers = ();
     while ( my $row = $result->next ) {
         push @followers, $row;
     }
     is scalar(@followers), 54, 'Automatically paginate through four pages';
+}
+
+{
+    my $p = Pithub::Test->create(
+        'Pithub',
+        prepare_request => sub {
+            my ($request) = @_;
+            $request->header( Accept => 'anything' );
+        }
+    );
+    my $result = $p->users->followers->list( user => 'plu' );
+    is $result->request->header('Accept'), 'anything', 'The request header got set using global prepare_request';
+}
+
+{
+    my $p      = Pithub::Test->create('Pithub');
+    my $result = $p->users->followers->list(
+        user    => 'plu',
+        options => {
+            prepare_request => sub {
+                my ($request) = @_;
+                $request->header( Accept => 'foobar' );
+              }
+        }
+    );
+    is $result->request->header('Accept'), 'foobar', 'The request header got set via the method call';
+}
+
+{
+    my $p = Pithub::Test->create('Pithub');
+    throws_ok {
+        $p->users->get( user => 'foo', params => 5 );
+    }
+    qr{The key params must be a hashref}, 'The params key must be a hashref';
+
+    my $result = $p->users->get( user => 'foo', params => { direction => 'asc' } );
+    my %query = $result->request->uri->query_form;
+    eq_or_diff \%query, { direction => 'asc' }, 'The params were set';
 }
 
 done_testing;

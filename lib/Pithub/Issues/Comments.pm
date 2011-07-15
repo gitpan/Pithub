@@ -1,6 +1,6 @@
 package Pithub::Issues::Comments;
 BEGIN {
-  $Pithub::Issues::Comments::VERSION = '0.01003';
+  $Pithub::Issues::Comments::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Issue Comments API
@@ -16,7 +16,11 @@ sub create {
     croak 'Missing key in parameters: issue_id' unless $args{issue_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/issues/%s/comments', $args{user}, $args{repo}, $args{issue_id} ), $args{data} );
+    return $self->request(
+        method => 'POST',
+        path   => sprintf( '/repos/%s/%s/issues/%s/comments', delete $args{user}, delete $args{repo}, delete $args{issue_id} ),
+        %args,
+    );
 }
 
 
@@ -24,7 +28,11 @@ sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/issues/comments/%s', $args{user}, $args{repo}, $args{comment_id} ) );
+    return $self->request(
+        method => 'DELETE',
+        path   => sprintf( '/repos/%s/%s/issues/comments/%s', delete $args{user}, delete $args{repo}, delete $args{comment_id} ),
+        %args,
+    );
 }
 
 
@@ -32,7 +40,11 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/issues/comments/%s', $args{user}, $args{repo}, $args{comment_id} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/issues/comments/%s', delete $args{user}, delete $args{repo}, delete $args{comment_id} ),
+        %args,
+    );
 }
 
 
@@ -40,7 +52,11 @@ sub list {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: issue_id' unless $args{issue_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/issues/%s/comments', $args{user}, $args{repo}, $args{issue_id} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/issues/%s/comments', delete $args{user}, delete $args{repo}, delete $args{issue_id} ),
+        %args,
+    );
 }
 
 
@@ -49,7 +65,11 @@ sub update {
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/issues/comments/%s', $args{user}, $args{repo}, $args{comment_id} ), $args{data} );
+    return $self->request(
+        method => 'PATCH',
+        path   => sprintf( '/repos/%s/%s/issues/comments/%s', delete $args{user}, delete $args{repo}, delete $args{comment_id} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -65,7 +85,7 @@ Pithub::Issues::Comments - Github v3 Issue Comments API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -81,7 +101,8 @@ Create a comment
 
 Examples:
 
-    $result = $p->issues->comments->create(
+    my $c = Pithub::Issues::Comments->new;
+    my $result = $c->create(
         repo     => 'Pithub',
         user     => 'plu',
         issue_id => 1,
@@ -102,7 +123,8 @@ Delete a comment
 
 Examples:
 
-    $result = $p->issues->comments->delete(
+    my $c = Pithub::Issues::Comments->new;
+    my $result = $c->delete(
         repo       => 'Pithub',
         user       => 'plu',
         comment_id => 1,
@@ -122,7 +144,8 @@ Get a single comment
 
 Examples:
 
-    $result = $p->issues->comments->get(
+    my $c = Pithub::Issues::Comments->new;
+    my $result = $c->get(
         repo       => 'Pithub',
         user       => 'plu',
         comment_id => 1,
@@ -142,7 +165,8 @@ List comments on an issue
 
 Examples:
 
-    $result = $p->issues->comments->list(
+    my $c = Pithub::Issues::Comments->new;
+    my $result = $c->list(
         repo     => 'Pithub',
         user     => 'plu',
         issue_id => 1,
@@ -162,7 +186,8 @@ Edit a comment
 
 Examples:
 
-    $result = $p->issues->comments->update(
+    my $c = Pithub::Issues::Comments->new;
+    my $result = $c->update(
         repo       => 'Pithub',
         user       => 'plu',
         comment_id => 1,

@@ -1,6 +1,6 @@
 package Pithub::Repos::Collaborators;
 BEGIN {
-  $Pithub::Repos::Collaborators::VERSION = '0.01003';
+  $Pithub::Repos::Collaborators::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Repo Collaborators API
@@ -15,7 +15,11 @@ sub add {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: collaborator' unless $args{collaborator};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PUT => sprintf( '/repos/%s/%s/collaborators/%s', $args{user}, $args{repo}, $args{collaborator} ) );
+    return $self->request(
+        method => 'PUT',
+        path   => sprintf( '/repos/%s/%s/collaborators/%s', delete $args{user}, delete $args{repo}, delete $args{collaborator} ),
+        %args,
+    );
 }
 
 
@@ -23,14 +27,22 @@ sub is_collaborator {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: collaborator' unless $args{collaborator};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/collaborators/%s', $args{user}, $args{repo}, $args{collaborator} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/collaborators/%s', delete $args{user}, delete $args{repo}, delete $args{collaborator} ),
+        %args,
+    );
 }
 
 
 sub list {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/collaborators', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/collaborators', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
@@ -38,7 +50,11 @@ sub remove {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: collaborator' unless $args{collaborator};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/collaborators/%s', $args{user}, $args{repo}, $args{collaborator} ) );
+    return $self->request(
+        method => 'DELETE',
+        path   => sprintf( '/repos/%s/%s/collaborators/%s', delete $args{user}, delete $args{repo}, delete $args{collaborator} ),
+        %args
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -54,7 +70,7 @@ Pithub::Repos::Collaborators - Github v3 Repo Collaborators API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -70,7 +86,8 @@ Add collaborator
 
 Examples:
 
-    $result = $p->repos->collaborators->add(
+    my $c = Pithub::Repos::Collaborators->new;
+    my $result = $c->add(
         user         => 'plu',
         repo         => 'Pithub',
         collaborator => 'rbo',
@@ -90,7 +107,8 @@ Get
 
 Examples:
 
-    $result = $p->repos->collaborators->is_collaborator(
+    my $c = Pithub::Repos::Collaborators->new;
+    my $result = $c->is_collaborator(
         user         => 'plu',
         repo         => 'Pithub',
         collaborator => 'rbo',
@@ -117,7 +135,8 @@ List
 
 Examples:
 
-    $result = $p->repos->collaborators->list(
+    my $c = Pithub::Repos::Collaborators->new;
+    my $result = $c->list(
         user => 'plu',
         repo => 'Pithub',
     );
@@ -136,7 +155,8 @@ Remove collaborator
 
 Examples:
 
-    $result = $p->repos->collaborators->remove(
+    my $c = Pithub::Repos::Collaborators->new;
+    my $result = $c->remove(
         user         => 'plu',
         repo         => 'Pithub',
         collaborator => 'rbo',

@@ -1,6 +1,6 @@
 package Pithub::Repos;
 BEGIN {
-  $Pithub::Repos::VERSION = '0.01003';
+  $Pithub::Repos::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Repos API
@@ -21,25 +21,41 @@ around qr{^merge_.*?_args$}          => \&Pithub::Base::_merge_args;
 sub branches {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/branches', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/branches', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
 sub contributors {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/contributors', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/contributors', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
 sub create {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    if ( my $org = $args{org} ) {
-        return $self->request( POST => sprintf( '/orgs/%s/repos', $args{org} ), $args{data} );
+    if ( my $org = delete $args{org} ) {
+        return $self->request(
+            method => 'POST',
+            path   => sprintf( '/orgs/%s/repos', $org ),
+            %args,
+        );
     }
     else {
-        return $self->request( POST => '/user/repos', $args{data} );
+        return $self->request(
+            method => 'POST',
+            path   => '/user/repos',
+            %args,
+        );
     }
 }
 
@@ -47,27 +63,47 @@ sub create {
 sub get {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
 sub languages {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/languages', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/languages', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
 sub list {
     my ( $self, %args ) = @_;
-    if ( my $user = $args{user} ) {
-        return $self->request( GET => sprintf( '/users/%s/repos', $user ) );
+    if ( my $user = delete $args{user} ) {
+        return $self->request(
+            method => 'GET',
+            path   => sprintf( '/users/%s/repos', $user ),
+            %args,
+        );
     }
-    elsif ( my $org = $args{org} ) {
-        return $self->request( GET => sprintf( '/orgs/%s/repos', $org ) );
+    elsif ( my $org = delete $args{org} ) {
+        return $self->request(
+            method => 'GET',
+            path   => sprintf( '/orgs/%s/repos', $org ),
+            %args
+        );
     }
     else {
-        return $self->request( GET => '/user/repos' );
+        return $self->request(
+            method => 'GET',
+            path   => '/user/repos',
+            %args,
+        );
     }
 }
 
@@ -75,22 +111,34 @@ sub list {
 sub tags {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/tags', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/tags', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
 sub teams {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/teams', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/teams', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
 sub update {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    croak 'Missing key in parameters: repo' unless $args{repo};
-    return $self->request( PATCH => sprintf( '/user/repos/%s', $args{repo} ), $args{data} );
+    $self->_validate_user_repo_args( \%args );
+    return $self->request(
+        method => 'PATCH',
+        path   => sprintf( '/repos/%s/%s', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -106,7 +154,7 @@ Pithub::Repos - Github v3 Repos API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -122,23 +170,8 @@ List Branches
 
 Examples:
 
-    $p      = Pithub->new;
-    $result = $p->repos->branches( user => 'plu', repo => 'Pithub' );
-
-    $p      = Pithub->new( user => 'plu' );
-    $result = $p->repos->branches( repo => 'Pithub' );
-
-    $p      = Pithub->new( user => 'plu', repo => 'Pithub' );
-    $result = $p->repos->branches;
-
-    $r      = Pithub::Repos->new;
-    $result = $r->repos->branches( user => 'plu', repo => 'Pithub' );
-
-    $r      = Pithub::Repos->new( user => 'plu' );
-    $result = $r->repos->branches( repo => 'Pithub' );
-
-    $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
-    $result = $r->repos->branches;
+    my $repos  = Pithub::Repos->new;
+    my $result = $repos->branches( user => 'plu', repo => 'Pithub' );
 
 =back
 
@@ -154,23 +187,8 @@ List contributors
 
 Examples:
 
-    $p      = Pithub->new;
-    $result = $p->repos->contributors( user => 'plu', repo => 'Pithub' );
-
-    $p      = Pithub->new( user => 'plu' );
-    $result = $p->repos->contributors( repo => 'Pithub' );
-
-    $p      = Pithub->new( user => 'plu', repo => 'Pithub' );
-    $result = $p->repos->contributors;
-
-    $r      = Pithub::Repos->new;
-    $result = $r->repos->contributors( user => 'plu', repo => 'Pithub' );
-
-    $r      = Pithub::Repos->new( user => 'plu' );
-    $result = $r->repos->contributors( repo => 'Pithub' );
-
-    $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
-    $result = $r->repos->contributors;
+    my $repos  = Pithub::Repos->new;
+    my $result = $repos->contributors( user => 'plu', repo => 'Pithub' );
 
 =back
 
@@ -186,7 +204,8 @@ Create a new repository for the authenticated user.
 
 Examples:
 
-    $result = $p->repos->create( data => { name => 'some-repo' } );
+    my $repos  = Pithub::Repos->new;
+    my $result = $repos->create( data => { name => 'some-repo' } );
 
 =item *
 
@@ -197,7 +216,8 @@ must be a member of this organization.
 
 Examples:
 
-    $result = $p->repos->create(
+    my $repos  = Pithub::Repos->new;
+    my $result = $repos->create(
         org  => 'CPAN-API',
         data => { name => 'some-repo' }
     );
@@ -216,23 +236,8 @@ Get a repo
 
 Examples:
 
-    $p      = Pithub->new;
-    $result = $p->repos->get( user => 'plu', repo => 'Pithub' );
-
-    $p      = Pithub->new( user => 'plu' );
-    $result = $p->repos->get( repo => 'Pithub' );
-
-    $p      = Pithub->new( user => 'plu', repo => 'Pithub' );
-    $result = $p->repos->get;
-
-    $r      = Pithub::Repos->new;
-    $result = $r->repos->get( user => 'plu', repo => 'Pithub' );
-
-    $r      = Pithub::Repos->new( user => 'plu' );
-    $result = $r->repos->get( repo => 'Pithub' );
-
-    $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
-    $result = $r->repos->get;
+    my $repos  = Pithub::Repos->new;
+    my $result = $repos->get( user => 'plu', repo => 'Pithub' );
 
 =back
 
@@ -248,23 +253,8 @@ List languages
 
 Examples:
 
-    $p      = Pithub->new;
-    $result = $p->repos->languages( user => 'plu', repo => 'Pithub' );
-
-    $p      = Pithub->new( user => 'plu' );
-    $result = $p->repos->languages( repo => 'Pithub' );
-
-    $p      = Pithub->new( user => 'plu', repo => 'Pithub' );
-    $result = $p->repos->languages;
-
-    $r      = Pithub::Repos->new;
-    $result = $r->repos->languages( user => 'plu', repo => 'Pithub' );
-
-    $r      = Pithub::Repos->new( user => 'plu' );
-    $result = $r->repos->languages( repo => 'Pithub' );
-
-    $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
-    $result = $r->repos->languages;
+    my $repos  = Pithub::Repos->new;
+    my $result = $repos->languages( user => 'plu', repo => 'Pithub' );
 
 =back
 
@@ -278,11 +268,21 @@ List repositories for the authenticated user.
 
     GET /user/repos
 
+Examples:
+
+    my $repos  = Pithub::Repos->new;
+    my $result = $repos->list;
+
 =item *
 
 List public repositories for the specified user.
 
     GET /users/:user/repos
+
+Examples:
+
+    my $repos  = Pithub::Repos->new;
+    my $result = $repos->list( user => 'plu' );
 
 =item *
 
@@ -292,9 +292,8 @@ List repositories for the specified org.
 
 Examples:
 
-    $result = $p->repos->list( user => 'plu' );
-    $result = $p->repos->list( org => 'CPAN-API' );
-    $result = $p->repos->list;
+    my $repos  = Pithub::Repos->new;
+    my $result = $repos->list( org => 'CPAN-API' );
 
 =back
 
@@ -310,23 +309,8 @@ List Tags
 
 Examples:
 
-    $p      = Pithub->new;
-    $result = $p->repos->tags( user => 'plu', repo => 'Pithub' );
-
-    $p      = Pithub->new( user => 'plu' );
-    $result = $p->repos->tags( repo => 'Pithub' );
-
-    $p      = Pithub->new( user => 'plu', repo => 'Pithub' );
-    $result = $p->repos->tags;
-
-    $r      = Pithub::Repos->new;
-    $result = $r->repos->tags( user => 'plu', repo => 'Pithub' );
-
-    $r      = Pithub::Repos->new( user => 'plu' );
-    $result = $r->repos->tags( repo => 'Pithub' );
-
-    $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
-    $result = $r->repos->tags;
+    my $repos  = Pithub::Repos->new;
+    my $result = $repos->tags( user => 'plu', repo => 'Pithub' );
 
 =back
 
@@ -342,23 +326,8 @@ List Teams
 
 Examples:
 
-    $p      = Pithub->new;
-    $result = $p->repos->teams( user => 'plu', repo => 'Pithub' );
-
-    $p      = Pithub->new( user => 'plu' );
-    $result = $p->repos->teams( repo => 'Pithub' );
-
-    $p      = Pithub->new( user => 'plu', repo => 'Pithub' );
-    $result = $p->repos->teams;
-
-    $r      = Pithub::Repos->new;
-    $result = $r->repos->teams( user => 'plu', repo => 'Pithub' );
-
-    $r      = Pithub::Repos->new( user => 'plu' );
-    $result = $r->repos->teams( repo => 'Pithub' );
-
-    $r      = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
-    $result = $r->repos->teams;
+    my $repos  = Pithub::Repos->new;
+    my $result = $repos->teams( user => 'plu', repo => 'Pithub' );
 
 =back
 
@@ -375,8 +344,9 @@ Edit
 Examples:
 
     # update a repo for the authenticated user
-    $result = $p->repos->update(
-        repo => Pithub,
+    my $repos  = Pithub::Repos->new;
+    my $result = $repos->update(
+        repo => 'Pithub',
         data => { description => 'Github API v3' },
     );
 

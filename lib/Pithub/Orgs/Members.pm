@@ -1,6 +1,6 @@
 package Pithub::Orgs::Members;
 BEGIN {
-  $Pithub::Orgs::Members::VERSION = '0.01003';
+  $Pithub::Orgs::Members::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Org Members API
@@ -15,7 +15,11 @@ sub conceal {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: org'  unless $args{org};
     croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( DELETE => sprintf( '/orgs/%s/public_members/%s', $args{org}, $args{user} ) );
+    return $self->request(
+        method => 'DELETE',
+        path   => sprintf( '/orgs/%s/public_members/%s', delete $args{org}, delete $args{user} ),
+        %args,
+    );
 }
 
 
@@ -23,7 +27,11 @@ sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: org'  unless $args{org};
     croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( DELETE => sprintf( '/orgs/%s/members/%s', $args{org}, $args{user} ) );
+    return $self->request(
+        method => 'DELETE',
+        path   => sprintf( '/orgs/%s/members/%s', delete $args{org}, delete $args{user} ),
+        %args,
+    );
 }
 
 
@@ -31,7 +39,11 @@ sub is_member {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: org'  unless $args{org};
     croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( GET => sprintf( '/orgs/%s/members/%s', $args{org}, $args{user} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/orgs/%s/members/%s', delete $args{org}, delete $args{user} ),
+        %args,
+    );
 }
 
 
@@ -39,21 +51,33 @@ sub is_public {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: org'  unless $args{org};
     croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( GET => sprintf( '/orgs/%s/public_members/%s', $args{org}, $args{user} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/orgs/%s/public_members/%s', delete $args{org}, delete $args{user} ),
+        %args,
+    );
 }
 
 
 sub list {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: org' unless $args{org};
-    return $self->request( GET => sprintf( '/orgs/%s/members', $args{org} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/orgs/%s/members', delete $args{org} ),
+        %args,
+    );
 }
 
 
 sub list_public {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: org' unless $args{org};
-    return $self->request( GET => sprintf( '/orgs/%s/public_members', $args{org} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/orgs/%s/public_members', delete $args{org} ),
+        %args,
+    );
 }
 
 
@@ -61,7 +85,11 @@ sub publicize {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: org'  unless $args{org};
     croak 'Missing key in parameters: user' unless $args{user};
-    return $self->request( PUT => sprintf( '/orgs/%s/public_members/%s', $args{org}, $args{user} ) );
+    return $self->request(
+        method => 'PUT',
+        path   => sprintf( '/orgs/%s/public_members/%s', delete $args{org}, delete $args{user} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -77,7 +105,7 @@ Pithub::Orgs::Members - Github v3 Org Members API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -93,7 +121,8 @@ Conceal a user's membership
 
 Examples:
 
-    $result = $p->orgs->members->conceal(
+    my $m = Pithub::Orgs::Members->new;
+    my $result = $m->conceal(
         org  => 'CPAN-API',
         user => 'plu',
     );
@@ -114,7 +143,8 @@ repositories.
 
 Examples:
 
-    $result = $p->orgs->members->delete(
+    my $m = Pithub::Orgs::Members->new;
+    my $result = $m->delete(
         org  => 'CPAN-API',
         user => 'plu',
     );
@@ -133,7 +163,8 @@ Check if a user is a member of an organization
 
 Examples:
 
-    $result = $p->orgs->members->is_member(
+    my $m = Pithub::Orgs::Members->new;
+    my $result = $m->is_member(
         org  => 'CPAN-API',
         user => 'plu',
     );
@@ -152,7 +183,8 @@ Get if a user is a public member
 
 Examples:
 
-    $result = $p->orgs->members->is_public(
+    my $m = Pithub::Orgs::Members->new;
+    my $result = $m->is_public(
         org  => 'CPAN-API',
         user => 'plu',
     );
@@ -175,7 +207,8 @@ members are returned.
 
 Examples:
 
-    $result = $p->orgs->members->list( org => 'CPAN-API' );
+    my $m = Pithub::Orgs::Members->new;
+    my $result = $m->list( org => 'CPAN-API' );
 
 =back
 
@@ -192,7 +225,8 @@ publicized or not.
 
 Examples:
 
-    $result = $p->orgs->members->list_public( org => 'CPAN-API' );
+    my $m = Pithub::Orgs::Members->new;
+    my $result = $m->list_public( org => 'CPAN-API' );
 
 =back
 
@@ -208,7 +242,8 @@ Publicize a user's membership
 
 Examples:
 
-    $result = $p->orgs->members->publicize(
+    my $m = Pithub::Orgs::Members->new;
+    my $result = $m->publicize(
         org  => 'CPAN-API',
         user => 'plu',
     );

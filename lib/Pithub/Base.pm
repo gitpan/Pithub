@@ -1,17 +1,19 @@
 package Pithub::Base;
 BEGIN {
-  $Pithub::Base::VERSION = '0.01003';
+  $Pithub::Base::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 base class for all Pithub modules
 
 use Moose;
 use Carp qw(croak);
+use HTTP::Headers;
+use HTTP::Request;
+use JSON::Any;
 use LWP::UserAgent;
 use MooseX::Types::URI qw(Uri);
-use Pithub::Request;
-use Pithub::Response;
 use Pithub::Result;
+use URI;
 use namespace::autoclean;
 
 
@@ -49,6 +51,15 @@ has 'per_page' => (
 );
 
 
+has 'prepare_request' => (
+    clearer   => 'clear_prepare_request',
+    is        => 'rw',
+    isa       => 'CodeRef',
+    predicate => 'has_prepare_request',
+    required  => 0,
+);
+
+
 has 'repo' => (
     clearer   => 'clear_repo',
     is        => 'rw',
@@ -80,6 +91,12 @@ has 'user' => (
     isa       => 'Str',
     predicate => 'has_user',
     required  => 0,
+);
+
+has '_json' => (
+    is         => 'ro',
+    isa        => 'JSON::Any',
+    lazy_build => 1,
 );
 
 my @TOKEN_REQUIRED = (
@@ -120,6 +137,7 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^DELETE /user/watched/[^/]+/.*?$},
     qr{^GET /gists/starred$},
     qr{^GET /gists/[^/]+/star$},
+    qr{^GET /issues$},
     qr{^GET /orgs/[^/]+/members/.*?$},
     qr{^GET /orgs/[^/]+/teams$},
     qr{^GET /repos/[^/]+/[^/]+/collaborators$},
@@ -184,12 +202,40 @@ my @TOKEN_REQUIRED_REGEXP = (
 
 
 sub request {
-    my $self = shift;
+    my ( $self, %args ) = @_;
 
-    my %req_args = $self->_prepare_request_args(@_);
-    my $request  = Pithub::Request->new(%req_args);
-    my %res_args = $self->_prepare_response_args($request);
-    my $response = Pithub::Response->new(%res_args);
+    my $method = delete $args{method} || croak 'Missing mandatory key in parameters: method';
+    my $path   = delete $args{path}   || croak 'Missing mandatory key in parameters: path';
+    my $data   = delete $args{data};
+    my $options = delete $args{options};
+    my $params  = delete $args{params};
+
+    croak "Invalid method: $method" unless grep $_ eq $method, qw(DELETE GET PATCH POST PUT);
+
+    my $uri = $self->_uri_for($path);
+
+    if ( $self->_token_required( $method, $path ) && !$self->has_token ) {
+        croak sprintf "Access token required for: %s %s (%s)", $method, $path, $uri;
+    }
+
+    my $request = $self->_request_for( $method, $uri, $data );
+
+    if ($options) {
+        croak 'The key options must be a hashref' unless ref $options eq 'HASH';
+        croak 'The key prepare_request in the options hashref must be a coderef' if $options->{prepare_request} && ref $options->{prepare_request} ne 'CODE';
+
+        if ( $options->{prepare_request} ) {
+            $options->{prepare_request}->($request);
+        }
+    }
+
+    if ($params) {
+        croak 'The key params must be a hashref' unless ref $params eq 'HASH';
+        my %query = ( $request->uri->query_form, %$params );
+        $request->uri->query_form(%query);
+    }
+
+    my $response = $self->ua->request($request);
 
     return Pithub::Result->new(
         auto_pagination => $self->auto_pagination,
@@ -198,9 +244,21 @@ sub request {
     );
 }
 
+sub _build__json {
+    my ($self) = @_;
+    return JSON::Any->new;
+}
+
 sub _build_ua {
     my ($self) = @_;
     return LWP::UserAgent->new;
+}
+
+sub _get_user_repo_args {
+    my ( $self, $args ) = @_;
+    $args->{user} = $self->user unless defined $args->{user};
+    $args->{repo} = $self->repo unless defined $args->{repo};
+    return $args;
 }
 
 sub _merge_args {
@@ -226,14 +284,48 @@ sub _merge_args {
     if ( $self->has_jsonp_callback ) {
         $args{jsonp_callback} = $self->jsonp_callback;
     }
+    if ( $self->has_prepare_request ) {
+        $args{prepare_request} = $self->prepare_request;
+    }
     return ( %args, @args );
 }
 
-sub _prepare_request_args {
-    my ( $self, $method, $path, $data, $options ) = @_;
+sub _request_for {
+    my ( $self, $method, $uri, $data ) = @_;
 
-    croak 'Missing mandatory parameters: $method, $path' if scalar @_ < 3;
-    croak "Invalid method: ${method}" unless grep $_ eq $method, qw(DELETE GET PATCH POST PUT);
+    my $headers = HTTP::Headers->new;
+
+    if ( $self->has_token ) {
+        $headers->header( 'Authorization' => sprintf( 'token %s', $self->token ) );
+    }
+
+    my $request = HTTP::Request->new( $method, $uri, $headers );
+
+    if ($data) {
+        my $json = $self->_json->encode($data);
+        $request->content($json);
+    }
+
+    $request->header( 'Content-Length' => length $request->content );
+
+    if ( $self->has_prepare_request ) {
+        $self->prepare_request->($request);
+    }
+
+    return $request;
+}
+
+sub _token_required {
+    my ( $self, $method, $path ) = @_;
+    return 1 if grep $_ eq "${method} ${path}", @TOKEN_REQUIRED;
+    foreach my $regexp (@TOKEN_REQUIRED_REGEXP) {
+        return 1 if "${method} ${path}" =~ /$regexp/;
+    }
+    return 0;
+}
+
+sub _uri_for {
+    my ( $self, $path ) = @_;
 
     my $uri = $self->api_uri->clone;
     $uri->path($path);
@@ -248,48 +340,12 @@ sub _prepare_request_args {
         $uri->query_form(%query);
     }
 
-    if ($options) {
-        croak 'The parameter $options must be a hashref' unless ref $options eq 'HASH';
-        croak 'The key prepare_uri in the $options hashref must be a coderef' if $options->{prepare_uri} && ref $options->{prepare_uri} ne 'CODE';
-        $options->{prepare_uri}->($uri) if $options->{prepare_uri};
-    }
-
-    if ( $self->_token_required( $method, $path ) && !$self->has_token ) {
-        croak sprintf "Access token required for: %s %s (%s)", $method, $path, $uri;
-    }
-
-    my %args = (
-        uri    => $uri,
-        method => $method,
-        ua     => $self->ua,
-    );
-
-    $args{data}  = $data        if defined $data;
-    $args{token} = $self->token if $self->has_token;
-
-    return %args;
-}
-
-sub _prepare_response_args {
-    my ( $self, $request ) = @_;
-    my %args = ( request => $request );
-    $args{http_response} = $request->send;
-    return %args;
-}
-
-sub _token_required {
-    my ( $self, $method, $path ) = @_;
-    return 1 if grep $_ eq "${method} ${path}", @TOKEN_REQUIRED;
-    foreach my $regexp (@TOKEN_REQUIRED_REGEXP) {
-        return 1 if "${method} ${path}" =~ /$regexp/;
-    }
-    return 0;
+    return $uri;
 }
 
 sub _validate_user_repo_args {
     my ( $self, $args ) = @_;
-    $args->{user} = $self->user unless defined $args->{user};
-    $args->{repo} = $self->repo unless defined $args->{repo};
+    $args = $self->_get_user_repo_args($args);
     croak 'Missing key in parameters: user' unless $args->{user};
     croak 'Missing key in parameters: repo' unless $args->{repo};
 }
@@ -307,13 +363,53 @@ Pithub::Base - Github v3 base class for all Pithub modules
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 DESCRIPTION
 
-All L<Pithub/MODULES> inherit from L<Pithub::Base>, even L<Pithub>
-itself. So all attributes listed here can either be set in the
+All L<Pithub> L<modules|Pithub/MODULES> inherit from
+L<Pithub::Base>, even L<Pithub> itself. So all
+L<attributes|/ATTRIBUTES> listed here can either be set in the
 constructor or via the setter on the objects.
+
+If any attribute is set on a L<Pithub> object, it gets
+automatically set on objects, that get created by a method call on
+the L<Pithub> object. This is very convenient for attributes like
+the L</token> or the L</user> and L</repo> attributes.
+
+The L</user> and L</repo> attributes are special: They get even
+set on method calls that require B<both> of them. This is to reduce
+verbosity, especially if you want to do a lot of things on the
+same repo. This also works for other objects: If you create an
+object of L<Pithub::Repos> where you set the L</user> and L</repo>
+attribute in the constructor, this will also be set once you
+get to the L<Pithub::Repos::Keys> object via the C<< keys >> method.
+
+Examples:
+
+    # just to demonstrate the "magic"
+    print Pithub->new( user => 'plu' )->repos->user;          # plu
+    print Pithub::Repos->new( user => 'plu' )->keys->user;    # plu
+
+    # and now some real use cases
+    my $p = Pithub->new( user => 'plu', repo => 'Pithub' );
+    my $r = $p->repos;
+
+    print $r->user;    # plu
+    print $r->repo;    # pithub
+
+    # usually you would do
+    print $r->get( user => 'plu', repo => 'Pithub' )->content->{html_url};
+
+    # but since user + repo has been set already
+    print $r->get->content->{html_url};
+
+    # of course parameters to the method take precedence
+    print $r->get( user => 'miyagawa', repo => 'Plack' )->content->{html_url};
+
+    # it even works on other objects
+    my $repo = Pithub::Repos->new( user => 'plu', repo => 'Pithub' );
+    print $repo->watching->list->first->{login};
 
 =head1 ATTRIBUTES
 
@@ -327,9 +423,11 @@ Defaults to L<https://api.github.com>.
 
 Examples:
 
-    $users = Pithub::Users->new( api_uri => 'https://api-foo.github.com' );
+    my $users = Pithub::Users->new( api_uri => 'https://api-foo.github.com' );
 
-    $users = Pithub::Users->new;
+    # ... is the same as ...
+
+    my $users = Pithub::Users->new;
     $users->api_uri('https://api-foo.github.com');
 
 =head2 jsonp_callback
@@ -341,8 +439,8 @@ See also: L<http://developer.github.com/v3/#json-p-callbacks>.
 
 Examples:
 
-    $p = Pithub->new( jsonp_callback => 'loadGithubData' );
-    $result = $p->users->get( user => 'plu' );
+    my $p = Pithub->new( jsonp_callback => 'loadGithubData' );
+    my $result = $p->users->get( user => 'plu' );
     print $result->raw_content;
 
 The result will look like this:
@@ -367,6 +465,10 @@ B<Be careful:> The L<content|Pithub::Result/content> method will
 try to decode the JSON into a Perl data structure. This is not
 possible if the C<< jsonp_callback >> is set:
 
+    # calling this ...
+    print $result->content;
+
+    # ... will throw an exception like this ...
     Runtime error: malformed JSON string, neither array, object, number, string or atom,
     at character offset 0 (before "loadGithubData( ...
 
@@ -391,9 +493,11 @@ L<http://developer.github.com/v3/#pagination>.
 
 Examples:
 
-    $users = Pithub::Users->new( per_page => 100 );
+    my $users = Pithub::Users->new( per_page => 100 );
 
-    $users = Pithub::Users->new;
+    # ... is the same as ...
+
+    my $users = Pithub::Users->new;
     $users->per_page(100);
 
 There are two helper methods:
@@ -410,15 +514,73 @@ B<has_per_page>: check if the per_page attribute is set
 
 =back
 
-=head2 repo
+=head2 prepare_request
 
-This can be set as a default repo to use for API calls that require
-the repo parameter to be set.
+This is a CodeRef and can be used to modify the L<HTTP::Request>
+object on a global basis, before it's being sent to the Github
+API. It's useful for setting MIME types for example. See also:
+L<http://developer.github.com/v3/mimes/>. This is the right way
+to go if you want to modify the HTTP request of B<all> API
+calls. If you just want to change a few, consider sending the
+C<< prepare_request >> parameter on any method call.
+
+Let's use this example from the Github docs:
+
+B<Html>
+
+C<< application/vnd.github-issue.html+json >>
+
+Return html rendered from the body’s markdown. Response will
+include body_html.
 
 Examples:
 
-    $c = Pithub::Repos::Collaborators->new( repo => 'Pithub' );
-    $result = $c->list( user => 'plu' );
+    my $p = Pithub::Issues->new(
+        prepare_request => sub {
+            my ($request) = @_;
+            $request->header( Accept => 'application/vnd.github-issue.html+json' );
+        }
+    );
+
+    my $result = $p->get(
+        user     => 'miyagawa',
+        repo     => 'Plack',
+        issue_id => 209,
+    );
+
+    print $result->content->{body_html};
+
+Please compare to the solution where you set the custom HTTP header
+on the method call, instead globally on the object:
+
+    my $p = Pithub::Issues->new;
+
+    my $result = $p->get(
+        user     => 'miyagawa',
+        repo     => 'Plack',
+        issue_id => 209,
+        options  => {
+            prepare_request => sub {
+                my ($request) = @_;
+                $request->header( Accept => 'application/vnd.github-issue.html+json' );
+            },
+        }
+    );
+
+    print $result->content->{body_html};
+
+=head2 repo
+
+This can be set as a default repo to use for API calls that require
+the repo parameter to be set. There are many of them and it can get
+kind of verbose to include the repo and the user for all of the
+calls, especially if you want to do many operations on the same
+user/repo.
+
+Examples:
+
+    my $c = Pithub::Repos::Collaborators->new( repo => 'Pithub' );
+    my $result = $c->list( user => 'plu' );
 
 There are two helper methods:
 
@@ -454,8 +616,8 @@ the user parameter to be set.
 
 Examples:
 
-    $c = Pithub::Repos::Collaborators->new( user => 'plu' );
-    $result = $c->list( repo => 'Pithub' );
+    my $c = Pithub::Repos::Collaborators->new( user => 'plu' );
+    my $result = $c->list( repo => 'Pithub' );
 
 There are two helper methods:
 
@@ -471,12 +633,12 @@ B<has_user>: check if the user attribute is set
 
 =back
 
-It might makes sense to use this together with the repo attribute:
+It might make sense to use this together with the repo attribute:
 
-    $c = Pithub::Repos::Commits->new( user => 'plu', repo => 'Pithub' );
-    $result = $c->list;
-    $result = $c->list_comments;
-    $reuslt = $c->get('6b6127383666e8ecb41ec20a669e4f0552772363');
+    my $c = Pithub::Repos::Commits->new( user => 'plu', repo => 'Pithub' );
+    my $result = $c->list;
+    my $result = $c->list_comments;
+    my $result = $c->get('6b6127383666e8ecb41ec20a669e4f0552772363');
 
 =head1 METHODS
 
@@ -485,13 +647,13 @@ It might makes sense to use this together with the repo attribute:
 This method is the central point: All L<Pithub> are using this method
 for making requests to the Github. If Github adds a new API call that
 is not yet supported, this method can be used directly. It accepts
-following parameters:
+an hash with following keys:
 
 =over
 
 =item *
 
-B<$method>: mandatory string, one of the following:
+B<method>: mandatory string, one of the following:
 
 =over
 
@@ -519,20 +681,29 @@ PUT
 
 =item *
 
-B<$path>: mandatory string of the relative path used for making the
+B<path>: mandatory string of the relative path used for making the
 API call.
 
 =item *
 
-B<$data>: optional data reference, usually a reference to an array
+B<data>: optional data reference, usually a reference to an array
 or hash. It must be possible to serialize this using L<JSON::Any>.
 This will be the HTTP request body.
 
 =item *
 
-B<$options>: optional hash reference to set additional options on
-the request. So far only C<< prepare_uri >> is supported. See more
-about that in the examples below.
+B<options>: optional hash reference to set additional options on
+the request. So far C<< prepare_request >> is supported. See
+more about that in the examples below. So this can be used on
+B<every> method which maps directly to an API call.
+
+=item *
+
+B<params>: optional hash reference to set additional C<< GET >>
+parameters. This could be achieved using the C<< prepare_request >>
+in the C<< options >> hashref as well, but this is shorter. It's
+being used in L<list method of Pithub::Issues|Pithub::Issues/list>
+for example.
 
 =back
 
@@ -540,46 +711,72 @@ Usually you should not end up using this method at all. It's only
 available if L<Pithub> is missing anything from the Github v3 API.
 Though here are some examples how to use it:
 
+=over
+
+=item *
+
+Same as L<Pithub::Issues/list>:
+
+    my $p      = Pithub->new;
+    my $result = $p->request(
+        method => 'GET',
+        path   => '/repos/plu/Pithub/issues',
+        params => {
+            state     => 'closed',
+            direction => 'asc',
+        }
+    );
+
 =item *
 
 Same as L<Pithub::Users/get>:
 
-    $p = Pithub->new;
-    $result = $p->request( GET => '/users/plu' );
+    my $p = Pithub->new;
+    my $result = $p->request(
+        method => 'GET',
+        path   => '/users/plu',
+    );
+
+=item *
 
 Same as L<Pithub::Gists/create>:
 
-    $p      = Pithub->new;
-    $method = 'POST';
-    $path   = '/gists';
-    $data   = {
+    my $p      = Pithub->new;
+    my $method = 'POST';
+    my $path   = '/gists';
+    my $data   = {
         description => 'the description for this gist',
         public      => 1,
         files       => { 'file1.txt' => { content => 'String file content' } }
     };
-    $result = $p->request( $method, $path, $data );
+    my $result = $p->request(
+        method => $method,
+        path   => $path,
+        data   => $data,
+    );
+
+=item *
 
 Same as L<Pithub::GitData::Trees/get>:
 
-    $p       = Pithub->new;
-    $method  = 'GET';
-    $path    = '/repos/plu/Pithub/git/trees/aac667c5aaa6e49572894e8c722d0705bb00fab2';
-    $data    = undef;
-    $options = {
-        prepare_uri => sub {
-            my ($uri) = @_;
-            my %query = ( $uri->query_form, recursive => 1 );
-            $uri->query_form(%query);
+    my $p       = Pithub->new;
+    my $method  = 'GET';
+    my $path    = '/repos/miyagawa/Plack/issues/209';
+    my $data    = undef;
+    my $options = {
+        prepare_request => sub {
+            my ($request) = @_;
+            $request->header( Accept => 'application/vnd.github-issue.html+json' );
         },
     };
-    $result = $p->request( $method, $path, $data, $options );
+    my $result = $p->request(
+        method  => $method,
+        path    => $path,
+        data    => $data,
+        options => $options,
+    );
 
-Always be careful using C<< prepare_uri >> and C<< query_form >>. If
-the option L</per_page> is set, you might override the pagination
-parameter. That's the reason for this construct:
-
-    my %query = ( $uri->query_form, recursive => 1 );
-    $uri->query_form(%query);
+=back
 
 This method always returns a L<Pithub::Result> object.
 

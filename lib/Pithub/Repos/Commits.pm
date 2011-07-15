@@ -1,6 +1,6 @@
 package Pithub::Repos::Commits;
 BEGIN {
-  $Pithub::Repos::Commits::VERSION = '0.01003';
+  $Pithub::Repos::Commits::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Repo Commits API
@@ -16,7 +16,11 @@ sub create_comment {
     croak 'Missing key in parameters: sha' unless $args{sha};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/commits/%s/comments', $args{user}, $args{repo}, $args{sha} ), $args{data} );
+    return $self->request(
+        method => 'POST',
+        path   => sprintf( '/repos/%s/%s/commits/%s/comments', delete $args{user}, delete $args{repo}, delete $args{sha} ),
+        %args,
+    );
 }
 
 
@@ -24,7 +28,11 @@ sub delete_comment {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/comments/%s', $args{user}, $args{repo}, $args{comment_id} ) );
+    return $self->request(
+        method => 'DELETE',
+        path   => sprintf( '/repos/%s/%s/comments/%s', delete $args{user}, delete $args{repo}, delete $args{comment_id} ),
+        %args,
+    );
 }
 
 
@@ -32,7 +40,11 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: sha' unless $args{sha};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/commits/%s', $args{user}, $args{repo}, $args{sha} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/commits/%s', delete $args{user}, delete $args{repo}, delete $args{sha} ),
+        %args,
+    );
 }
 
 
@@ -40,24 +52,40 @@ sub get_comment {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/comments/%s', $args{user}, $args{repo}, $args{comment_id} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/comments/%s', delete $args{user}, delete $args{repo}, delete $args{comment_id} ),
+        %args,
+    );
 }
 
 
 sub list {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/commits', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/commits', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
 sub list_comments {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    if ( my $sha = $args{sha} ) {
-        return $self->request( GET => sprintf( '/repos/%s/%s/commits/%s/comments', $args{user}, $args{repo}, $sha ) );
+    if ( my $sha = delete $args{sha} ) {
+        return $self->request(
+            method => 'GET',
+            path   => sprintf( '/repos/%s/%s/commits/%s/comments', delete $args{user}, delete $args{repo}, $sha ),
+            %args,
+        );
     }
-    return $self->request( GET => sprintf( '/repos/%s/%s/comments', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/comments', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
@@ -66,7 +94,11 @@ sub update_comment {
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/comments/%s', $args{user}, $args{repo}, $args{comment_id} ), $args{data} );
+    return $self->request(
+        method => 'PATCH',
+        path   => sprintf( '/repos/%s/%s/comments/%s', delete $args{user}, delete $args{repo}, delete $args{comment_id} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -82,7 +114,7 @@ Pithub::Repos::Commits - Github v3 Repo Commits API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -98,7 +130,8 @@ Create a commit comment
 
 Examples:
 
-    $result = $p->repos->commits->create_comment(
+    my $c = Pithub::Repos::Commits->new;
+    my $result = $c->create_comment(
         user => 'plu',
         repo => 'Pithub',
         sha  => 'df21b2660fb6',
@@ -119,7 +152,8 @@ Delete a commit comment
 
 Examples:
 
-    $result = $p->repos->commits->delete_comment(
+    my $c = Pithub::Repos::Commits->new;
+    my $result = $c->delete_comment(
         user       => 'plu',
         repo       => 'Pithub',
         comment_id => 1,
@@ -139,7 +173,8 @@ Get a single commit
 
 Examples:
 
-    $result = $p->repos->commits->get(
+    my $c = Pithub::Repos::Commits->new;
+    my $result = $c->get(
         user => 'plu',
         repo => 'Pithub',
         sha  => 'df21b2660fb6',
@@ -159,7 +194,8 @@ Get a single commit comment
 
 Examples:
 
-    $result = $p->repos->commits->get_comment(
+    my $c = Pithub::Repos::Commits->new;
+    my $result = $c->get_comment(
         user       => 'plu',
         repo       => 'Pithub',
         comment_id => 1,
@@ -179,7 +215,8 @@ List commits on a repository
 
 Examples:
 
-    $result = $p->repos->commits->list(
+    my $c = Pithub::Repos::Commits->new;
+    my $result = $c->list(
         user => 'plu',
         repo => 'Pithub',
     );
@@ -202,7 +239,8 @@ L<http://developer.github.com/v3/mimes/>.
 
 Examples:
 
-    $result = $p->repos->commits->list_comments(
+    my $c = Pithub::Repos::Commits->new;
+    my $result = $c->list_comments(
         user => 'plu',
         repo => 'Pithub',
     );
@@ -215,7 +253,8 @@ List comments for a single commit
 
 Examples:
 
-    $result = $p->repos->commits->list_comments(
+    my $c = Pithub::Repos::Commits->new;
+    my $result = $c->list_comments(
         user => 'plu',
         repo => 'Pithub',
         sha  => 'df21b2660fb6',
@@ -235,7 +274,8 @@ Update a commit comment
 
 Examples:
 
-    $result = $p->repos->commits->update_comment(
+    my $c = Pithub::Repos::Commits->new;
+    my $result = $c->update_comment(
         user       => 'plu',
         repo       => 'Pithub',
         comment_id => 1,

@@ -1,6 +1,6 @@
 package Pithub::PullRequests;
 BEGIN {
-  $Pithub::PullRequests::VERSION = '0.01003';
+  $Pithub::PullRequests::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Pull Requests API
@@ -17,7 +17,11 @@ sub commits {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/%s/commits', $args{user}, $args{repo}, $args{pull_request_id} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/pulls/%s/commits', delete $args{user}, delete $args{repo}, delete $args{pull_request_id} ),
+        %args,
+    );
 }
 
 
@@ -25,7 +29,11 @@ sub create {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/pulls', $args{user}, $args{repo} ), $args{data} );
+    return $self->request(
+        method => 'POST',
+        path   => sprintf( '/repos/%s/%s/pulls', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
@@ -33,7 +41,11 @@ sub files {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/%s/files', $args{user}, $args{repo}, $args{pull_request_id} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/pulls/%s/files', delete $args{user}, delete $args{repo}, delete $args{pull_request_id} ),
+        %args,
+    );
 }
 
 
@@ -41,7 +53,11 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/%s', $args{user}, $args{repo}, $args{pull_request_id} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/pulls/%s', delete $args{user}, delete $args{repo}, delete $args{pull_request_id} ),
+        %args,
+    );
 }
 
 
@@ -49,14 +65,22 @@ sub is_merged {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/pulls/%s/merge', $args{user}, $args{repo}, $args{pull_request_id} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/pulls/%s/merge', delete $args{user}, delete $args{repo}, delete $args{pull_request_id} ),
+        %args,
+    );
 }
 
 
 sub list {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/pulls', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/pulls', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
@@ -64,7 +88,11 @@ sub merge {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PUT => sprintf( '/repos/%s/%s/pulls/%s/merge', $args{user}, $args{repo}, $args{pull_request_id} ) );
+    return $self->request(
+        method => 'PUT',
+        path   => sprintf( '/repos/%s/%s/pulls/%s/merge', delete $args{user}, delete $args{repo}, delete $args{pull_request_id} ),
+        %args,
+    );
 }
 
 
@@ -73,7 +101,11 @@ sub update {
     croak 'Missing key in parameters: pull_request_id' unless $args{pull_request_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/pulls/%s', $args{user}, $args{repo}, $args{pull_request_id} ), $args{data} );
+    return $self->request(
+        method => 'PATCH',
+        path   => sprintf( '/repos/%s/%s/pulls/%s', delete $args{user}, delete $args{repo}, delete $args{pull_request_id} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -89,7 +121,7 @@ Pithub::PullRequests - Github v3 Pull Requests API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -105,7 +137,8 @@ List commits on a pull request
 
 Examples:
 
-    $result = $p->pull_requests->commits(
+    my $p = Pithub::PullRequests->new;
+    my $result = $p->commits(
         user            => 'plu',
         repo            => 'Pithub',
         pull_request_id => 1
@@ -125,7 +158,8 @@ Create a pull request
 
 Examples:
 
-    $result = $p->pull_requests->create(
+    my $p = Pithub::PullRequests->new;
+    my $result = $p->create(
         user   => 'plu',
         repo => 'Pithub',
         data   => {
@@ -150,7 +184,8 @@ List pull requests files
 
 Examples:
 
-    $result = $p->pull_requests->files(
+    my $p = Pithub::PullRequests->new;
+    my $result = $p->files(
         user            => 'plu',
         repo            => 'Pithub',
         pull_request_id => 1,
@@ -170,7 +205,8 @@ Get a single pull request
 
 Examples:
 
-    $result = $p->pull_requests->get(
+    my $p = Pithub::PullRequests->new;
+    my $result = $p->get(
         user            => 'plu',
         repo            => 'Pithub',
         pull_request_id => 1,
@@ -190,7 +226,8 @@ Get if a pull request has been merged
 
 Examples:
 
-    $result = $p->pull_requests->is_merged(
+    my $p = Pithub::PullRequests->new;
+    my $result = $p->is_merged(
         user            => 'plu',
         repo            => 'Pithub',
         pull_request_id => 1,
@@ -210,7 +247,8 @@ List pull requests
 
 Examples:
 
-    $result = $p->pull_requests->list(
+    my $p = Pithub::PullRequests->new;
+    my $result = $p->list(
         user => 'plu',
         repo => 'Pithub'
     );
@@ -229,7 +267,8 @@ Merge a pull request
 
 Examples:
 
-    $result = $p->pull_requests->merge(
+    my $p = Pithub::PullRequests->new;
+    my $result = $p->merge(
         user            => 'plu',
         repo            => 'Pithub',
         pull_request_id => 1,
@@ -249,7 +288,8 @@ Update a pull request
 
 Examples:
 
-    $result = $p->pull_requests->update(
+    my $p = Pithub::PullRequests->new;
+    my $result = $p->update(
         user            => 'plu',
         repo            => 'Pithub',
         pull_request_id => 1,

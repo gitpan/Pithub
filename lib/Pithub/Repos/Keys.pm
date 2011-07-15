@@ -1,6 +1,6 @@
 package Pithub::Repos::Keys;
 BEGIN {
-  $Pithub::Repos::Keys::VERSION = '0.01003';
+  $Pithub::Repos::Keys::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Repo Keys API
@@ -15,7 +15,11 @@ sub create {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/keys', $args{user}, $args{repo} ), $args{data} );
+    return $self->request(
+        method => 'POST',
+        path   => sprintf( '/repos/%s/%s/keys', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
@@ -23,7 +27,11 @@ sub delete {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: key_id' unless $args{key_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/keys/%s', $args{user}, $args{repo}, $args{key_id} ) );
+    return $self->request(
+        method => 'DELETE',
+        path   => sprintf( '/repos/%s/%s/keys/%s', delete $args{user}, delete $args{repo}, delete $args{key_id} ),
+        %args,
+    );
 }
 
 
@@ -31,14 +39,22 @@ sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: key_id' unless $args{key_id};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/keys/%s', $args{user}, $args{repo}, $args{key_id} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/keys/%s', delete $args{user}, delete $args{repo}, delete $args{key_id} ),
+        %args,
+    );
 }
 
 
 sub list {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/keys', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/keys', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
@@ -47,7 +63,11 @@ sub update {
     croak 'Missing key in parameters: key_id' unless $args{key_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/keys/%s', $args{user}, $args{repo}, $args{key_id} ), $args{data} );
+    return $self->request(
+        method => 'PATCH',
+        path   => sprintf( '/repos/%s/%s/keys/%s', delete $args{user}, delete $args{repo}, delete $args{key_id} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -63,7 +83,7 @@ Pithub::Repos::Keys - Github v3 Repo Keys API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -79,7 +99,8 @@ Create
 
 Examples:
 
-    $result = $p->repos->keys->create(
+    my $k = Pithub::Repos::Keys->new;
+    my $result = $k->create(
         user => 'plu',
         repo => 'Pithub',
         data => {
@@ -102,7 +123,8 @@ Delete
 
 Examples:
 
-    $result = $p->repos->keys->delete(
+    my $k = Pithub::Repos::Keys->new;
+    my $result = $k->delete(
         user   => 'plu',
         repo   => 'Pithub',
         key_id => 1,
@@ -122,7 +144,8 @@ Get
 
 Examples:
 
-    $result = $p->repos->keys->get(
+    my $k = Pithub::Repos::Keys->new;
+    my $result = $k->get(
         user   => 'plu',
         repo   => 'Pithub',
         key_id => 1,
@@ -142,7 +165,8 @@ List
 
 Examples:
 
-    $result = $p->repos->keys->list(
+    my $k = Pithub::Repos::Keys->new;
+    my $result = $k->list(
         user => 'plu',
         repo => 'Pithub',
     );
@@ -161,7 +185,8 @@ Edit
 
 Examples:
 
-    $result = $p->repos->keys->update(
+    my $k = Pithub::Repos::Keys->new;
+    my $result = $k->update(
         user   => 'plu',
         repo   => 'Pithub',
         key_id => 1,

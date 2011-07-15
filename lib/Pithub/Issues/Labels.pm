@@ -1,6 +1,6 @@
 package Pithub::Issues::Labels;
 BEGIN {
-  $Pithub::Issues::Labels::VERSION = '0.01003';
+  $Pithub::Issues::Labels::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Issue Labels API
@@ -16,7 +16,11 @@ sub add {
     croak 'Missing key in parameters: issue_id' unless $args{issue_id};
     croak 'Missing key in parameters: data (arrayref)' unless ref $args{data} eq 'ARRAY';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/issues/%s/labels', $args{user}, $args{repo}, $args{issue_id} ), $args{data} );
+    return $self->request(
+        method => 'POST',
+        path   => sprintf( '/repos/%s/%s/issues/%s/labels', delete $args{user}, delete $args{repo}, delete $args{issue_id} ),
+        %args,
+    );
 }
 
 
@@ -24,36 +28,60 @@ sub create {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( POST => sprintf( '/repos/%s/%s/labels', $args{user}, $args{repo} ), $args{data} );
+    return $self->request(
+        method => 'POST',
+        path   => sprintf( '/repos/%s/%s/labels', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
 sub delete {
     my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: label_id' unless $args{label_id};
+    croak 'Missing key in parameters: label' unless $args{label};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/labels/%s', $args{user}, $args{repo}, $args{label_id} ) );
+    return $self->request(
+        method => 'DELETE',
+        path   => sprintf( '/repos/%s/%s/labels/%s', delete $args{user}, delete $args{repo}, delete $args{label} ),
+        %args,
+    );
 }
 
 
 sub get {
     my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: label_id' unless $args{label_id};
+    croak 'Missing key in parameters: label' unless $args{label};
     $self->_validate_user_repo_args( \%args );
-    return $self->request( GET => sprintf( '/repos/%s/%s/labels/%s', $args{user}, $args{repo}, $args{label_id} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/labels/%s', delete $args{user}, delete $args{repo}, delete $args{label} ),
+        %args,
+    );
 }
 
 
 sub list {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
-    if ( my $milestone_id = $args{milestone_id} ) {
-        return $self->request( GET => sprintf( '/repos/%s/%s/milestones/%s/labels', $args{user}, $args{repo}, $milestone_id ) );
+    if ( my $milestone_id = delete $args{milestone_id} ) {
+        return $self->request(
+            method => 'GET',
+            path   => sprintf( '/repos/%s/%s/milestones/%s/labels', delete $args{user}, delete $args{repo}, $milestone_id ),
+            %args,
+        );
     }
-    elsif ( my $issue_id = $args{issue_id} ) {
-        return $self->request( GET => sprintf( '/repos/%s/%s/issues/%s/labels', $args{user}, $args{repo}, $issue_id ) );
+    elsif ( my $issue_id = delete $args{issue_id} ) {
+        return $self->request(
+            method => 'GET',
+            path   => sprintf( '/repos/%s/%s/issues/%s/labels', delete $args{user}, delete $args{repo}, $issue_id ),
+            %args
+        );
     }
-    return $self->request( GET => sprintf( '/repos/%s/%s/labels', $args{user}, $args{repo} ) );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/labels', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
 }
 
 
@@ -61,10 +89,18 @@ sub remove {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
     croak 'Missing key in parameters: issue_id' unless $args{issue_id};
-    if ( my $label_id = $args{label_id} ) {
-        return $self->request( DELETE => sprintf( '/repos/%s/%s/issues/%s/labels/%s', $args{user}, $args{repo}, $args{issue_id}, $label_id ) );
+    if ( my $label = delete $args{label} ) {
+        return $self->request(
+            method => 'DELETE',
+            path   => sprintf( '/repos/%s/%s/issues/%s/labels/%s', delete $args{user}, delete $args{repo}, delete $args{issue_id}, $label ),
+            %args,
+        );
     }
-    return $self->request( DELETE => sprintf( '/repos/%s/%s/issues/%s/labels', $args{user}, $args{repo}, $args{issue_id} ) );
+    return $self->request(
+        method => 'DELETE',
+        path   => sprintf( '/repos/%s/%s/issues/%s/labels', delete $args{user}, delete $args{repo}, delete $args{issue_id} ),
+        %args,
+    );
 }
 
 
@@ -73,16 +109,24 @@ sub replace {
     croak 'Missing key in parameters: issue_id' unless $args{issue_id};
     croak 'Missing key in parameters: data (arrayref)' unless ref $args{data} eq 'ARRAY';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PUT => sprintf( '/repos/%s/%s/issues/%s/labels', $args{user}, $args{repo}, $args{issue_id} ), $args{data} );
+    return $self->request(
+        method => 'PUT',
+        path   => sprintf( '/repos/%s/%s/issues/%s/labels', delete $args{user}, delete $args{repo}, delete $args{issue_id} ),
+        %args,
+    );
 }
 
 
 sub update {
     my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: label_id' unless $args{label_id};
+    croak 'Missing key in parameters: label' unless $args{label};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     $self->_validate_user_repo_args( \%args );
-    return $self->request( PATCH => sprintf( '/repos/%s/%s/labels/%s', $args{user}, $args{repo}, $args{label_id} ), $args{data} );
+    return $self->request(
+        method => 'PATCH',
+        path   => sprintf( '/repos/%s/%s/labels/%s', delete $args{user}, delete $args{repo}, delete $args{label} ),
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -98,7 +142,7 @@ Pithub::Issues::Labels - Github v3 Issue Labels API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -114,7 +158,8 @@ Add labels to an issue
 
 Examples:
 
-    $result = $p->issues->labels->add(
+    my $l = Pithub::Issues::Labels->new;
+    my $result = $l->add(
         repo     => 'Pithub',
         user     => 'plu',
         issue_id => 1,
@@ -135,7 +180,8 @@ Create a label
 
 Examples:
 
-    $result = $p->issues->labels->create(
+    my $l = Pithub::Issues::Labels->new;
+    my $result = $l->create(
         repo => 'Pithub',
         user => 'plu',
         data => {
@@ -158,10 +204,11 @@ Delete a label
 
 Examples:
 
-    $result = $p->issues->labels->delete(
+    my $l = Pithub::Issues::Labels->new;
+    my $result = $l->delete(
         repo     => 'Pithub',
         user     => 'plu',
-        label_id => 1,
+        label => 1,
     );
 
 =back
@@ -178,10 +225,11 @@ Get a single label
 
 Examples:
 
-    $result = $p->issues->labels->get(
+    my $l = Pithub::Issues::Labels->new;
+    my $result = $l->get(
         repo => 'Pithub',
         user => 'plu',
-        label_id => 1,
+        label => 1,
     );
 
 =back
@@ -198,7 +246,8 @@ List all labels for this repository
 
 Examples:
 
-    $result = $p->issues->labels->list(
+    my $l = Pithub::Issues::Labels->new;
+    my $result = $l->list(
         repo => 'Pithub',
         user => 'plu'
     );
@@ -211,7 +260,8 @@ List labels on an issue
 
 Examples:
 
-    $result = $p->issues->labels->list(
+    my $l = Pithub::Issues::Labels->new;
+    my $result = $l->list(
         repo     => 'Pithub',
         user     => 'plu',
         issue_id => 1,
@@ -225,7 +275,8 @@ Get labels for every issue in a milestone
 
 Examples:
 
-    $result = $p->issues->labels->get(
+    my $l = Pithub::Issues::Labels->new;
+    my $result = $l->get(
         repo         => 'Pithub',
         user         => 'plu',
         milestone_id => 1
@@ -245,11 +296,12 @@ Remove a label from an issue
 
 Examples:
 
-    $result = $p->issues->labels->delete(
+    my $l = Pithub::Issues::Labels->new;
+    my $result = $l->delete(
         repo     => 'Pithub',
         user     => 'plu',
         issue_id => 1,
-        label_id => 1,
+        label => 1,
     );
 
 =item *
@@ -260,7 +312,8 @@ Remove all labels from an issue
 
 Examples:
 
-    $result = $p->issues->labels->delete(
+    my $l = Pithub::Issues::Labels->new;
+    my $result = $l->delete(
         repo     => 'Pithub',
         user     => 'plu',
         issue_id => 1,
@@ -280,7 +333,8 @@ Replace all labels for an issue
 
 Examples:
 
-    $result = $p->issues->labels->replace(
+    my $l = Pithub::Issues::Labels->new;
+    my $result = $l->replace(
         repo     => 'Pithub',
         user     => 'plu',
         issue_id => 1,
@@ -301,10 +355,11 @@ Update a label
 
 Examples:
 
-    $result = $p->issues->labels->update(
+    my $l = Pithub::Issues::Labels->new;
+    my $result = $l->update(
         repo     => 'Pithub',
         user     => 'plu',
-        label_id => 1,
+        label => 1,
         data     => {
             color => 'FFFFFF',
             name  => 'API',

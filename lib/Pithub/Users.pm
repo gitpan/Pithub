@@ -1,6 +1,6 @@
 package Pithub::Users;
 BEGIN {
-  $Pithub::Users::VERSION = '0.01003';
+  $Pithub::Users::VERSION = '0.01004';
 }
 
 # ABSTRACT: Github v3 Users API
@@ -18,16 +18,28 @@ around qr{^merge_.*?_args$}          => \&Pithub::Base::_merge_args;
 sub get {
     my ( $self, %args ) = @_;
     if ( $args{user} ) {
-        return $self->request( GET => sprintf( '/users/%s', $args{user} ) );
+        return $self->request(
+            method => 'GET',
+            path   => sprintf( '/users/%s', delete $args{user} ),
+            %args,
+        );
     }
-    return $self->request( GET => '/user' );
+    return $self->request(
+        method => 'GET',
+        path   => '/user',
+        %args,
+    );
 }
 
 
 sub update {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    return $self->request( PATCH => '/user', $args{data} );
+    return $self->request(
+        method => 'PATCH',
+        path   => '/user',
+        %args,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -43,7 +55,7 @@ Pithub::Users - Github v3 Users API
 
 =head1 VERSION
 
-version 0.01003
+version 0.01004
 
 =head1 METHODS
 
@@ -59,11 +71,8 @@ Get a single user
 
 Examples:
 
-    $p = Pithub->new;
-    $result = $p->users->get( user => 'plu');
-
-    $u = Pithub::Users->new;
-    $result = $u->get( user => 'plu');
+    my $u = Pithub::Users->new;
+    my $result = $u->get( user => 'plu');
 
 =item *
 
@@ -73,11 +82,8 @@ Get the authenticated user
 
 Examples:
 
-    $p = Pithub->new( token => 'b3c62c6' );
-    $result = $p->users->get;
-
-    $u = Pithub::Users->new( token => 'b3c62c6' );
-    $result = $u->get;
+    my $u = Pithub::Users->new( token => 'b3c62c6' );
+    my $result = $u->get;
 
 =back
 
@@ -93,11 +99,8 @@ Update the authenticated user
 
 Examples:
 
-    $p = Pithub->new( token => 'b3c62c6' );
-    $result = $p->users->update( data => { email => 'plu@cpan.org' } );
-
-    $u = Pithub::Users->new( token => 'b3c62c6' );
-    $result = $u->update( data => { email => 'plu@cpan.org' } );
+    my $u = Pithub::Users->new( token => 'b3c62c6' );
+    my $result = $u->update( data => { email => 'plu@cpan.org' } );
 
 =back
 
