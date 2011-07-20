@@ -1,13 +1,12 @@
 package Pithub::GitData::Tags;
 BEGIN {
-  $Pithub::GitData::Tags::VERSION = '0.01004';
+  $Pithub::GitData::Tags::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 Git Data Tags API
 
-use Moose;
+use Moo;
 use Carp qw(croak);
-use namespace::autoclean;
 extends 'Pithub::Base';
 
 
@@ -34,8 +33,6 @@ sub get {
     );
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -47,7 +44,7 @@ Pithub::GitData::Tags - Github v3 Git Data Tags API
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 DESCRIPTION
 

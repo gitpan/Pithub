@@ -1,42 +1,39 @@
 package Pithub::Base;
 BEGIN {
-  $Pithub::Base::VERSION = '0.01004';
+  $Pithub::Base::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 base class for all Pithub modules
 
-use Moose;
+use Moo;
 use Carp qw(croak);
 use HTTP::Headers;
 use HTTP::Request;
 use JSON::Any;
 use LWP::UserAgent;
-use MooseX::Types::URI qw(Uri);
 use Pithub::Result;
 use URI;
-use namespace::autoclean;
 
 
 has 'auto_pagination' => (
     default => 0,
     is      => 'rw',
-    isa     => 'Bool',
 );
 
 
 has 'api_uri' => (
-    coerce   => 1,
-    default  => 'https://api.github.com',
+    default  => sub { URI->new('https://api.github.com') },
     is       => 'rw',
-    isa      => Uri,
-    required => 1,
+    trigger  => sub {
+        my ( $self, $uri ) = @_;
+        $self->{api_uri} = URI->new("$uri");
+    },
 );
 
 
 has 'jsonp_callback' => (
     clearer   => 'clear_jsonp_callback',
     is        => 'rw',
-    isa       => 'Str',
     predicate => 'has_jsonp_callback',
     required  => 0,
 );
@@ -45,7 +42,6 @@ has 'jsonp_callback' => (
 has 'per_page' => (
     clearer   => 'clear_per_page',
     is        => 'rw',
-    isa       => 'Int',
     predicate => 'has_per_page',
     required  => 0,
 );
@@ -54,7 +50,6 @@ has 'per_page' => (
 has 'prepare_request' => (
     clearer   => 'clear_prepare_request',
     is        => 'rw',
-    isa       => 'CodeRef',
     predicate => 'has_prepare_request',
     required  => 0,
 );
@@ -63,7 +58,6 @@ has 'prepare_request' => (
 has 'repo' => (
     clearer   => 'clear_repo',
     is        => 'rw',
-    isa       => 'Str',
     predicate => 'has_repo',
     required  => 0,
 );
@@ -72,31 +66,29 @@ has 'repo' => (
 has 'token' => (
     clearer   => 'clear_token',
     is        => 'rw',
-    isa       => 'Str',
     predicate => 'has_token',
     required  => 0,
 );
 
 
 has 'ua' => (
-    is         => 'ro',
-    isa        => 'Object',
-    lazy_build => 1,
+    builder => '_build_ua',
+    is      => 'ro',
+    lazy    => 1,
 );
 
 
 has 'user' => (
     clearer   => 'clear_user',
     is        => 'rw',
-    isa       => 'Str',
     predicate => 'has_user',
     required  => 0,
 );
 
 has '_json' => (
-    is         => 'ro',
-    isa        => 'JSON::Any',
-    lazy_build => 1,
+    builder => '_build__json',
+    is      => 'ro',
+    lazy    => 1,
 );
 
 my @TOKEN_REQUIRED = (
@@ -261,9 +253,8 @@ sub _get_user_repo_args {
     return $args;
 }
 
-sub _merge_args {
-    my ( $orig, $self ) = @_;
-    my @args = $self->$orig;
+sub _create_instance {
+    my ( $self, $class ) = @_;
     my %args = (
         api_uri         => $self->api_uri,
         auto_pagination => $self->auto_pagination,
@@ -287,7 +278,7 @@ sub _merge_args {
     if ( $self->has_prepare_request ) {
         $args{prepare_request} = $self->prepare_request;
     }
-    return ( %args, @args );
+    return $class->new(%args);
 }
 
 sub _request_for {
@@ -350,8 +341,6 @@ sub _validate_user_repo_args {
     croak 'Missing key in parameters: repo' unless $args->{repo};
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -363,7 +352,7 @@ Pithub::Base - Github v3 base class for all Pithub modules
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 DESCRIPTION
 
@@ -530,7 +519,7 @@ B<Html>
 
 C<< application/vnd.github-issue.html+json >>
 
-Return html rendered from the body’s markdown. Response will
+Return html rendered from the body's markdown. Response will
 include body_html.
 
 Examples:

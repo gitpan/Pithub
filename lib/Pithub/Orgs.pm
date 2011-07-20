@@ -1,17 +1,23 @@
 package Pithub::Orgs;
 BEGIN {
-  $Pithub::Orgs::VERSION = '0.01004';
+  $Pithub::Orgs::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 Orgs API
 
-use Moose;
+use Moo;
 use Carp qw(croak);
-use namespace::autoclean;
+use Pithub::Orgs::Members;
+use Pithub::Orgs::Teams;
 extends 'Pithub::Base';
-with 'MooseX::Role::BuildInstanceOf' => { target => '::Members' };
-with 'MooseX::Role::BuildInstanceOf' => { target => '::Teams' };
-around qr{^merge_.*?_args$}          => \&Pithub::Base::_merge_args;
+
+sub members {
+    return shift->_create_instance('Pithub::Orgs::Members');
+}
+
+sub teams {
+    return shift->_create_instance('Pithub::Orgs::Teams');
+}
 
 
 sub get {
@@ -53,8 +59,6 @@ sub update {
     );
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -66,7 +70,7 @@ Pithub::Orgs - Github v3 Orgs API
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 METHODS
 

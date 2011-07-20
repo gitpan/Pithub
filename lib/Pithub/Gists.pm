@@ -1,16 +1,18 @@
 package Pithub::Gists;
 BEGIN {
-  $Pithub::Gists::VERSION = '0.01004';
+  $Pithub::Gists::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 Gists API
 
-use Moose;
+use Moo;
 use Carp qw(croak);
-use namespace::autoclean;
+use Pithub::Gists::Comments
 extends 'Pithub::Base';
-with 'MooseX::Role::BuildInstanceOf' => { target => '::Comments' };
-around qr{^merge_.*?_args$} => \&Pithub::Base::_merge_args;
+
+sub comments {
+    return shift->_create_instance('Pithub::Gists::Comments');
+}
 
 
 sub create {
@@ -132,8 +134,6 @@ sub update {
     );
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -145,7 +145,7 @@ Pithub::Gists - Github v3 Gists API
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 METHODS
 
@@ -469,7 +469,7 @@ Response: C<< Status: 204 No Content >> / C<< Status: 404 Not Found >>
 
 =item *
 
-List a user’s gists:
+List a user's gists:
 
     GET /users/:user/gists
 
@@ -495,7 +495,7 @@ Examples:
 
 =item *
 
-List the authenticated user’s gists or if called anonymously,
+List the authenticated user's gists or if called anonymously,
 this will returns all public gists:
 
     GET /gists
@@ -528,7 +528,7 @@ Examples:
 
 =item *
 
-List the authenticated user’s starred gists:
+List the authenticated user's starred gists:
 
     GET /gists/starred
 

@@ -1,13 +1,12 @@
 package Pithub::GitData::References;
 BEGIN {
-  $Pithub::GitData::References::VERSION = '0.01004';
+  $Pithub::GitData::References::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 Git Data References API
 
-use Moose;
+use Moo;
 use Carp qw(croak);
-use namespace::autoclean;
 extends 'Pithub::Base';
 
 
@@ -65,8 +64,6 @@ sub update {
     );
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -78,7 +75,7 @@ Pithub::GitData::References - Github v3 Git Data References API
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 METHODS
 
@@ -113,7 +110,7 @@ B<data>: mandatory hashref, having following keys:
 =item *
 
 B<ref>: mandatory string of the name of the fully qualified
-reference (ie: refs/heads/master). If it doesn’t start with
+reference (ie: refs/heads/master). If it doesn't start with
 'refs' and have at least two slashes, it will be rejected.
 
 =item *
@@ -332,7 +329,7 @@ reference to.
 B<force>: optional boolean indicating whether to force the update or
 to make sure the update is a fast-forward update. The default is
 C<< false >> so leaving this out or setting it to C<< false >> will
-make sure you’re not overwriting work.
+make sure you're not overwriting work.
 
 =back
 

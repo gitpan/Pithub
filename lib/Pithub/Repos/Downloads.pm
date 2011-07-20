@@ -1,14 +1,13 @@
 package Pithub::Repos::Downloads;
 BEGIN {
-  $Pithub::Repos::Downloads::VERSION = '0.01004';
+  $Pithub::Repos::Downloads::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 Repo Downloads API
 
-use Moose;
+use Moo;
 use Carp qw(croak);
 use HTTP::Request::Common qw(POST);
-use namespace::autoclean;
 extends 'Pithub::Base';
 
 
@@ -85,8 +84,6 @@ sub upload {
     return $self->ua->request($request);
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -98,7 +95,7 @@ Pithub::Repos::Downloads - Github v3 Repo Downloads API
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 METHODS
 

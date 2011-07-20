@@ -1,13 +1,12 @@
 package Pithub::Repos::Keys;
 BEGIN {
-  $Pithub::Repos::Keys::VERSION = '0.01004';
+  $Pithub::Repos::Keys::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 Repo Keys API
 
-use Moose;
+use Moo;
 use Carp qw(croak);
-use namespace::autoclean;
 extends 'Pithub::Base';
 
 
@@ -70,8 +69,6 @@ sub update {
     );
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -83,7 +80,7 @@ Pithub::Repos::Keys - Github v3 Repo Keys API
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 METHODS
 

@@ -21,7 +21,6 @@ name: Pithub
 requires:
   Array::Iterator: 0
   Carp: 0
-  Class::MOP: 0
   HTTP::Headers: 0
   HTTP::Message: 0
   HTTP::Request: 0
@@ -30,15 +29,12 @@ requires:
   JSON::XS: 0
   LWP::Protocol::https: 0
   LWP::UserAgent: 0
-  Moose: 0
-  MooseX::Role::BuildInstanceOf: 0
-  MooseX::Types::URI: 0
+  Moo: 0
   URI: 0
-  namespace::autoclean: 0
 resources:
   homepage: http://github.com/plu/Pithub
   repository: http://github.com/plu/Pithub
-version: 0.01004
+version: 0.01005
 x_Dist_Zilla:
   plugins:
     -

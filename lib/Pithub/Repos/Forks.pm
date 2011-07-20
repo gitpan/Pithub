@@ -1,13 +1,12 @@
 package Pithub::Repos::Forks;
 BEGIN {
-  $Pithub::Repos::Forks::VERSION = '0.01004';
+  $Pithub::Repos::Forks::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 Repo Forks API
 
-use Moose;
+use Moo;
 use Carp qw(croak);
-use namespace::autoclean;
 extends 'Pithub::Base';
 
 
@@ -40,8 +39,6 @@ sub list {
     );
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -53,7 +50,7 @@ Pithub::Repos::Forks - Github v3 Repo Forks API
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 METHODS
 

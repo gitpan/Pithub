@@ -1,13 +1,12 @@
 package Pithub::PullRequests::Comments;
 BEGIN {
-  $Pithub::PullRequests::Comments::VERSION = '0.01004';
+  $Pithub::PullRequests::Comments::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 Pull Request Comments API
 
-use Moose;
+use Moo;
 use Carp qw(croak);
-use namespace::autoclean;
 extends 'Pithub::Base';
 
 
@@ -72,8 +71,6 @@ sub update {
     );
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -85,7 +82,7 @@ Pithub::PullRequests::Comments - Github v3 Pull Request Comments API
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 METHODS
 

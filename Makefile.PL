@@ -29,7 +29,6 @@ my %WriteMakefileArgs = (
   'PREREQ_PM' => {
     'Array::Iterator' => '0',
     'Carp' => '0',
-    'Class::MOP' => '0',
     'HTTP::Headers' => '0',
     'HTTP::Message' => '0',
     'HTTP::Request' => '0',
@@ -38,13 +37,10 @@ my %WriteMakefileArgs = (
     'JSON::XS' => '0',
     'LWP::Protocol::https' => '0',
     'LWP::UserAgent' => '0',
-    'Moose' => '0',
-    'MooseX::Role::BuildInstanceOf' => '0',
-    'MooseX::Types::URI' => '0',
-    'URI' => '0',
-    'namespace::autoclean' => '0'
+    'Moo' => '0',
+    'URI' => '0'
   },
-  'VERSION' => '0.01004',
+  'VERSION' => '0.01005',
   'test' => {
     'TESTS' => 't/*.t t/live/*.t'
   }

@@ -1,13 +1,12 @@
 package Pithub::Users::Followers;
 BEGIN {
-  $Pithub::Users::Followers::VERSION = '0.01004';
+  $Pithub::Users::Followers::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 User Followers API
 
-use Moose;
+use Moo;
 use Carp qw(croak);
-use namespace::autoclean;
 extends 'Pithub::Base';
 
 
@@ -77,8 +76,6 @@ sub unfollow {
     );
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -90,7 +87,7 @@ Pithub::Users::Followers - Github v3 User Followers API
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 METHODS
 

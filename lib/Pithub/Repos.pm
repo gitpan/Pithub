@@ -1,21 +1,43 @@
 package Pithub::Repos;
 BEGIN {
-  $Pithub::Repos::VERSION = '0.01004';
+  $Pithub::Repos::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 Repos API
 
-use Moose;
+use Moo;
 use Carp qw(croak);
-use namespace::autoclean;
+use Pithub::Repos::Collaborators;
+use Pithub::Repos::Commits;
+use Pithub::Repos::Downloads;
+use Pithub::Repos::Forks;
+use Pithub::Repos::Keys;
+use Pithub::Repos::Watching;
 extends 'Pithub::Base';
-with 'MooseX::Role::BuildInstanceOf' => { target => '::Collaborators' };
-with 'MooseX::Role::BuildInstanceOf' => { target => '::Commits' };
-with 'MooseX::Role::BuildInstanceOf' => { target => '::Downloads' };
-with 'MooseX::Role::BuildInstanceOf' => { target => '::Forks' };
-with 'MooseX::Role::BuildInstanceOf' => { target => '::Keys' };
-with 'MooseX::Role::BuildInstanceOf' => { target => '::Watching' };
-around qr{^merge_.*?_args$}          => \&Pithub::Base::_merge_args;
+
+sub collaborators {
+    return shift->_create_instance('Pithub::Repos::Collaborators');
+}
+
+sub commits {
+    return shift->_create_instance('Pithub::Repos::Commits');
+}
+
+sub downloads {
+    return shift->_create_instance('Pithub::Repos::Downloads');
+}
+
+sub forks {
+    return shift->_create_instance('Pithub::Repos::Forks');
+}
+
+sub keys {
+    return shift->_create_instance('Pithub::Repos::Keys');
+}
+
+sub watching {
+    return shift->_create_instance('Pithub::Repos::Watching');
+}
 
 
 sub branches {
@@ -141,8 +163,6 @@ sub update {
     );
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -154,7 +174,7 @@ Pithub::Repos - Github v3 Repos API
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 METHODS
 

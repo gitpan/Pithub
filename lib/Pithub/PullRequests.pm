@@ -1,16 +1,18 @@
 package Pithub::PullRequests;
 BEGIN {
-  $Pithub::PullRequests::VERSION = '0.01004';
+  $Pithub::PullRequests::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 Pull Requests API
 
-use Moose;
+use Moo;
 use Carp qw(croak);
-use namespace::autoclean;
+use Pithub::PullRequests::Comments;
 extends 'Pithub::Base';
-with 'MooseX::Role::BuildInstanceOf' => { target => '::Comments' };
-around qr{^merge_.*?_args$} => \&Pithub::Base::_merge_args;
+
+sub comments {
+    return shift->_create_instance('Pithub::PullRequests::Comments');
+}
 
 
 sub commits {
@@ -108,8 +110,6 @@ sub update {
     );
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -121,7 +121,7 @@ Pithub::PullRequests - Github v3 Pull Requests API
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 METHODS
 

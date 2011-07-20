@@ -1,13 +1,12 @@
 package Pithub::Orgs::Members;
 BEGIN {
-  $Pithub::Orgs::Members::VERSION = '0.01004';
+  $Pithub::Orgs::Members::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 Org Members API
 
-use Moose;
+use Moo;
 use Carp qw(croak);
-use namespace::autoclean;
 extends 'Pithub::Base';
 
 
@@ -92,8 +91,6 @@ sub publicize {
     );
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -105,7 +102,7 @@ Pithub::Orgs::Members - Github v3 Org Members API
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 METHODS
 
@@ -136,7 +133,7 @@ Examples:
 =item *
 
 Removing a user from this list will remove them from all teams and
-they will no longer have any access to the organization’s
+they will no longer have any access to the organization's
 repositories.
 
     DELETE /orgs/:org/members/:user

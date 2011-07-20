@@ -1,19 +1,33 @@
 package Pithub::Issues;
 BEGIN {
-  $Pithub::Issues::VERSION = '0.01004';
+  $Pithub::Issues::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 Issues API
 
-use Moose;
+use Moo;
 use Carp qw(croak);
-use namespace::autoclean;
+use Pithub::Issues::Comments;
+use Pithub::Issues::Events;
+use Pithub::Issues::Labels;
+use Pithub::Issues::Milestones;
 extends 'Pithub::Base';
-with 'MooseX::Role::BuildInstanceOf' => { target => '::Comments' };
-with 'MooseX::Role::BuildInstanceOf' => { target => '::Events' };
-with 'MooseX::Role::BuildInstanceOf' => { target => '::Labels' };
-with 'MooseX::Role::BuildInstanceOf' => { target => '::Milestones' };
-around qr{^merge_.*?_args$}          => \&Pithub::Base::_merge_args;
+
+sub comments {
+    return shift->_create_instance('Pithub::Issues::Comments');
+}
+
+sub events {
+    return shift->_create_instance('Pithub::Issues::Events');
+}
+
+sub labels {
+    return shift->_create_instance('Pithub::Issues::Labels');
+}
+
+sub milestones {
+    return shift->_create_instance('Pithub::Issues::Milestones');
+}
 
 
 sub create {
@@ -70,8 +84,6 @@ sub update {
     );
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -83,7 +95,7 @@ Pithub::Issues - Github v3 Issues API
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 METHODS
 
@@ -345,7 +357,7 @@ B<mentioned>: Issues mentioning you
 
 =item *
 
-B<subscribed>: Issues you’re subscribed to updates for
+B<subscribed>: Issues you're subscribed to updates for
 
 =back
 

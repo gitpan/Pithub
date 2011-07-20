@@ -1,13 +1,12 @@
 package Pithub::Users::Keys;
 BEGIN {
-  $Pithub::Users::Keys::VERSION = '0.01004';
+  $Pithub::Users::Keys::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 User Keys API
 
-use Moose;
+use Moo;
 use Carp qw(croak);
-use namespace::autoclean;
 extends 'Pithub::Base';
 
 
@@ -65,8 +64,6 @@ sub update {
     );
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -78,7 +75,7 @@ Pithub::Users::Keys - Github v3 User Keys API
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 METHODS
 

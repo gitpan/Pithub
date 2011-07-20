@@ -1,56 +1,59 @@
 package Pithub::Result;
 BEGIN {
-  $Pithub::Result::VERSION = '0.01004';
+  $Pithub::Result::VERSION = '0.01005';
 }
 
 # ABSTRACT: Github v3 result object
 
-use Moose;
+use Moo;
 use Array::Iterator;
 use JSON::Any;
 use URI;
-use namespace::autoclean;
 
 
 has 'auto_pagination' => (
     default => 0,
     is      => 'rw',
-    isa     => 'Bool',
 );
 
 
 has 'content' => (
-    is         => 'ro',
-    isa        => 'HashRef|ArrayRef',
-    lazy_build => 1,
+    builder => '_build_content',
+    clearer => 'clear_content',
+    is      => 'ro',
+    lazy    => 1,
 );
 
 
 has 'first_page_uri' => (
-    is         => 'ro',
-    isa        => 'Str|Undef',
-    lazy_build => 1,
+    builder => '_build_first_page_uri',
+    clearer => 'clear_first_page_uri',
+    is      => 'ro',
+    lazy    => 1,
 );
 
 
 has 'last_page_uri' => (
-    is         => 'ro',
-    isa        => 'Str|Undef',
-    lazy_build => 1,
+    builder => '_build_last_page_uri',
+    clearer => 'clear_last_page_uri',
+    is      => 'ro',
+    lazy    => 1,
 );
 
 
 has 'next_page_uri' => (
-    is         => 'ro',
-    isa        => 'Str|Undef',
-    lazy_build => 1,
+    builder => '_build_next_page_uri',
+    clearer => 'clear_next_page_uri',
+    is      => 'ro',
+    lazy    => 1,
 );
 
 
 has 'prev_page_uri' => (
-    is         => 'ro',
-    isa        => 'Str|Undef',
-    lazy_build => 1,
+    builder => '_build_prev_page_uri',
+    clearer => 'clear_prev_page_uri',
+    is      => 'ro',
+    lazy    => 1,
 );
 
 
@@ -62,28 +65,31 @@ has 'response' => (
         success     => 'is_success',
     },
     is       => 'ro',
-    isa      => 'HTTP::Response',
+    isa      => sub { die 'must be a HTTP::Response, but is ' . ref $_[0] unless ref $_[0] eq 'HTTP::Response' },
     required => 1,
 );
 
 # required for next_page etc
 has '_request' => (
     is       => 'ro',
-    isa      => 'CodeRef',
+    isa      => sub { die 'must be a coderef, but is ' . ref $_[0] unless ref $_[0] eq 'CODE' },
     required => 1,
 );
 
 # required for next
 has '_iterator' => (
-    is         => 'ro',
-    isa        => 'Array::Iterator',
-    lazy_build => 1,
+    builder => '_build__iterator',
+    clearer => '_clear_iterator',
+    is      => 'ro',
+    isa     => sub { die 'must be a Array::Iterator, but is ' . ref $_[0] unless ref $_[0] eq 'Array::Iterator' },
+    lazy    => 1,
 );
 
 has '_json' => (
-    is         => 'ro',
-    isa        => 'JSON::Any',
-    lazy_build => 1,
+    builder => '_build__json',
+    is      => 'ro',
+    isa     => sub { die 'must be a JSON::Any, but is ' . ref $_[0] unless ref $_[0] eq 'JSON::Any' },
+    lazy    => 1,
 );
 
 
@@ -269,8 +275,6 @@ sub _reset {
     delete $self->{_get_link_header};
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -282,7 +286,7 @@ Pithub::Result - Github v3 result object
 
 =head1 VERSION
 
-version 0.01004
+version 0.01005
 
 =head1 DESCRIPTION
 
