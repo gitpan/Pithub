@@ -1,6 +1,6 @@
 package Pithub::Issues::Labels;
 BEGIN {
-  $Pithub::Issues::Labels::VERSION = '0.01005';
+  $Pithub::Issues::Labels::VERSION = '0.01006';
 }
 
 # ABSTRACT: Github v3 Issue Labels API
@@ -139,7 +139,7 @@ Pithub::Issues::Labels - Github v3 Issue Labels API
 
 =head1 VERSION
 
-version 0.01005
+version 0.01006
 
 =head1 METHODS
 

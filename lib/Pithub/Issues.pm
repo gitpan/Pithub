@@ -1,6 +1,6 @@
 package Pithub::Issues;
 BEGIN {
-  $Pithub::Issues::VERSION = '0.01005';
+  $Pithub::Issues::VERSION = '0.01006';
 }
 
 # ABSTRACT: Github v3 Issues API
@@ -13,20 +13,9 @@ use Pithub::Issues::Labels;
 use Pithub::Issues::Milestones;
 extends 'Pithub::Base';
 
+
 sub comments {
     return shift->_create_instance('Pithub::Issues::Comments');
-}
-
-sub events {
-    return shift->_create_instance('Pithub::Issues::Events');
-}
-
-sub labels {
-    return shift->_create_instance('Pithub::Issues::Labels');
-}
-
-sub milestones {
-    return shift->_create_instance('Pithub::Issues::Milestones');
 }
 
 
@@ -42,6 +31,11 @@ sub create {
 }
 
 
+sub events {
+    return shift->_create_instance('Pithub::Issues::Events');
+}
+
+
 sub get {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: issue_id' unless $args{issue_id};
@@ -51,6 +45,11 @@ sub get {
         path   => sprintf( '/repos/%s/%s/issues/%s', delete $args{user}, delete $args{repo}, delete $args{issue_id} ),
         %args,
     );
+}
+
+
+sub labels {
+    return shift->_create_instance('Pithub::Issues::Labels');
 }
 
 
@@ -69,6 +68,11 @@ sub list {
         path   => sprintf('/issues'),
         %args,
     );
+}
+
+
+sub milestones {
+    return shift->_create_instance('Pithub::Issues::Milestones');
 }
 
 
@@ -95,9 +99,13 @@ Pithub::Issues - Github v3 Issues API
 
 =head1 VERSION
 
-version 0.01005
+version 0.01006
 
 =head1 METHODS
+
+=head2 comments
+
+Provides access to L<Pithub::Issues::Comments>.
 
 =head2 create
 
@@ -227,6 +235,10 @@ Response: C<< Status: 201 Created >>
 
 =back
 
+=head2 events
+
+Provides access to L<Pithub::Issues::Events>.
+
 =head2 get
 
 =over
@@ -321,6 +333,10 @@ Response: C<< Status: 200 OK >>
     }
 
 =back
+
+=head2 labels
+
+Provides access to L<Pithub::Issues::Labels>.
 
 =head2 list
 
@@ -701,6 +717,10 @@ Response: C<< Status: 200 OK >>
     ]
 
 =back
+
+=head2 milestones
+
+Provides access to L<Pithub::Issues::Milestones>.
 
 =head2 update
 

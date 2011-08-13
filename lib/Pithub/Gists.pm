@@ -1,6 +1,6 @@
 package Pithub::Gists;
 BEGIN {
-  $Pithub::Gists::VERSION = '0.01005';
+  $Pithub::Gists::VERSION = '0.01006';
 }
 
 # ABSTRACT: Github v3 Gists API
@@ -9,6 +9,7 @@ use Moo;
 use Carp qw(croak);
 use Pithub::Gists::Comments
 extends 'Pithub::Base';
+
 
 sub comments {
     return shift->_create_instance('Pithub::Gists::Comments');
@@ -145,9 +146,13 @@ Pithub::Gists - Github v3 Gists API
 
 =head1 VERSION
 
-version 0.01005
+version 0.01006
 
 =head1 METHODS
+
+=head2 comments
+
+Provides access to L<Pithub::Gists::Comments>.
 
 =head2 create
 

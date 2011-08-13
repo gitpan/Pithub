@@ -40,7 +40,7 @@ my %WriteMakefileArgs = (
     'Moo' => '0',
     'URI' => '0'
   },
-  'VERSION' => '0.01005',
+  'VERSION' => '0.01006',
   'test' => {
     'TESTS' => 't/*.t t/live/*.t'
   }

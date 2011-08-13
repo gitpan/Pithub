@@ -1,6 +1,6 @@
 package Pithub::Result;
 BEGIN {
-  $Pithub::Result::VERSION = '0.01005';
+  $Pithub::Result::VERSION = '0.01006';
 }
 
 # ABSTRACT: Github v3 result object
@@ -240,8 +240,10 @@ sub _get_link_header {
     return $self->{_get_link_header}{$type} if $self->{_get_link_header}{$type};
     my $link = $self->response->header('Link');
     return unless $link;
+    return unless $link =~ /(next|first|last|prev)/;
     foreach my $item ( split /,/, $link ) {
         my @result = $item =~ /<([^>]+)>; rel="([^"]+)"/g;
+        next if !$result[1] || !$result[0];
         $self->{_get_link_header}{ $result[1] } = $result[0];
     }
     return $self->{_get_link_header}{$type};
@@ -286,7 +288,7 @@ Pithub::Result - Github v3 result object
 
 =head1 VERSION
 
-version 0.01005
+version 0.01006
 
 =head1 DESCRIPTION
 

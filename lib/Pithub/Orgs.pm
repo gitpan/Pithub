@@ -1,6 +1,6 @@
 package Pithub::Orgs;
 BEGIN {
-  $Pithub::Orgs::VERSION = '0.01005';
+  $Pithub::Orgs::VERSION = '0.01006';
 }
 
 # ABSTRACT: Github v3 Orgs API
@@ -10,14 +10,6 @@ use Carp qw(croak);
 use Pithub::Orgs::Members;
 use Pithub::Orgs::Teams;
 extends 'Pithub::Base';
-
-sub members {
-    return shift->_create_instance('Pithub::Orgs::Members');
-}
-
-sub teams {
-    return shift->_create_instance('Pithub::Orgs::Teams');
-}
 
 
 sub get {
@@ -48,6 +40,16 @@ sub list {
 }
 
 
+sub members {
+    return shift->_create_instance('Pithub::Orgs::Members');
+}
+
+
+sub teams {
+    return shift->_create_instance('Pithub::Orgs::Teams');
+}
+
+
 sub update {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: org' unless $args{org};
@@ -70,7 +72,7 @@ Pithub::Orgs - Github v3 Orgs API
 
 =head1 VERSION
 
-version 0.01005
+version 0.01006
 
 =head1 METHODS
 
@@ -118,6 +120,14 @@ Examples:
     my $result = $o->list;
 
 =back
+
+=head2 members
+
+Provides access to L<Pithub::Orgs::Members>.
+
+=head2 teams
+
+Provides access to L<Pithub::Orgs::Teams>.
 
 =head2 update
 

@@ -1,6 +1,6 @@
 package Pithub::Users;
 BEGIN {
-  $Pithub::Users::VERSION = '0.01005';
+  $Pithub::Users::VERSION = '0.01006';
 }
 
 # ABSTRACT: Github v3 Users API
@@ -12,16 +12,14 @@ use Pithub::Users::Followers;
 use Pithub::Users::Keys;
 extends 'Pithub::Base';
 
+
 sub emails {
     return shift->_create_instance('Pithub::Users::Emails');
 }
 
+
 sub followers {
     return shift->_create_instance('Pithub::Users::Followers');
-}
-
-sub keys {
-    return shift->_create_instance('Pithub::Users::Keys');
 }
 
 
@@ -39,6 +37,11 @@ sub get {
         path   => '/user',
         %args,
     );
+}
+
+
+sub keys {
+    return shift->_create_instance('Pithub::Users::Keys');
 }
 
 
@@ -63,9 +66,17 @@ Pithub::Users - Github v3 Users API
 
 =head1 VERSION
 
-version 0.01005
+version 0.01006
 
 =head1 METHODS
+
+=head2 emails
+
+Provides access to L<Pithub::Users::Emails>.
+
+=head2 followers
+
+Provides access to L<Pithub::Users::Followers>.
 
 =head2 get
 
@@ -94,6 +105,10 @@ Examples:
     my $result = $u->get;
 
 =back
+
+=head2 keys
+
+Provides access to L<Pithub::Users::Keys>.
 
 =head2 update
 

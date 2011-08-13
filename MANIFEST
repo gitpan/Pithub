@@ -9,6 +9,7 @@ dist.ini
 examples/create_download.pl
 examples/gitdata_commit.pl
 examples/list_repos.pl
+examples/show_commit.pl
 lib/Pithub.pm
 lib/Pithub/Base.pm
 lib/Pithub/Gists.pm
@@ -50,6 +51,7 @@ t/lib/Pithub/Test/UA.pm
 t/lib/Pithub/Test/http_response/api.github.com/error/notfound.GET
 t/lib/Pithub/Test/http_response/api.github.com/orgs/CPAN-API/repos.GET
 t/lib/Pithub/Test/http_response/api.github.com/repos/foo/bar/downloads.POST
+t/lib/Pithub/Test/http_response/api.github.com/repos/foo/bar/issues.GET
 t/lib/Pithub/Test/http_response/api.github.com/user/following/rafl.GET
 t/lib/Pithub/Test/http_response/api.github.com/users/miyagawa/followers.GET
 t/lib/Pithub/Test/http_response/api.github.com/users/miyagawa/followers.GET.page-26

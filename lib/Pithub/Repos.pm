@@ -1,6 +1,6 @@
 package Pithub::Repos;
 BEGIN {
-  $Pithub::Repos::VERSION = '0.01005';
+  $Pithub::Repos::VERSION = '0.01006';
 }
 
 # ABSTRACT: Github v3 Repos API
@@ -15,30 +15,6 @@ use Pithub::Repos::Keys;
 use Pithub::Repos::Watching;
 extends 'Pithub::Base';
 
-sub collaborators {
-    return shift->_create_instance('Pithub::Repos::Collaborators');
-}
-
-sub commits {
-    return shift->_create_instance('Pithub::Repos::Commits');
-}
-
-sub downloads {
-    return shift->_create_instance('Pithub::Repos::Downloads');
-}
-
-sub forks {
-    return shift->_create_instance('Pithub::Repos::Forks');
-}
-
-sub keys {
-    return shift->_create_instance('Pithub::Repos::Keys');
-}
-
-sub watching {
-    return shift->_create_instance('Pithub::Repos::Watching');
-}
-
 
 sub branches {
     my ( $self, %args ) = @_;
@@ -48,6 +24,16 @@ sub branches {
         path   => sprintf( '/repos/%s/%s/branches', delete $args{user}, delete $args{repo} ),
         %args,
     );
+}
+
+
+sub collaborators {
+    return shift->_create_instance('Pithub::Repos::Collaborators');
+}
+
+
+sub commits {
+    return shift->_create_instance('Pithub::Repos::Commits');
 }
 
 
@@ -82,6 +68,16 @@ sub create {
 }
 
 
+sub downloads {
+    return shift->_create_instance('Pithub::Repos::Downloads');
+}
+
+
+sub forks {
+    return shift->_create_instance('Pithub::Repos::Forks');
+}
+
+
 sub get {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
@@ -90,6 +86,11 @@ sub get {
         path   => sprintf( '/repos/%s/%s', delete $args{user}, delete $args{repo} ),
         %args,
     );
+}
+
+
+sub keys {
+    return shift->_create_instance('Pithub::Repos::Keys');
 }
 
 
@@ -163,6 +164,11 @@ sub update {
     );
 }
 
+
+sub watching {
+    return shift->_create_instance('Pithub::Repos::Watching');
+}
+
 1;
 
 __END__
@@ -174,7 +180,7 @@ Pithub::Repos - Github v3 Repos API
 
 =head1 VERSION
 
-version 0.01005
+version 0.01006
 
 =head1 METHODS
 
@@ -194,6 +200,14 @@ Examples:
     my $result = $repos->branches( user => 'plu', repo => 'Pithub' );
 
 =back
+
+=head2 collaborators
+
+Provides access to L<Pithub::Repos::Collaborators>.
+
+=head2 commits
+
+Provides access to L<Pithub::Repos::Commits>.
 
 =head2 contributors
 
@@ -244,6 +258,14 @@ Examples:
 
 =back
 
+=head2 downloads
+
+Provides access to L<Pithub::Repos::Downloads>.
+
+=head2 forks
+
+Provides access to L<Pithub::Repos::Forks>.
+
 =head2 get
 
 =over
@@ -260,6 +282,10 @@ Examples:
     my $result = $repos->get( user => 'plu', repo => 'Pithub' );
 
 =back
+
+=head2 keys
+
+Provides access to L<Pithub::Repos::Keys>.
 
 =head2 languages
 
@@ -371,6 +397,10 @@ Examples:
     );
 
 =back
+
+=head2 watching
+
+Provides access to L<Pithub::Repos::Watching>.
 
 =head1 AUTHOR
 

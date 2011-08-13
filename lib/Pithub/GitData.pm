@@ -1,6 +1,6 @@
 package Pithub::GitData;
 BEGIN {
-  $Pithub::GitData::VERSION = '0.01005';
+  $Pithub::GitData::VERSION = '0.01006';
 }
 
 # ABSTRACT: Github v3 Git Data API
@@ -14,21 +14,26 @@ use Pithub::GitData::Tags;
 use Pithub::GitData::Trees;
 extends 'Pithub::Base';
 
+
 sub blobs {
     return shift->_create_instance('Pithub::GitData::Blobs');
 }
+
 
 sub commits {
     return shift->_create_instance('Pithub::GitData::Commits');
 }
 
+
 sub references {
     return shift->_create_instance('Pithub::GitData::References');
 }
 
+
 sub tags {
     return shift->_create_instance('Pithub::GitData::Tags');
 }
+
 
 sub trees {
     return shift->_create_instance('Pithub::GitData::Trees');
@@ -45,7 +50,29 @@ Pithub::GitData - Github v3 Git Data API
 
 =head1 VERSION
 
-version 0.01005
+version 0.01006
+
+=head1 METHODS
+
+=head2 blobs
+
+Provides access to L<Pithub::GitData::Blobs>.
+
+=head2 commits
+
+Provides access to L<Pithub::GitData::Commits>.
+
+=head2 references
+
+Provides access to L<Pithub::GitData::References>.
+
+=head2 tags
+
+Provides access to L<Pithub::GitData::Tags>.
+
+=head2 trees
+
+Provides access to L<Pithub::GitData::Trees>.
 
 =head1 AUTHOR
 
