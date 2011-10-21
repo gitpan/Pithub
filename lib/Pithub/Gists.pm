@@ -1,6 +1,6 @@
 package Pithub::Gists;
-BEGIN {
-  $Pithub::Gists::VERSION = '0.01007';
+{
+  $Pithub::Gists::VERSION = '0.01008';
 }
 
 # ABSTRACT: Github v3 Gists API
@@ -146,7 +146,7 @@ Pithub::Gists - Github v3 Gists API
 
 =head1 VERSION
 
-version 0.01007
+version 0.01008
 
 =head1 METHODS
 

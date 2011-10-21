@@ -1,6 +1,6 @@
 package Pithub;
-BEGIN {
-  $Pithub::VERSION = '0.01007';
+{
+  $Pithub::VERSION = '0.01008';
 }
 
 # ABSTRACT: Github v3 API
@@ -63,7 +63,7 @@ Pithub - Github v3 API
 
 =head1 VERSION
 
-version 0.01007
+version 0.01008
 
 =head1 SYNOPSIS
 
@@ -89,7 +89,8 @@ version 0.01007
 L<Pithub> provides a set of modules to access the
 L<Github v3 API|http://developer.github.com/v3/> in an object
 oriented way. There is also L<Net::Github> does the same for the
-older versions of the API. L<Pithub> supports all API calls so far.
+all versions (v1, v2, v3) of the Github API.
+L<Pithub> supports all API calls so far, but only for v3.
 
 =head1 METHODS
 
