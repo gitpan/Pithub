@@ -33,14 +33,14 @@ my %WriteMakefileArgs = (
     'HTTP::Message' => '0',
     'HTTP::Request' => '0',
     'HTTP::Request::Common' => '0',
+    'JSON' => '0',
     'JSON::Any' => '0',
-    'JSON::XS' => '0',
     'LWP::Protocol::https' => '0',
     'LWP::UserAgent' => '0',
     'Moo' => '0',
     'URI' => '0'
   },
-  'VERSION' => '0.01006',
+  'VERSION' => '0.01007',
   'test' => {
     'TESTS' => 't/*.t t/live/*.t'
   }

@@ -1,6 +1,6 @@
 package Pithub::GitData::Trees;
 BEGIN {
-  $Pithub::GitData::Trees::VERSION = '0.01006';
+  $Pithub::GitData::Trees::VERSION = '0.01007';
 }
 
 # ABSTRACT: Github v3 Git Data Trees API
@@ -50,7 +50,7 @@ Pithub::GitData::Trees - Github v3 Git Data Trees API
 
 =head1 VERSION
 
-version 0.01006
+version 0.01007
 
 =head1 METHODS
 

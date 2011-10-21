@@ -1,6 +1,6 @@
 package Pithub::Base;
 BEGIN {
-  $Pithub::Base::VERSION = '0.01006';
+  $Pithub::Base::VERSION = '0.01007';
 }
 
 # ABSTRACT: Github v3 base class for all Pithub modules
@@ -22,9 +22,9 @@ has 'auto_pagination' => (
 
 
 has 'api_uri' => (
-    default  => sub { URI->new('https://api.github.com') },
-    is       => 'rw',
-    trigger  => sub {
+    default => sub { URI->new('https://api.github.com') },
+    is      => 'rw',
+    trigger => sub {
         my ( $self, $uri ) = @_;
         $self->{api_uri} = URI->new("$uri");
     },
@@ -114,6 +114,7 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^DELETE /repos/[^/]+/[^/]+/collaborators/.*?$},
     qr{^DELETE /repos/[^/]+/[^/]+/comments/.*?$},
     qr{^DELETE /repos/[^/]+/[^/]+/downloads/.*?$},
+    qr{^DELETE /repos/[^/]+/[^/]+/hooks/.*?$},
     qr{^DELETE /repos/[^/]+/[^/]+/issues/comments/.*?$},
     qr{^DELETE /repos/[^/]+/[^/]+/issues/[^/]+/labels$},
     qr{^DELETE /repos/[^/]+/[^/]+/issues/[^/]+/labels/.*?$},
@@ -134,6 +135,8 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^GET /orgs/[^/]+/teams$},
     qr{^GET /repos/[^/]+/[^/]+/collaborators$},
     qr{^GET /repos/[^/]+/[^/]+/collaborators/.*?$},
+    qr{^GET /repos/[^/]+/[^/]+/hooks$},
+    qr{^GET /repos/[^/]+/[^/]+/hooks/.*?$},
     qr{^GET /repos/[^/]+/[^/]+/keys$},
     qr{^GET /repos/[^/]+/[^/]+/keys/.*?$},
     qr{^GET /teams/.*?$},
@@ -152,6 +155,7 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^PATCH /repos/[^/]+/.*?$},
     qr{^PATCH /repos/[^/]+/[^/]+/comments/.*?$},
     qr{^PATCH /repos/[^/]+/[^/]+/git/refs/.*?$},
+    qr{^PATCH /repos/[^/]+/[^/]+/hooks/.*?$},
     qr{^PATCH /repos/[^/]+/[^/]+/issues/.*?$},
     qr{^PATCH /repos/[^/]+/[^/]+/issues/comments/.*?$},
     qr{^PATCH /repos/[^/]+/[^/]+/keys/.*?$},
@@ -173,6 +177,8 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^POST /repos/[^/]+/[^/]+/git/refs},
     qr{^POST /repos/[^/]+/[^/]+/git/tags$},
     qr{^POST /repos/[^/]+/[^/]+/git/trees$},
+    qr{^POST /repos/[^/]+/[^/]+/hooks$},
+    qr{^POST /repos/[^/]+/[^/]+/hooks/[^/]+/test$},
     qr{^POST /repos/[^/]+/[^/]+/issues$},
     qr{^POST /repos/[^/]+/[^/]+/issues/[^/]+/comments},
     qr{^POST /repos/[^/]+/[^/]+/issues/[^/]+/labels$},
@@ -352,7 +358,7 @@ Pithub::Base - Github v3 base class for all Pithub modules
 
 =head1 VERSION
 
-version 0.01006
+version 0.01007
 
 =head1 DESCRIPTION
 

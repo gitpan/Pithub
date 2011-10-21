@@ -35,6 +35,7 @@ lib/Pithub/Repos/Collaborators.pm
 lib/Pithub/Repos/Commits.pm
 lib/Pithub/Repos/Downloads.pm
 lib/Pithub/Repos/Forks.pm
+lib/Pithub/Repos/Hooks.pm
 lib/Pithub/Repos/Keys.pm
 lib/Pithub/Repos/Watching.pm
 lib/Pithub/Result.pm

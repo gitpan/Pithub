@@ -1,6 +1,6 @@
 package Pithub::Repos;
 BEGIN {
-  $Pithub::Repos::VERSION = '0.01006';
+  $Pithub::Repos::VERSION = '0.01007';
 }
 
 # ABSTRACT: Github v3 Repos API
@@ -11,6 +11,7 @@ use Pithub::Repos::Collaborators;
 use Pithub::Repos::Commits;
 use Pithub::Repos::Downloads;
 use Pithub::Repos::Forks;
+use Pithub::Repos::Hooks;
 use Pithub::Repos::Keys;
 use Pithub::Repos::Watching;
 extends 'Pithub::Base';
@@ -86,6 +87,11 @@ sub get {
         path   => sprintf( '/repos/%s/%s', delete $args{user}, delete $args{repo} ),
         %args,
     );
+}
+
+
+sub hooks {
+    return shift->_create_instance('Pithub::Repos::Hooks');
 }
 
 
@@ -180,7 +186,7 @@ Pithub::Repos - Github v3 Repos API
 
 =head1 VERSION
 
-version 0.01006
+version 0.01007
 
 =head1 METHODS
 
@@ -282,6 +288,10 @@ Examples:
     my $result = $repos->get( user => 'plu', repo => 'Pithub' );
 
 =back
+
+=head2 hooks
+
+Provides access to L<Pithub::Repos::Hooks>.
 
 =head2 keys
 

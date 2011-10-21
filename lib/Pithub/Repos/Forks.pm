@@ -1,6 +1,6 @@
 package Pithub::Repos::Forks;
 BEGIN {
-  $Pithub::Repos::Forks::VERSION = '0.01006';
+  $Pithub::Repos::Forks::VERSION = '0.01007';
 }
 
 # ABSTRACT: Github v3 Repo Forks API
@@ -50,7 +50,7 @@ Pithub::Repos::Forks - Github v3 Repo Forks API
 
 =head1 VERSION
 
-version 0.01006
+version 0.01007
 
 =head1 METHODS
 

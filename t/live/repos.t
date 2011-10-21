@@ -59,7 +59,8 @@ SKIP: {
         my $result = $p->repos->tags( user => 'plu', repo => 'Pithub' );
         is $result->success, 1, 'Pithub::Repos->tags successful';
         ok $result->count > 0, 'Pithub::Repos->tags has some rows';
-        my @tags = splice @{ $result->content }, 0, 2;
+        my @sorted = sort { $a->{name} cmp $b->{name} } @{ $result->content };
+        my @tags = splice @sorted, 0, 2;
         eq_or_diff \@tags,
           [
             {
@@ -124,8 +125,7 @@ SKIP: {
     {
         my $result = $p->repos->watching->list( user => 'plu', repo => 'Pithub' );
         is $result->success, 1, 'Pithub::Repos::Watching->list successful';
-        is $result->content->[0]{id},    '31597', "Pithub::Repos::Watching->list: Attribute id";
-        is $result->content->[0]{login}, 'plu',   "Pithub::Repos::Watching->list: Attribute login";
+        like $result->content->[0]{id}, qr{^\d+$}, "Pithub::Repos::Watching->list: Attribute id";
     }
 }
 
@@ -320,6 +320,51 @@ SKIP: {
 
         # Pithub::Repos::Forks->list
         is $p->repos->forks->list( user => $org, repo => $org_repo )->first->{name}, 'buhtip-org-repo', 'Pithub::Repos::Forks->list after create';
+    }
+
+    {
+
+        # Pithub::Repos::Hooks->create
+        my $hook_id = $p->repos->hooks->create(
+            data => {
+                name   => 'irc',
+                active => 1,
+                config => {
+                    port   => 6667,
+                    room   => 'asdf',
+                    server => 'irc.perl.org',
+                },
+            },
+        )->content->{id};
+        like $hook_id, qr{^\d+$}, 'Pithub::Repos::Hooks->create returned hook id';
+
+        # Pithub::Repos::Hooks->list
+        is $p->repos->hooks->list->content->[-1]->{id}, $hook_id, 'Pithub::Repos::Hooks->list last hook id';
+
+        # Pithub::Repos::Hooks->update
+        ok $p->repos->hooks->update(
+            hook_id => $hook_id,
+            data    => {
+                config => {
+                    port   => 6667,
+                    room   => 'pithub',
+                    server => 'irc.perl.org',
+                }
+            }
+        )->success, 'Pithub::Repos::Hooks->update successful';
+
+        # Pithub::Repos::Hooks->get
+        is $p->repos->hooks->get( hook_id => $hook_id )->content->{config}{room}, 'pithub', 'Pithub::Repos::Hooks->get after update';
+
+        # Pithub::Repos::Hooks->test
+        is $p->repos->hooks->test( hook_id => $hook_id )->code, 204, 'Pithub::Repos::Hooks->test successful';
+
+        # Pithub::Repos::Hooks->delete
+        ok $p->repos->hooks->delete( hook_id => $hook_id )->success, 'Pithub::Repos::Hooks->delete successful';
+
+        # Pithub::Repos::Hooks->get
+        ok !$p->repos->hooks->get( hook_id => $hook_id )->success, 'Pithub::Repos::Hooks->hook_id not successful after delete';
+
     }
 }
 
