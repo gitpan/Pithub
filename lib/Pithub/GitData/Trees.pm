@@ -1,6 +1,6 @@
 package Pithub::GitData::Trees;
-{
-  $Pithub::GitData::Trees::VERSION = '0.01008';
+BEGIN {
+  $Pithub::GitData::Trees::VERSION = '0.01009';
 }
 
 # ABSTRACT: Github v3 Git Data Trees API
@@ -50,7 +50,7 @@ Pithub::GitData::Trees - Github v3 Git Data Trees API
 
 =head1 VERSION
 
-version 0.01008
+version 0.01009
 
 =head1 METHODS
 
@@ -147,7 +147,7 @@ Examples:
         }
     );
 
-Response: C<< Status: 201 Created >>
+Response: B<Status: 201 Created>
 
     {
         "sha": "cd8274d15fa3ae2ab983129fb037999f264ba9a7",
@@ -207,7 +207,7 @@ Examples:
         sha  => 'df21b2660fb6'
     );
 
-Response: C<< Status: 200 OK >>
+Response: B<Status: 200 OK>
 
     {
         "sha": "9fb037999f264ba9a7fc6274d15fa3ae2ab98312",
@@ -277,7 +277,7 @@ Examples:
         recursive => 1,
     );
 
-Response: C<< Status: 200 OK >>
+Response: B<Status: 200 OK>
 
     {
         "sha": "fc6274d15fa3ae2ab983129fb037999f264ba9a7",

@@ -1,6 +1,6 @@
 package Pithub::Issues;
-{
-  $Pithub::Issues::VERSION = '0.01008';
+BEGIN {
+  $Pithub::Issues::VERSION = '0.01009';
 }
 
 # ABSTRACT: Github v3 Issues API
@@ -99,7 +99,7 @@ Pithub::Issues - Github v3 Issues API
 
 =head1 VERSION
 
-version 0.01008
+version 0.01009
 
 =head1 METHODS
 
@@ -177,7 +177,7 @@ Examples:
         }
     );
 
-Response: C<< Status: 201 Created >>
+Response: B<Status: 201 Created>
 
     {
         "url": "https://api.github.com/repos/octocat/Hello-World/issues/1",
@@ -276,7 +276,7 @@ Examples:
         issue_id => 1,
     );
 
-Response: C<< Status: 200 OK >>
+Response: B<Status: 200 OK>
 
     {
         "url": "https://api.github.com/repos/octocat/Hello-World/issues/1",
@@ -453,7 +453,7 @@ Examples:
         }
     );
 
-Response: C<< Status: 200 OK >>
+Response: B<Status: 200 OK>
 
     [
         {
@@ -658,7 +658,7 @@ Examples:
         }
     );
 
-Response: C<< Status: 200 OK >>
+Response: B<Status: 200 OK>
 
     [
         {

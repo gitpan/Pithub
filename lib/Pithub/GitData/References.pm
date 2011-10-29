@@ -1,6 +1,6 @@
 package Pithub::GitData::References;
-{
-  $Pithub::GitData::References::VERSION = '0.01008';
+BEGIN {
+  $Pithub::GitData::References::VERSION = '0.01009';
 }
 
 # ABSTRACT: Github v3 Git Data References API
@@ -75,7 +75,7 @@ Pithub::GitData::References - Github v3 Git Data References API
 
 =head1 VERSION
 
-version 0.01008
+version 0.01009
 
 =head1 METHODS
 
@@ -177,7 +177,7 @@ Examples:
         ref  => 'heads/master'
     );
 
-Response: C<< Status: 200 OK >>
+Response: B<Status: 200 OK>
 
     {
         "ref": "refs/heads/sc/featureA",
@@ -262,7 +262,7 @@ Examples:
         ref  => 'tags',
     );
 
-Response: C<< Status: 200 OK >>
+Response: B<Status: 200 OK>
 
     [
         {
@@ -348,7 +348,7 @@ Examples:
         }
     );
 
-Response: C<< Status: 200 OK >>
+Response: B<Status: 200 OK>
 
     [
         {

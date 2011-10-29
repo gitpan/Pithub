@@ -1,6 +1,6 @@
 package Pithub::GitData::Commits;
-{
-  $Pithub::GitData::Commits::VERSION = '0.01008';
+BEGIN {
+  $Pithub::GitData::Commits::VERSION = '0.01009';
 }
 
 # ABSTRACT: Github v3 Git Data Commits API
@@ -44,7 +44,7 @@ Pithub::GitData::Commits - Github v3 Git Data Commits API
 
 =head1 VERSION
 
-version 0.01008
+version 0.01009
 
 =head1 METHODS
 
@@ -165,7 +165,7 @@ Examples:
         }
     );
 
-Response: C<< Status: 201 Created >>
+Response: B<Status: 201 Created>
 
     {
         "sha": "7638417db6d59f3c431d3e1f261cc637155684cd",
@@ -232,7 +232,7 @@ Examples:
         sha  => 'b7cdea6830e128bc16c2b75efd99842d971666e2',
     );
 
-Response: C<< Status: 200 OK >>
+Response: B<Status: 200 OK>
 
     {
         "sha": "7638417db6d59f3c431d3e1f261cc637155684cd",

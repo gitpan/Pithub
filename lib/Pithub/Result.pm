@@ -1,6 +1,6 @@
 package Pithub::Result;
-{
-  $Pithub::Result::VERSION = '0.01008';
+BEGIN {
+  $Pithub::Result::VERSION = '0.01009';
 }
 
 # ABSTRACT: Github v3 result object
@@ -288,7 +288,7 @@ Pithub::Result - Github v3 result object
 
 =head1 VERSION
 
-version 0.01008
+version 0.01009
 
 =head1 DESCRIPTION
 

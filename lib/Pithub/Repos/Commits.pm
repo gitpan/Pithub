@@ -1,6 +1,6 @@
 package Pithub::Repos::Commits;
-{
-  $Pithub::Repos::Commits::VERSION = '0.01008';
+BEGIN {
+  $Pithub::Repos::Commits::VERSION = '0.01009';
 }
 
 # ABSTRACT: Github v3 Repo Commits API
@@ -8,6 +8,19 @@ package Pithub::Repos::Commits;
 use Moo;
 use Carp qw(croak);
 extends 'Pithub::Base';
+
+
+sub compare {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: base' unless $args{base};
+    croak 'Missing key in parameters: head' unless $args{head};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf( '/repos/%s/%s/compare/%s...%s', delete $args{user}, delete $args{repo}, delete $args{base}, delete $args{head} ),
+        %args,
+    );
+}
 
 
 sub create_comment {
@@ -111,9 +124,31 @@ Pithub::Repos::Commits - Github v3 Repo Commits API
 
 =head1 VERSION
 
-version 0.01008
+version 0.01009
 
 =head1 METHODS
+
+=head2 compare
+
+=over
+
+=item *
+
+Compare two commits
+
+    GET /repos/:user/:repo/compare/:base...:head
+
+Examples:
+
+    my $c      = Pithub::Repos::Commits->new;
+    my $result = $c->compare(
+        user => 'plu',
+        repo => 'Pithub',
+        base => 'v0.01008,
+        head => ' master ',
+    );
+
+=back
 
 =head2 create_comment
 

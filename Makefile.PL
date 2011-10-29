@@ -9,31 +9,31 @@ use ExtUtils::MakeMaker 6.30;
 
 
 my %WriteMakefileArgs = (
-  "ABSTRACT" => "Github v3 API",
-  "AUTHOR" => "Johannes Plunien <plu\@cpan.org>",
-  "BUILD_REQUIRES" => {
-    "File::Slurp" => 0,
-    "Test::Most" => 0
+  'ABSTRACT' => 'Github v3 API',
+  'AUTHOR' => 'Johannes Plunien <plu@cpan.org>',
+  'BUILD_REQUIRES' => {
+    'File::Slurp' => '0',
+    'Test::Most' => '0'
   },
-  "CONFIGURE_REQUIRES" => {
-    "ExtUtils::MakeMaker" => "6.30"
+  'CONFIGURE_REQUIRES' => {
+    'ExtUtils::MakeMaker' => '6.30'
   },
-  "DISTNAME" => "Pithub",
-  "EXE_FILES" => [],
-  "LICENSE" => "perl",
-  "NAME" => "Pithub",
-  "PREREQ_PM" => {
-    "Array::Iterator" => 0,
-    "HTTP::Message" => 0,
-    "JSON" => 0,
-    "JSON::Any" => 0,
-    "LWP::Protocol::https" => 0,
-    "LWP::UserAgent" => 0,
-    "Moo" => 0
+  'DISTNAME' => 'Pithub',
+  'EXE_FILES' => [],
+  'LICENSE' => 'perl',
+  'NAME' => 'Pithub',
+  'PREREQ_PM' => {
+    'Array::Iterator' => '0',
+    'HTTP::Message' => '0',
+    'JSON' => '0',
+    'JSON::Any' => '0',
+    'LWP::Protocol::https' => '0',
+    'LWP::UserAgent' => '0',
+    'Moo' => '0'
   },
-  "VERSION" => "0.01008",
-  "test" => {
-    "TESTS" => "t/*.t t/live/*.t"
+  'VERSION' => '0.01009',
+  'test' => {
+    'TESTS' => 't/*.t t/live/*.t'
   }
 );
 
