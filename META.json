@@ -46,7 +46,7 @@
          "web" : "http://github.com/plu/Pithub"
       }
    },
-   "version" : "0.01009",
+   "version" : "0.01010",
    "x_Dist_Zilla" : {
       "plugins" : [
          {
@@ -120,26 +120,6 @@
             "version" : "4.200012"
          },
          {
-            "class" : "Dist::Zilla::Plugin::Git::Check",
-            "name" : "@Git/Check",
-            "version" : "1.111590"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Git::Commit",
-            "name" : "@Git/Commit",
-            "version" : "1.111590"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Git::Tag",
-            "name" : "@Git/Tag",
-            "version" : "1.111590"
-         },
-         {
-            "class" : "Dist::Zilla::Plugin::Git::Push",
-            "name" : "@Git/Push",
-            "version" : "1.111590"
-         },
-         {
             "class" : "Dist::Zilla::Plugin::MetaConfig",
             "name" : "MetaConfig",
             "version" : "4.200012"
@@ -177,6 +157,21 @@
          {
             "class" : "Dist::Zilla::Plugin::Git::NextVersion",
             "name" : "Git::NextVersion",
+            "version" : "1.111590"
+         },
+         {
+            "class" : "Dist::Zilla::Plugin::Git::Check",
+            "name" : "Git::Check",
+            "version" : "1.111590"
+         },
+         {
+            "class" : "Dist::Zilla::Plugin::Git::Commit",
+            "name" : "Git::Commit",
+            "version" : "1.111590"
+         },
+         {
+            "class" : "Dist::Zilla::Plugin::Git::Tag",
+            "name" : "Git::Tag",
             "version" : "1.111590"
          },
          {

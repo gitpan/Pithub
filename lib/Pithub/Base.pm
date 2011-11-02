@@ -1,6 +1,6 @@
 package Pithub::Base;
 BEGIN {
-  $Pithub::Base::VERSION = '0.01009';
+  $Pithub::Base::VERSION = '0.01010';
 }
 
 # ABSTRACT: Github v3 base class for all Pithub modules
@@ -149,6 +149,7 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^GET /user/orgs$},
     qr{^GET /user/watched$},
     qr{^GET /user/watched/[^/]+/.*?$},
+    qr{^GET /users/[^/]+/events/orgs/.*?$},
     qr{^PATCH /gists/.*?$},
     qr{^PATCH /gists/comments/.*?$},
     qr{^PATCH /orgs/.*?$},
@@ -358,7 +359,7 @@ Pithub::Base - Github v3 base class for all Pithub modules
 
 =head1 VERSION
 
-version 0.01009
+version 0.01010
 
 =head1 DESCRIPTION
 

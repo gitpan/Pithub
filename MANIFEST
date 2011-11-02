@@ -12,6 +12,7 @@ examples/list_repos.pl
 examples/show_commit.pl
 lib/Pithub.pm
 lib/Pithub/Base.pm
+lib/Pithub/Events.pm
 lib/Pithub/Gists.pm
 lib/Pithub/Gists/Comments.pm
 lib/Pithub/GitData.pm
@@ -44,6 +45,7 @@ lib/Pithub/Users/Emails.pm
 lib/Pithub/Users/Followers.pm
 lib/Pithub/Users/Keys.pm
 t/basic.t
+t/events.t
 t/gists.t
 t/git_data.t
 t/issues.t
@@ -65,6 +67,7 @@ t/lib/Pithub/Test/http_response/api.github.com/users/plu/followers.GET.page-4.pe
 t/lib/Pithub/Test/http_response/api.github.com/users/plu/followers.GET.per_page-15
 t/lib/Pithub/Test/http_response/api.github.com/users/plu/repos.GET
 t/live/basic.t
+t/live/events.t
 t/live/gists.t
 t/live/git_data.t
 t/live/issues.t

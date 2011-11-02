@@ -1,11 +1,12 @@
 package Pithub;
 BEGIN {
-  $Pithub::VERSION = '0.01009';
+  $Pithub::VERSION = '0.01010';
 }
 
 # ABSTRACT: Github v3 API
 
 use Moo;
+use Pithub::Events;
 use Pithub::Gists;
 use Pithub::GitData;
 use Pithub::Issues;
@@ -15,6 +16,11 @@ use Pithub::Repos;
 use Pithub::Users;
 extends 'Pithub::Base';
 
+
+
+sub events {
+    return shift->_create_instance('Pithub::Events');
+}
 
 
 sub gists {
@@ -63,7 +69,7 @@ Pithub - Github v3 API
 
 =head1 VERSION
 
-version 0.01009
+version 0.01010
 
 =head1 SYNOPSIS
 
@@ -93,6 +99,10 @@ all the versions (v1, v2, v3) of the Github API.
 L<Pithub> supports all API calls so far, but only for v3.
 
 =head1 METHODS
+
+=head2 events
+
+Provides access to L<Pithub::Events>.
 
 =head2 gists
 
@@ -182,6 +192,15 @@ perform this new API call, there's some documentation on how to
 use it.
 
 =over
+
+=item *
+
+L<Pithub::Events>
+
+See also: L<http://developer.github.com/v3/events/>
+
+    my $gists = Pithub->new->events;
+    my $gists = Pithub::Events->new;
 
 =item *
 

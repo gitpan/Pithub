@@ -1,6 +1,6 @@
 package Pithub::Repos;
 BEGIN {
-  $Pithub::Repos::VERSION = '0.01009';
+  $Pithub::Repos::VERSION = '0.01010';
 }
 
 # ABSTRACT: Github v3 Repos API
@@ -186,7 +186,7 @@ Pithub::Repos - Github v3 Repos API
 
 =head1 VERSION
 
-version 0.01009
+version 0.01010
 
 =head1 METHODS
 
