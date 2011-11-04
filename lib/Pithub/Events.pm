@@ -1,6 +1,6 @@
 package Pithub::Events;
 BEGIN {
-  $Pithub::Events::VERSION = '0.01010';
+  $Pithub::Events::VERSION = '0.01011';
 }
 
 # ABSTRACT: Github v3 Events API
@@ -116,7 +116,7 @@ Pithub::Events - Github v3 Events API
 
 =head1 VERSION
 
-version 0.01010
+version 0.01011
 
 =head1 METHODS
 
@@ -245,7 +245,7 @@ List events performed by a user
     GET /users/:user/events
 
 If you are authenticated as the given user, you will see your
-private events. Otherwise, you’ll only see public events.
+private events. Otherwise, you'll only see public events.
 
 Examples:
 
@@ -271,9 +271,9 @@ List events that a user has received
 
     GET /users/:user/received_events
 
-These are events that you’ve received by watching repos and
+These are events that you've received by watching repos and
 following users. If you are authenticated as the given user,
-you will see private events. Otherwise, you’ll only see
+you will see private events. Otherwise, you'll only see
 public events.
 
 Examples:

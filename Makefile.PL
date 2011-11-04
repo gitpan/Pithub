@@ -31,7 +31,7 @@ my %WriteMakefileArgs = (
     'LWP::UserAgent' => '0',
     'Moo' => '0'
   },
-  'VERSION' => '0.01010',
+  'VERSION' => '0.01011',
   'test' => {
     'TESTS' => 't/*.t t/live/*.t'
   }
