@@ -1,6 +1,6 @@
 package Pithub::Gists;
-BEGIN {
-  $Pithub::Gists::VERSION = '0.01011';
+{
+  $Pithub::Gists::VERSION = '0.01012';
 }
 
 # ABSTRACT: Github v3 Gists API
@@ -43,7 +43,7 @@ sub fork {
     croak 'Missing key in parameters: gist_id' unless $args{gist_id};
     return $self->request(
         method => 'POST',
-        path   => sprintf( '/gists/%s/fork', delete $args{gist_id} ),
+        path   => sprintf( '/gists/%s/forks', delete $args{gist_id} ),
         %args,
     );
 }
@@ -146,7 +146,7 @@ Pithub::Gists - Github v3 Gists API
 
 =head1 VERSION
 
-version 0.01011
+version 0.01012
 
 =head1 METHODS
 
@@ -303,7 +303,7 @@ Response: B<Status: 204 No Content>
 
 Fork a gist
 
-    POST /gists/:id/fork
+    POST /gists/:id/forks
 
 Parameters:
 

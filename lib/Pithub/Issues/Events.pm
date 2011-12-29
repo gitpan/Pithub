@@ -1,6 +1,6 @@
 package Pithub::Issues::Events;
-BEGIN {
-  $Pithub::Issues::Events::VERSION = '0.01011';
+{
+  $Pithub::Issues::Events::VERSION = '0.01012';
 }
 
 # ABSTRACT: Github v3 Issue Events API
@@ -50,7 +50,7 @@ Pithub::Issues::Events - Github v3 Issue Events API
 
 =head1 VERSION
 
-version 0.01011
+version 0.01012
 
 =head1 METHODS
 
