@@ -1,6 +1,6 @@
 package Pithub::Base;
 {
-  $Pithub::Base::VERSION = '0.01012';
+  $Pithub::Base::VERSION = '0.01013';
 }
 
 # ABSTRACT: Github v3 base class for all Pithub modules
@@ -16,7 +16,7 @@ use URI;
 
 
 has 'auto_pagination' => (
-    default => 0,
+    default => sub { 0 },
     is      => 'rw',
 );
 
@@ -359,7 +359,7 @@ Pithub::Base - Github v3 base class for all Pithub modules
 
 =head1 VERSION
 
-version 0.01012
+version 0.01013
 
 =head1 DESCRIPTION
 

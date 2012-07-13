@@ -1,6 +1,6 @@
 package Pithub::Result;
 {
-  $Pithub::Result::VERSION = '0.01012';
+  $Pithub::Result::VERSION = '0.01013';
 }
 
 # ABSTRACT: Github v3 result object
@@ -12,7 +12,7 @@ use URI;
 
 
 has 'auto_pagination' => (
-    default => 0,
+    default => sub { 0 },
     is      => 'rw',
 );
 
@@ -288,7 +288,7 @@ Pithub::Result - Github v3 result object
 
 =head1 VERSION
 
-version 0.01012
+version 0.01013
 
 =head1 DESCRIPTION
 

@@ -1,6 +1,6 @@
 package Pithub::Users::Keys;
 {
-  $Pithub::Users::Keys::VERSION = '0.01012';
+  $Pithub::Users::Keys::VERSION = '0.01013';
 }
 
 # ABSTRACT: Github v3 User Keys API
@@ -75,7 +75,7 @@ Pithub::Users::Keys - Github v3 User Keys API
 
 =head1 VERSION
 
-version 0.01012
+version 0.01013
 
 =head1 METHODS
 
