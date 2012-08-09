@@ -1,6 +1,6 @@
 package Pithub::PullRequests;
 {
-  $Pithub::PullRequests::VERSION = '0.01013';
+  $Pithub::PullRequests::VERSION = '0.01014';
 }
 
 # ABSTRACT: Github v3 Pull Requests API
@@ -122,7 +122,7 @@ Pithub::PullRequests - Github v3 Pull Requests API
 
 =head1 VERSION
 
-version 0.01013
+version 0.01014
 
 =head1 METHODS
 

@@ -1,6 +1,6 @@
 package Pithub::Users;
 {
-  $Pithub::Users::VERSION = '0.01013';
+  $Pithub::Users::VERSION = '0.01014';
 }
 
 # ABSTRACT: Github v3 Users API
@@ -66,7 +66,7 @@ Pithub::Users - Github v3 Users API
 
 =head1 VERSION
 
-version 0.01013
+version 0.01014
 
 =head1 METHODS
 

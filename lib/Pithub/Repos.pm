@@ -1,6 +1,6 @@
 package Pithub::Repos;
 {
-  $Pithub::Repos::VERSION = '0.01013';
+  $Pithub::Repos::VERSION = '0.01014';
 }
 
 # ABSTRACT: Github v3 Repos API
@@ -9,6 +9,7 @@ use Moo;
 use Carp qw(croak);
 use Pithub::Repos::Collaborators;
 use Pithub::Repos::Commits;
+use Pithub::Repos::Contents;
 use Pithub::Repos::Downloads;
 use Pithub::Repos::Forks;
 use Pithub::Repos::Hooks;
@@ -35,6 +36,11 @@ sub collaborators {
 
 sub commits {
     return shift->_create_instance('Pithub::Repos::Commits');
+}
+
+
+sub contents {
+    return shift->_create_instance('Pithub::Repos::Contents');
 }
 
 
@@ -186,7 +192,7 @@ Pithub::Repos - Github v3 Repos API
 
 =head1 VERSION
 
-version 0.01013
+version 0.01014
 
 =head1 METHODS
 
@@ -214,6 +220,10 @@ Provides access to L<Pithub::Repos::Collaborators>.
 =head2 commits
 
 Provides access to L<Pithub::Repos::Commits>.
+
+=head2 contents
+
+Provides access to L<Pithub::Repos::Contents>.
 
 =head2 contributors
 

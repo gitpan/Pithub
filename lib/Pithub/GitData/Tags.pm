@@ -1,6 +1,6 @@
 package Pithub::GitData::Tags;
 {
-  $Pithub::GitData::Tags::VERSION = '0.01013';
+  $Pithub::GitData::Tags::VERSION = '0.01014';
 }
 
 # ABSTRACT: Github v3 Git Data Tags API
@@ -44,7 +44,7 @@ Pithub::GitData::Tags - Github v3 Git Data Tags API
 
 =head1 VERSION
 
-version 0.01013
+version 0.01014
 
 =head1 DESCRIPTION
 

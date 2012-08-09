@@ -1,6 +1,6 @@
 package Pithub::Base;
 {
-  $Pithub::Base::VERSION = '0.01013';
+  $Pithub::Base::VERSION = '0.01014';
 }
 
 # ABSTRACT: Github v3 base class for all Pithub modules
@@ -233,7 +233,6 @@ sub request {
         my %query = ( $request->uri->query_form, %$params );
         $request->uri->query_form(%query);
     }
-
     my $response = $self->ua->request($request);
 
     return Pithub::Result->new(
@@ -359,7 +358,7 @@ Pithub::Base - Github v3 base class for all Pithub modules
 
 =head1 VERSION
 
-version 0.01013
+version 0.01014
 
 =head1 DESCRIPTION
 

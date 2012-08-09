@@ -1,6 +1,6 @@
 package Pithub::GitData::References;
 {
-  $Pithub::GitData::References::VERSION = '0.01013';
+  $Pithub::GitData::References::VERSION = '0.01014';
 }
 
 # ABSTRACT: Github v3 Git Data References API
@@ -75,7 +75,7 @@ Pithub::GitData::References - Github v3 Git Data References API
 
 =head1 VERSION
 
-version 0.01013
+version 0.01014
 
 =head1 METHODS
 
@@ -164,7 +164,7 @@ B<ref>: mandatory string
 
 The key B<ref> must be formatted as C<< heads/branch >>, not just
 C<< branch >>. For example, the call to get the data for a branch
-named C<< sc/featureA > would be: C<< heads/sc/featureA >>
+named C<< sc/featureA >> would be: C<< heads/sc/featureA >>
 
 =back
 

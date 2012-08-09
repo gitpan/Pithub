@@ -22,6 +22,7 @@ lib/Pithub/GitData/References.pm
 lib/Pithub/GitData/Tags.pm
 lib/Pithub/GitData/Trees.pm
 lib/Pithub/Issues.pm
+lib/Pithub/Issues/Assignees.pm
 lib/Pithub/Issues/Comments.pm
 lib/Pithub/Issues/Events.pm
 lib/Pithub/Issues/Labels.pm
@@ -34,6 +35,7 @@ lib/Pithub/PullRequests/Comments.pm
 lib/Pithub/Repos.pm
 lib/Pithub/Repos/Collaborators.pm
 lib/Pithub/Repos/Commits.pm
+lib/Pithub/Repos/Contents.pm
 lib/Pithub/Repos/Downloads.pm
 lib/Pithub/Repos/Forks.pm
 lib/Pithub/Repos/Hooks.pm

@@ -1,17 +1,23 @@
 package Pithub::Issues;
 {
-  $Pithub::Issues::VERSION = '0.01013';
+  $Pithub::Issues::VERSION = '0.01014';
 }
 
 # ABSTRACT: Github v3 Issues API
 
 use Moo;
 use Carp qw(croak);
+use Pithub::Issues::Assignees;
 use Pithub::Issues::Comments;
 use Pithub::Issues::Events;
 use Pithub::Issues::Labels;
 use Pithub::Issues::Milestones;
 extends 'Pithub::Base';
+
+
+sub assignees {
+    return shift->_create_instance('Pithub::Issues::Assignees');
+}
 
 
 sub comments {
@@ -99,9 +105,13 @@ Pithub::Issues - Github v3 Issues API
 
 =head1 VERSION
 
-version 0.01013
+version 0.01014
 
 =head1 METHODS
+
+=head2 assignees
+
+Provides access to L<Pithub::Issues::Assignees>.
 
 =head2 comments
 
