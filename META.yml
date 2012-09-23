@@ -25,7 +25,7 @@ requires:
 resources:
   homepage: https://github.com/plu/Pithub
   repository: https://github.com/plu/Pithub.git
-version: 0.01014
+version: 0.01015
 x_Dist_Zilla:
   plugins:
     -

@@ -1,6 +1,6 @@
 package Pithub::Repos;
 {
-  $Pithub::Repos::VERSION = '0.01014';
+  $Pithub::Repos::VERSION = '0.01015';
 }
 
 # ABSTRACT: Github v3 Repos API
@@ -14,6 +14,7 @@ use Pithub::Repos::Downloads;
 use Pithub::Repos::Forks;
 use Pithub::Repos::Hooks;
 use Pithub::Repos::Keys;
+use Pithub::Repos::Starring;
 use Pithub::Repos::Watching;
 extends 'Pithub::Base';
 
@@ -143,6 +144,11 @@ sub list {
 }
 
 
+sub starring {
+    return shift->_create_instance('Pithub::Repos::Starring');
+}
+
+
 sub tags {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
@@ -192,7 +198,7 @@ Pithub::Repos - Github v3 Repos API
 
 =head1 VERSION
 
-version 0.01014
+version 0.01015
 
 =head1 METHODS
 
@@ -362,6 +368,10 @@ Examples:
     my $result = $repos->list( org => 'CPAN-API' );
 
 =back
+
+=head2 starring
+
+Provides access to L<Pithub::Repos::Starring>.
 
 =head2 tags
 

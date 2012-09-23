@@ -1,6 +1,6 @@
 package Pithub::GitData::Blobs;
 {
-  $Pithub::GitData::Blobs::VERSION = '0.01014';
+  $Pithub::GitData::Blobs::VERSION = '0.01015';
 }
 
 # ABSTRACT: Github v3 Git Data Blobs API
@@ -44,7 +44,7 @@ Pithub::GitData::Blobs - Github v3 Git Data Blobs API
 
 =head1 VERSION
 
-version 0.01014
+version 0.01015
 
 =head1 DESCRIPTION
 

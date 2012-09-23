@@ -40,6 +40,7 @@ lib/Pithub/Repos/Downloads.pm
 lib/Pithub/Repos/Forks.pm
 lib/Pithub/Repos/Hooks.pm
 lib/Pithub/Repos/Keys.pm
+lib/Pithub/Repos/Starring.pm
 lib/Pithub/Repos/Watching.pm
 lib/Pithub/Result.pm
 lib/Pithub/Users.pm

@@ -1,6 +1,6 @@
 package Pithub::Base;
 {
-  $Pithub::Base::VERSION = '0.01014';
+  $Pithub::Base::VERSION = '0.01015';
 }
 
 # ABSTRACT: Github v3 base class for all Pithub modules
@@ -127,6 +127,7 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^DELETE /teams/[^/]+/repos/.*?$},
     qr{^DELETE /user/following/.*?$},
     qr{^DELETE /user/keys/.*?$},
+    qr{^DELETE /user/starred/[^/]+/.*?$},
     qr{^DELETE /user/watched/[^/]+/.*?$},
     qr{^GET /gists/starred$},
     qr{^GET /gists/[^/]+/star$},
@@ -147,6 +148,7 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^GET /user/following/.*?$},
     qr{^GET /user/keys/.*?$},
     qr{^GET /user/orgs$},
+    qr{^GET /user/starred/[^/]+/.*?$},
     qr{^GET /user/watched$},
     qr{^GET /user/watched/[^/]+/.*?$},
     qr{^GET /users/[^/]+/events/orgs/.*?$},
@@ -196,6 +198,7 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^PUT /teams/[^/]+/members/.*?$},
     qr{^PUT /teams/[^/]+/repos/.*?$},
     qr{^PUT /user/following/.*?$},
+    qr{^PUT /user/starred/[^/]+/.*?$},
     qr{^PUT /user/watched/[^/]+/.*?$},
 );
 
@@ -325,7 +328,12 @@ sub _uri_for {
     my ( $self, $path ) = @_;
 
     my $uri = $self->api_uri->clone;
-    $uri->path($path);
+    my $base_path = $uri->path;
+    $path =~ s/^$base_path//;
+    my @parts;
+    push @parts, split qr{/+}, $uri->path;
+    push @parts, split qr{/+}, $path;
+    $uri->path( join '/',  grep { $_ } @parts );
 
     if ( $self->has_per_page ) {
         my %query = ( $uri->query_form, per_page => $self->per_page );
@@ -358,7 +366,7 @@ Pithub::Base - Github v3 base class for all Pithub modules
 
 =head1 VERSION
 
-version 0.01014
+version 0.01015
 
 =head1 DESCRIPTION
 
