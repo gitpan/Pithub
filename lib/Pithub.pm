@@ -1,6 +1,6 @@
 package Pithub;
 {
-  $Pithub::VERSION = '0.01015';
+  $Pithub::VERSION = '0.01016';
 }
 
 # ABSTRACT: Github v3 API
@@ -13,6 +13,7 @@ use Pithub::Issues;
 use Pithub::Orgs;
 use Pithub::PullRequests;
 use Pithub::Repos;
+use Pithub::Search;
 use Pithub::Users;
 extends 'Pithub::Base';
 
@@ -53,6 +54,11 @@ sub repos {
 }
 
 
+sub search {
+    return shift->_create_instance('Pithub::Search');
+}
+
+
 sub users {
     return shift->_create_instance('Pithub::Users');
 }
@@ -69,7 +75,7 @@ Pithub - Github v3 API
 
 =head1 VERSION
 
-version 0.01015
+version 0.01016
 
 =head1 SYNOPSIS
 
@@ -127,6 +133,10 @@ Provides access to L<Pithub::PullRequests>.
 =head2 repos
 
 Provides access to L<Pithub::Repos>.
+
+=head2 search
+
+Provides access to L<Pithub::Search>.
 
 =head2 users
 

@@ -1,6 +1,6 @@
 package Pithub::GitData::References;
 {
-  $Pithub::GitData::References::VERSION = '0.01015';
+  $Pithub::GitData::References::VERSION = '0.01016';
 }
 
 # ABSTRACT: Github v3 Git Data References API
@@ -75,7 +75,7 @@ Pithub::GitData::References - Github v3 Git Data References API
 
 =head1 VERSION
 
-version 0.01015
+version 0.01016
 
 =head1 METHODS
 

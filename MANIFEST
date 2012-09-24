@@ -43,6 +43,7 @@ lib/Pithub/Repos/Keys.pm
 lib/Pithub/Repos/Starring.pm
 lib/Pithub/Repos/Watching.pm
 lib/Pithub/Result.pm
+lib/Pithub/Search.pm
 lib/Pithub/Users.pm
 lib/Pithub/Users/Emails.pm
 lib/Pithub/Users/Followers.pm
@@ -83,4 +84,5 @@ t/orgs.t
 t/pull_requests.t
 t/release-pod-syntax.t
 t/repos.t
+t/search.t
 t/users.t

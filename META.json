@@ -46,7 +46,7 @@
          "web" : "https://github.com/plu/Pithub"
       }
    },
-   "version" : "0.01015",
+   "version" : "0.01016",
    "x_Dist_Zilla" : {
       "plugins" : [
          {
