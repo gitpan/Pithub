@@ -1,6 +1,6 @@
 package Pithub::Repos::Hooks;
 {
-  $Pithub::Repos::Hooks::VERSION = '0.01016';
+  $Pithub::Repos::Hooks::VERSION = '0.01017';
 }
 
 # ABSTRACT: Github v3 Repo Hooks API
@@ -92,7 +92,7 @@ Pithub::Repos::Hooks - Github v3 Repo Hooks API
 
 =head1 VERSION
 
-version 0.01016
+version 0.01017
 
 =head1 METHODS
 

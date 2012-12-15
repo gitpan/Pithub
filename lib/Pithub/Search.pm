@@ -1,6 +1,6 @@
 package Pithub::Search;
 {
-  $Pithub::Search::VERSION = '0.01016';
+  $Pithub::Search::VERSION = '0.01017';
 }
 
 # ABSTRACT: Github v3 Search API
@@ -66,7 +66,7 @@ Pithub::Search - Github v3 Search API
 
 =head1 VERSION
 
-version 0.01016
+version 0.01017
 
 =head1 METHODS
 

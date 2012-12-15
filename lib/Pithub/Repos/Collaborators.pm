@@ -1,6 +1,6 @@
 package Pithub::Repos::Collaborators;
 {
-  $Pithub::Repos::Collaborators::VERSION = '0.01016';
+  $Pithub::Repos::Collaborators::VERSION = '0.01017';
 }
 
 # ABSTRACT: Github v3 Repo Collaborators API
@@ -67,7 +67,7 @@ Pithub::Repos::Collaborators - Github v3 Repo Collaborators API
 
 =head1 VERSION
 
-version 0.01016
+version 0.01017
 
 =head1 METHODS
 
