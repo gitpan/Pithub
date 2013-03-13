@@ -33,6 +33,7 @@
       "test" : {
          "requires" : {
             "File::Slurp" : "0",
+            "MIME::Base64" : "0",
             "Test::Most" : "0"
          }
       }
@@ -46,7 +47,7 @@
          "web" : "https://github.com/plu/Pithub"
       }
    },
-   "version" : "0.01017",
+   "version" : "0.01018",
    "x_Dist_Zilla" : {
       "plugins" : [
          {

@@ -1,6 +1,6 @@
 package Pithub::GitData::Commits;
 {
-  $Pithub::GitData::Commits::VERSION = '0.01017';
+  $Pithub::GitData::Commits::VERSION = '0.01018';
 }
 
 # ABSTRACT: Github v3 Git Data Commits API
@@ -44,7 +44,7 @@ Pithub::GitData::Commits - Github v3 Git Data Commits API
 
 =head1 VERSION
 
-version 0.01017
+version 0.01018
 
 =head1 METHODS
 

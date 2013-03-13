@@ -13,6 +13,7 @@ my %WriteMakefileArgs = (
   "AUTHOR" => "Johannes Plunien <plu\@cpan.org>",
   "BUILD_REQUIRES" => {
     "File::Slurp" => 0,
+    "MIME::Base64" => 0,
     "Test::Most" => 0
   },
   "CONFIGURE_REQUIRES" => {
@@ -31,7 +32,7 @@ my %WriteMakefileArgs = (
     "LWP::UserAgent" => 0,
     "Moo" => 0
   },
-  "VERSION" => "0.01017",
+  "VERSION" => "0.01018",
   "test" => {
     "TESTS" => "t/*.t t/live/*.t"
   }

@@ -1,6 +1,6 @@
 package Pithub::Repos::Contents;
 {
-  $Pithub::Repos::Contents::VERSION = '0.01017';
+  $Pithub::Repos::Contents::VERSION = '0.01018';
 }
 
 # ABSTRACT: Github v3 Repo Contents API
@@ -62,7 +62,7 @@ Pithub::Repos::Contents - Github v3 Repo Contents API
 
 =head1 VERSION
 
-version 0.01017
+version 0.01018
 
 =head1 METHODS
 

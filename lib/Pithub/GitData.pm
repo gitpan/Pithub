@@ -1,6 +1,6 @@
 package Pithub::GitData;
 {
-  $Pithub::GitData::VERSION = '0.01017';
+  $Pithub::GitData::VERSION = '0.01018';
 }
 
 # ABSTRACT: Github v3 Git Data API
@@ -50,7 +50,7 @@ Pithub::GitData - Github v3 Git Data API
 
 =head1 VERSION
 
-version 0.01017
+version 0.01018
 
 =head1 METHODS
 

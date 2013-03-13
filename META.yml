@@ -4,6 +4,7 @@ author:
   - 'Johannes Plunien <plu@cpan.org>'
 build_requires:
   File::Slurp: 0
+  MIME::Base64: 0
   Test::Most: 0
 configure_requires:
   ExtUtils::MakeMaker: 6.30
@@ -25,7 +26,7 @@ requires:
 resources:
   homepage: https://github.com/plu/Pithub
   repository: https://github.com/plu/Pithub.git
-version: 0.01017
+version: 0.01018
 x_Dist_Zilla:
   plugins:
     -

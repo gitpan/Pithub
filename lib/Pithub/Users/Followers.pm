@@ -1,6 +1,6 @@
 package Pithub::Users::Followers;
 {
-  $Pithub::Users::Followers::VERSION = '0.01017';
+  $Pithub::Users::Followers::VERSION = '0.01018';
 }
 
 # ABSTRACT: Github v3 User Followers API
@@ -87,7 +87,7 @@ Pithub::Users::Followers - Github v3 User Followers API
 
 =head1 VERSION
 
-version 0.01017
+version 0.01018
 
 =head1 METHODS
 
