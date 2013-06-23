@@ -24,7 +24,6 @@
             "Array::Iterator" : "0",
             "HTTP::Message" : "0",
             "JSON" : "0",
-            "JSON::Any" : "0",
             "LWP::Protocol::https" : "0",
             "LWP::UserAgent" : "0",
             "Moo" : "0"
@@ -47,7 +46,7 @@
          "web" : "https://github.com/plu/Pithub"
       }
    },
-   "version" : "0.01018",
+   "version" : "0.01019",
    "x_Dist_Zilla" : {
       "plugins" : [
          {

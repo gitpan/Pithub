@@ -1,6 +1,6 @@
 package Pithub::Base;
 {
-  $Pithub::Base::VERSION = '0.01018';
+  $Pithub::Base::VERSION = '0.01019';
 }
 
 # ABSTRACT: Github v3 base class for all Pithub modules
@@ -9,7 +9,7 @@ use Moo;
 use Carp qw(croak);
 use HTTP::Headers;
 use HTTP::Request;
-use JSON::Any;
+use JSON;
 use LWP::UserAgent;
 use Pithub::Result;
 use URI;
@@ -261,7 +261,7 @@ sub has_token {
 
 sub _build__json {
     my ($self) = @_;
-    return JSON::Any->new;
+    return JSON->new;
 }
 
 sub _build_ua {
@@ -380,7 +380,7 @@ Pithub::Base - Github v3 base class for all Pithub modules
 
 =head1 VERSION
 
-version 0.01018
+version 0.01019
 
 =head1 DESCRIPTION
 
@@ -704,7 +704,7 @@ API call.
 =item *
 
 B<data>: optional data reference, usually a reference to an array
-or hash. It must be possible to serialize this using L<JSON::Any>.
+or hash. It must be possible to serialize this using L<JSON>.
 This will be the HTTP request body.
 
 =item *

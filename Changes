@@ -1,6 +1,11 @@
 Revision history for Pithub
 
+0.01019   2013-06-23 07:47:53 Europe/Berlin
+          - Replace JSON::Any with JSON (Alessandro Ghedini)
+
 0.01018   2013-03-13 11:24:16 Europe/Berlin
+          - Support setting Authorization in prepare_request
+            (Andreas Marienborg)
 
 0.01017   2012-12-15 10:34:03 Europe/Berlin
           - Fix tests on 5.17.x

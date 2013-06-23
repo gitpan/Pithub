@@ -1,6 +1,6 @@
 package Pithub::Orgs::Teams;
 {
-  $Pithub::Orgs::Teams::VERSION = '0.01018';
+  $Pithub::Orgs::Teams::VERSION = '0.01019';
 }
 
 # ABSTRACT: Github v3 Org Teams API
@@ -171,7 +171,7 @@ Pithub::Orgs::Teams - Github v3 Org Teams API
 
 =head1 VERSION
 
-version 0.01018
+version 0.01019
 
 =head1 METHODS
 

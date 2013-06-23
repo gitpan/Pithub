@@ -19,14 +19,13 @@ requires:
   Array::Iterator: 0
   HTTP::Message: 0
   JSON: 0
-  JSON::Any: 0
   LWP::Protocol::https: 0
   LWP::UserAgent: 0
   Moo: 0
 resources:
   homepage: https://github.com/plu/Pithub
   repository: https://github.com/plu/Pithub.git
-version: 0.01018
+version: 0.01019
 x_Dist_Zilla:
   plugins:
     -

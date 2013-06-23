@@ -1,13 +1,13 @@
 package Pithub::Result;
 {
-  $Pithub::Result::VERSION = '0.01018';
+  $Pithub::Result::VERSION = '0.01019';
 }
 
 # ABSTRACT: Github v3 result object
 
 use Moo;
 use Array::Iterator;
-use JSON::Any;
+use JSON;
 use URI;
 
 
@@ -88,7 +88,7 @@ has '_iterator' => (
 has '_json' => (
     builder => '_build__json',
     is      => 'ro',
-    isa     => sub { die 'must be a JSON::Any, but is ' . ref $_[0] unless ref $_[0] eq 'JSON::Any' },
+    isa     => sub { die 'must be a JSON, but is ' . ref $_[0] unless ref $_[0] eq 'JSON' },
     lazy    => 1,
 );
 
@@ -232,7 +232,7 @@ sub _build_prev_page_uri {
 
 sub _build__json {
     my ($self) = @_;
-    return JSON::Any->new;
+    return JSON->new;
 }
 
 sub _get_link_header {
@@ -288,7 +288,7 @@ Pithub::Result - Github v3 result object
 
 =head1 VERSION
 
-version 0.01018
+version 0.01019
 
 =head1 DESCRIPTION
 

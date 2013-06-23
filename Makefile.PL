@@ -27,12 +27,11 @@ my %WriteMakefileArgs = (
     "Array::Iterator" => 0,
     "HTTP::Message" => 0,
     "JSON" => 0,
-    "JSON::Any" => 0,
     "LWP::Protocol::https" => 0,
     "LWP::UserAgent" => 0,
     "Moo" => 0
   },
-  "VERSION" => "0.01018",
+  "VERSION" => "0.01019",
   "test" => {
     "TESTS" => "t/*.t t/live/*.t"
   }

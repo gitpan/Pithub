@@ -1,6 +1,6 @@
 package Pithub::Repos::Commits;
 {
-  $Pithub::Repos::Commits::VERSION = '0.01018';
+  $Pithub::Repos::Commits::VERSION = '0.01019';
 }
 
 # ABSTRACT: Github v3 Repo Commits API
@@ -124,7 +124,7 @@ Pithub::Repos::Commits - Github v3 Repo Commits API
 
 =head1 VERSION
 
-version 0.01018
+version 0.01019
 
 =head1 METHODS
 
