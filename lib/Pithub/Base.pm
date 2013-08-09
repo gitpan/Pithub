@@ -1,6 +1,6 @@
 package Pithub::Base;
 {
-  $Pithub::Base::VERSION = '0.01019';
+  $Pithub::Base::VERSION = '0.01020';
 }
 
 # ABSTRACT: Github v3 base class for all Pithub modules
@@ -372,6 +372,7 @@ sub _validate_user_repo_args {
 1;
 
 __END__
+
 =pod
 
 =head1 NAME
@@ -380,7 +381,7 @@ Pithub::Base - Github v3 base class for all Pithub modules
 
 =head1 VERSION
 
-version 0.01019
+version 0.01020
 
 =head1 DESCRIPTION
 
@@ -814,4 +815,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

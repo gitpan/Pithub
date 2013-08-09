@@ -1,6 +1,6 @@
 package Pithub;
 {
-  $Pithub::VERSION = '0.01019';
+  $Pithub::VERSION = '0.01020';
 }
 
 # ABSTRACT: Github v3 API
@@ -67,6 +67,7 @@ sub users {
 1;
 
 __END__
+
 =pod
 
 =head1 NAME
@@ -75,7 +76,7 @@ Pithub - Github v3 API
 
 =head1 VERSION
 
-version 0.01019
+version 0.01020
 
 =head1 SYNOPSIS
 
@@ -571,6 +572,20 @@ See also: L<http://developer.github.com/v3/users/keys/>
 
 =back
 
+=head1 CONTRIBUTORS
+
+=over
+
+=item *
+
+Andreas Marienborg
+
+=item *
+
+Alessandro Ghedini
+
+=back
+
 =head1 AUTHOR
 
 Johannes Plunien <plu@cpan.org>
@@ -583,4 +598,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

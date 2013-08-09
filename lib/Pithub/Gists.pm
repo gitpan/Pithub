@@ -1,6 +1,6 @@
 package Pithub::Gists;
 {
-  $Pithub::Gists::VERSION = '0.01019';
+  $Pithub::Gists::VERSION = '0.01020';
 }
 
 # ABSTRACT: Github v3 Gists API
@@ -138,6 +138,7 @@ sub update {
 1;
 
 __END__
+
 =pod
 
 =head1 NAME
@@ -146,7 +147,7 @@ Pithub::Gists - Github v3 Gists API
 
 =head1 VERSION
 
-version 0.01019
+version 0.01020
 
 =head1 METHODS
 
@@ -775,4 +776,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

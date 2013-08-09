@@ -1,6 +1,6 @@
 package Pithub::Result;
 {
-  $Pithub::Result::VERSION = '0.01019';
+  $Pithub::Result::VERSION = '0.01020';
 }
 
 # ABSTRACT: Github v3 result object
@@ -280,6 +280,7 @@ sub _reset {
 1;
 
 __END__
+
 =pod
 
 =head1 NAME
@@ -288,7 +289,7 @@ Pithub::Result - Github v3 result object
 
 =head1 VERSION
 
-version 0.01019
+version 0.01020
 
 =head1 DESCRIPTION
 
@@ -487,4 +488,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

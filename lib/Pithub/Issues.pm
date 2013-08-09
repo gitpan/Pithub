@@ -1,6 +1,6 @@
 package Pithub::Issues;
 {
-  $Pithub::Issues::VERSION = '0.01019';
+  $Pithub::Issues::VERSION = '0.01020';
 }
 
 # ABSTRACT: Github v3 Issues API
@@ -97,6 +97,7 @@ sub update {
 1;
 
 __END__
+
 =pod
 
 =head1 NAME
@@ -105,7 +106,7 @@ Pithub::Issues - Github v3 Issues API
 
 =head1 VERSION
 
-version 0.01019
+version 0.01020
 
 =head1 METHODS
 
@@ -820,4 +821,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

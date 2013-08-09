@@ -1,6 +1,6 @@
 package Pithub::Orgs::Members;
 {
-  $Pithub::Orgs::Members::VERSION = '0.01019';
+  $Pithub::Orgs::Members::VERSION = '0.01020';
 }
 
 # ABSTRACT: Github v3 Org Members API
@@ -94,6 +94,7 @@ sub publicize {
 1;
 
 __END__
+
 =pod
 
 =head1 NAME
@@ -102,7 +103,7 @@ Pithub::Orgs::Members - Github v3 Org Members API
 
 =head1 VERSION
 
-version 0.01019
+version 0.01020
 
 =head1 METHODS
 
@@ -259,4 +260,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

@@ -1,6 +1,6 @@
 package Pithub::Repos;
 {
-  $Pithub::Repos::VERSION = '0.01019';
+  $Pithub::Repos::VERSION = '0.01020';
 }
 
 # ABSTRACT: Github v3 Repos API
@@ -83,6 +83,11 @@ sub downloads {
 
 sub forks {
     return shift->_create_instance('Pithub::Repos::Forks');
+}
+
+
+sub stats {
+    return shift->_create_instance('Pitbub::Repos::Stats');
 }
 
 
@@ -190,6 +195,7 @@ sub watching {
 1;
 
 __END__
+
 =pod
 
 =head1 NAME
@@ -198,7 +204,7 @@ Pithub::Repos - Github v3 Repos API
 
 =head1 VERSION
 
-version 0.01019
+version 0.01020
 
 =head1 METHODS
 
@@ -287,6 +293,10 @@ Provides access to L<Pithub::Repos::Downloads>.
 =head2 forks
 
 Provides access to L<Pithub::Repos::Forks>.
+
+=head2 stats
+
+Provide access to L<Pithub::Repos::Stats>.
 
 =head2 get
 
@@ -444,4 +454,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
