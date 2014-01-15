@@ -1,6 +1,6 @@
 package Pithub::Repos::Starring;
 {
-  $Pithub::Repos::Starring::VERSION = '0.01020';
+  $Pithub::Repos::Starring::VERSION = '0.01021';
 }
 
 # ABSTRACT: Github v3 Repo Starring API
@@ -76,13 +76,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Pithub::Repos::Starring - Github v3 Repo Starring API
 
 =head1 VERSION
 
-version 0.01020
+version 0.01021
 
 =head1 METHODS
 

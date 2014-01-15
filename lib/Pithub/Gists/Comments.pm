@@ -1,6 +1,6 @@
 package Pithub::Gists::Comments;
 {
-  $Pithub::Gists::Comments::VERSION = '0.01020';
+  $Pithub::Gists::Comments::VERSION = '0.01021';
 }
 
 # ABSTRACT: Github v3 Gist Comments API
@@ -72,13 +72,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Pithub::Gists::Comments - Github v3 Gist Comments API
 
 =head1 VERSION
 
-version 0.01020
+version 0.01021
 
 =head1 METHODS
 

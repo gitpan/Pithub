@@ -1,6 +1,6 @@
 package Pithub::Repos::Watching;
 {
-  $Pithub::Repos::Watching::VERSION = '0.01020';
+  $Pithub::Repos::Watching::VERSION = '0.01021';
 }
 
 # ABSTRACT: Github v3 Repo Watching API
@@ -76,13 +76,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Pithub::Repos::Watching - Github v3 Repo Watching API
 
 =head1 VERSION
 
-version 0.01020
+version 0.01021
 
 =head1 METHODS
 

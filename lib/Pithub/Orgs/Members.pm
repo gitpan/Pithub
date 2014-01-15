@@ -1,6 +1,6 @@
 package Pithub::Orgs::Members;
 {
-  $Pithub::Orgs::Members::VERSION = '0.01020';
+  $Pithub::Orgs::Members::VERSION = '0.01021';
 }
 
 # ABSTRACT: Github v3 Org Members API
@@ -97,13 +97,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Pithub::Orgs::Members - Github v3 Org Members API
 
 =head1 VERSION
 
-version 0.01020
+version 0.01021
 
 =head1 METHODS
 

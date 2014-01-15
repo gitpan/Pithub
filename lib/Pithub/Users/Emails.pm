@@ -1,6 +1,6 @@
 package Pithub::Users::Emails;
 {
-  $Pithub::Users::Emails::VERSION = '0.01020';
+  $Pithub::Users::Emails::VERSION = '0.01021';
 }
 
 # ABSTRACT: Github v3 User Emails API
@@ -47,13 +47,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Pithub::Users::Emails - Github v3 User Emails API
 
 =head1 VERSION
 
-version 0.01020
+version 0.01021
 
 =head1 METHODS
 

@@ -1,6 +1,6 @@
 package Pithub::Base;
 {
-  $Pithub::Base::VERSION = '0.01020';
+  $Pithub::Base::VERSION = '0.01021';
 }
 
 # ABSTRACT: Github v3 base class for all Pithub modules
@@ -375,13 +375,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Pithub::Base - Github v3 base class for all Pithub modules
 
 =head1 VERSION
 
-version 0.01020
+version 0.01021
 
 =head1 DESCRIPTION
 

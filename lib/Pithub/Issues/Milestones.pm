@@ -1,6 +1,6 @@
 package Pithub::Issues::Milestones;
 {
-  $Pithub::Issues::Milestones::VERSION = '0.01020';
+  $Pithub::Issues::Milestones::VERSION = '0.01021';
 }
 
 # ABSTRACT: Github v3 Issue Milestones API
@@ -75,13 +75,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Pithub::Issues::Milestones - Github v3 Issue Milestones API
 
 =head1 VERSION
 
-version 0.01020
+version 0.01021
 
 =head1 METHODS
 

@@ -1,6 +1,6 @@
 package Pithub::Orgs;
 {
-  $Pithub::Orgs::VERSION = '0.01020';
+  $Pithub::Orgs::VERSION = '0.01021';
 }
 
 # ABSTRACT: Github v3 Orgs API
@@ -67,13 +67,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Pithub::Orgs - Github v3 Orgs API
 
 =head1 VERSION
 
-version 0.01020
+version 0.01021
 
 =head1 METHODS
 

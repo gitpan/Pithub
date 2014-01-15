@@ -1,6 +1,6 @@
 package Pithub::PullRequests::Comments;
 {
-  $Pithub::PullRequests::Comments::VERSION = '0.01020';
+  $Pithub::PullRequests::Comments::VERSION = '0.01021';
 }
 
 # ABSTRACT: Github v3 Pull Request Comments API
@@ -77,13 +77,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Pithub::PullRequests::Comments - Github v3 Pull Request Comments API
 
 =head1 VERSION
 
-version 0.01020
+version 0.01021
 
 =head1 METHODS
 

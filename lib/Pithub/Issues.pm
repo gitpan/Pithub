@@ -1,6 +1,6 @@
 package Pithub::Issues;
 {
-  $Pithub::Issues::VERSION = '0.01020';
+  $Pithub::Issues::VERSION = '0.01021';
 }
 
 # ABSTRACT: Github v3 Issues API
@@ -100,13 +100,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Pithub::Issues - Github v3 Issues API
 
 =head1 VERSION
 
-version 0.01020
+version 0.01021
 
 =head1 METHODS
 

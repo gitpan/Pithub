@@ -1,6 +1,6 @@
 package Pithub::Issues::Assignees;
 {
-  $Pithub::Issues::Assignees::VERSION = '0.01020';
+  $Pithub::Issues::Assignees::VERSION = '0.01021';
 }
 
 # ABSTRACT: Github v3 Issue Assignees API
@@ -38,13 +38,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Pithub::Issues::Assignees - Github v3 Issue Assignees API
 
 =head1 VERSION
 
-version 0.01020
+version 0.01021
 
 =head1 METHODS
 
