@@ -1,8 +1,5 @@
 package Pithub::Result;
-{
-  $Pithub::Result::VERSION = '0.01021';
-}
-
+$Pithub::Result::VERSION = '0.01022';
 # ABSTRACT: Github v3 result object
 
 use Moo;
@@ -291,7 +288,7 @@ Pithub::Result - Github v3 result object
 
 =head1 VERSION
 
-version 0.01021
+version 0.01022
 
 =head1 DESCRIPTION
 

@@ -1,8 +1,5 @@
 package Pithub::Users;
-{
-  $Pithub::Users::VERSION = '0.01021';
-}
-
+$Pithub::Users::VERSION = '0.01022';
 # ABSTRACT: Github v3 Users API
 
 use Moo;
@@ -69,7 +66,7 @@ Pithub::Users - Github v3 Users API
 
 =head1 VERSION
 
-version 0.01021
+version 0.01022
 
 =head1 METHODS
 

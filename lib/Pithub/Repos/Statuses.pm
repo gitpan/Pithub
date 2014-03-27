@@ -1,8 +1,5 @@
 package Pithub::Repos::Statuses;
-{
-  $Pithub::Repos::Statuses::VERSION = '0.01021';
-}
-
+$Pithub::Repos::Statuses::VERSION = '0.01022';
 # ABSTRACT:  Github v3 repos / statuses API
 
 use Moo;
@@ -65,7 +62,7 @@ Pithub::Repos::Statuses - Github v3 repos / statuses API
 
 =head1 VERSION
 
-version 0.01021
+version 0.01022
 
 =head1 METHODS
 

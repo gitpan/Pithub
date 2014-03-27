@@ -1,8 +1,5 @@
 package Pithub::Gists;
-{
-  $Pithub::Gists::VERSION = '0.01021';
-}
-
+$Pithub::Gists::VERSION = '0.01022';
 # ABSTRACT: Github v3 Gists API
 
 use Moo;
@@ -149,7 +146,7 @@ Pithub::Gists - Github v3 Gists API
 
 =head1 VERSION
 
-version 0.01021
+version 0.01022
 
 =head1 METHODS
 

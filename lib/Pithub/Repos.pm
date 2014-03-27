@@ -1,8 +1,5 @@
 package Pithub::Repos;
-{
-  $Pithub::Repos::VERSION = '0.01021';
-}
-
+$Pithub::Repos::VERSION = '0.01022';
 # ABSTRACT: Github v3 Repos API
 
 use Moo;
@@ -14,7 +11,10 @@ use Pithub::Repos::Downloads;
 use Pithub::Repos::Forks;
 use Pithub::Repos::Hooks;
 use Pithub::Repos::Keys;
+use Pithub::Repos::Releases;
 use Pithub::Repos::Starring;
+use Pithub::Repos::Stats;
+use Pithub::Repos::Statuses;
 use Pithub::Repos::Watching;
 extends 'Pithub::Base';
 
@@ -86,11 +86,6 @@ sub forks {
 }
 
 
-sub stats {
-    return shift->_create_instance('Pitbub::Repos::Stats');
-}
-
-
 sub get {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
@@ -149,8 +144,23 @@ sub list {
 }
 
 
+sub releases {
+    return shift->_create_instance('Pithub::Repos::Releases');
+}
+
+
 sub starring {
     return shift->_create_instance('Pithub::Repos::Starring');
+}
+
+
+sub stats {
+    return shift->_create_instance('Pithub::Repos::Stats');
+}
+
+
+sub statuses {
+    return shift->_create_instance('Pithub::Repos::Statuses');
 }
 
 
@@ -206,7 +216,7 @@ Pithub::Repos - Github v3 Repos API
 
 =head1 VERSION
 
-version 0.01021
+version 0.01022
 
 =head1 METHODS
 
@@ -296,10 +306,6 @@ Provides access to L<Pithub::Repos::Downloads>.
 
 Provides access to L<Pithub::Repos::Forks>.
 
-=head2 stats
-
-Provide access to L<Pithub::Repos::Stats>.
-
 =head2 get
 
 =over
@@ -381,9 +387,21 @@ Examples:
 
 =back
 
+=head2 releases
+
+Provides access to L<Pithub::Repos::Releases>.
+
 =head2 starring
 
 Provides access to L<Pithub::Repos::Starring>.
+
+=head2 stats
+
+Provide access to L<Pithub::Repos::Stats>.
+
+=head2 statuses
+
+Provide access to L<Pithub::Repos::Statuses>.
 
 =head2 tags
 

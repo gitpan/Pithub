@@ -1,8 +1,5 @@
 package Pithub::Events;
-{
-  $Pithub::Events::VERSION = '0.01021';
-}
-
+$Pithub::Events::VERSION = '0.01022';
 # ABSTRACT: Github v3 Events API
 
 use Moo;
@@ -119,7 +116,7 @@ Pithub::Events - Github v3 Events API
 
 =head1 VERSION
 
-version 0.01021
+version 0.01022
 
 =head1 METHODS
 

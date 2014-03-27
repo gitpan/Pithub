@@ -1,8 +1,5 @@
 package Pithub;
-{
-  $Pithub::VERSION = '0.01021';
-}
-
+$Pithub::VERSION = '0.01022';
 # ABSTRACT: Github v3 API
 
 use Moo;
@@ -78,7 +75,7 @@ Pithub - Github v3 API
 
 =head1 VERSION
 
-version 0.01021
+version 0.01022
 
 =head1 SYNOPSIS
 
@@ -510,6 +507,26 @@ See also: L<http://developer.github.com/v3/repos/keys/>
     my $keys = Pithub->new->repos->keys;
     my $keys = Pithub::Repos->new->keys;
     my $keys = Pithub::Repos::Keys->new;
+
+=item *
+
+L<Pithub::Repos::Stats>
+
+See also: L<http://developer.github.com/v3/repos/statistics/>
+
+    my $watching = Pithub->new->repos->stats;
+    my $watching = Pithub::Repos->new->stats;
+    my $watching = Pithub::Repos::Stats->new;
+
+=item *
+
+L<Pithub::Repos::Statuses>
+
+See also: L<http://developer.github.com/v3/repos/statuses/>
+
+    my $watching = Pithub->new->repos->statuses;
+    my $watching = Pithub::Repos->new->statuses;
+    my $watching = Pithub::Repos::Statuses->new;
 
 =item *
 

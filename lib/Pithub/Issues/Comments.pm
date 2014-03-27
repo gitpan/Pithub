@@ -1,8 +1,5 @@
 package Pithub::Issues::Comments;
-{
-  $Pithub::Issues::Comments::VERSION = '0.01021';
-}
-
+$Pithub::Issues::Comments::VERSION = '0.01022';
 # ABSTRACT: Github v3 Issue Comments API
 
 use Moo;
@@ -85,7 +82,7 @@ Pithub::Issues::Comments - Github v3 Issue Comments API
 
 =head1 VERSION
 
-version 0.01021
+version 0.01022
 
 =head1 METHODS
 

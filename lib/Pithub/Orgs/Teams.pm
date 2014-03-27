@@ -1,8 +1,5 @@
 package Pithub::Orgs::Teams;
-{
-  $Pithub::Orgs::Teams::VERSION = '0.01021';
-}
-
+$Pithub::Orgs::Teams::VERSION = '0.01022';
 # ABSTRACT: Github v3 Org Teams API
 
 use Moo;
@@ -26,9 +23,13 @@ sub add_repo {
     my ( $self, %args ) = @_;
     croak 'Missing key in parameters: team_id' unless $args{team_id};
     croak 'Missing key in parameters: repo'    unless $args{repo};
+    croak 'Missing key in parameters: org'     unless $args{org};
     return $self->request(
         method => 'PUT',
-        path   => sprintf( '/teams/%s/repos/%s', delete $args{team_id}, delete $args{repo} ),
+        path   => sprintf( '/teams/%s/repos/%s/%s',
+            delete $args{team_id},
+            delete $args{org},
+            delete $args{repo} ),
         %args,
     );
 }
@@ -174,7 +175,7 @@ Pithub::Orgs::Teams - Github v3 Org Teams API
 
 =head1 VERSION
 
-version 0.01021
+version 0.01022
 
 =head1 METHODS
 
@@ -213,6 +214,7 @@ Examples:
     my $result = $t->add_repo(
         team_id => 1,
         repo    => 'some_repo',
+        org => 'our_organization',
     );
 
 =back

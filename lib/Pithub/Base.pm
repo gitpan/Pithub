@@ -1,8 +1,5 @@
 package Pithub::Base;
-{
-  $Pithub::Base::VERSION = '0.01021';
-}
-
+$Pithub::Base::VERSION = '0.01022';
 # ABSTRACT: Github v3 base class for all Pithub modules
 
 use Moo;
@@ -122,6 +119,7 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^DELETE /repos/[^/]+/[^/]+/labels/.*?$},
     qr{^DELETE /repos/[^/]+/[^/]+/milestones/.*?$},
     qr{^DELETE /repos/[^/]+/[^/]+/pulls/comments/.*?$},
+    qr{^DELETE /repos/[^/]+/[^/]+/releases/.*?$},
     qr{^DELETE /teams/.*?$},
     qr{^DELETE /teams/[^/]+/members/.*?$},
     qr{^DELETE /teams/[^/]+/repos/.*?$},
@@ -165,6 +163,7 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^PATCH /repos/[^/]+/[^/]+/labels/.*?$},
     qr{^PATCH /repos/[^/]+/[^/]+/milestones/.*?$},
     qr{^PATCH /repos/[^/]+/[^/]+/pulls/.*?$},
+    qr{^PATCH /repos/[^/]+/[^/]+/releases/.*?$},
     qr{^PATCH /repos/[^/]+/[^/]+/pulls/comments/.*?$},
     qr{^PATCH /teams/.*?$},
     qr{^PATCH /user/keys/.*?$},
@@ -189,6 +188,7 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^POST /repos/[^/]+/[^/]+/labels$},
     qr{^POST /repos/[^/]+/[^/]+/milestones$},
     qr{^POST /repos/[^/]+/[^/]+/pulls$},
+    qr{^POST /repos/[^/]+/[^/]+/releases$},
     qr{^POST /repos/[^/]+/[^/]+/pulls/[^/]+/comments$},
     qr{^PUT /gists/[^/]+/star$},
     qr{^PUT /orgs/[^/]+/public_members/.*?$},
@@ -383,7 +383,7 @@ Pithub::Base - Github v3 base class for all Pithub modules
 
 =head1 VERSION
 
-version 0.01021
+version 0.01022
 
 =head1 DESCRIPTION
 

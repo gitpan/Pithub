@@ -574,6 +574,102 @@ BEGIN {
     }
 }
 
+# Pithub::Repos::Releases->list
+{
+    my $obj = Pithub::Test->create( 'Pithub::Repos::Releases', user => 'foo', repo => 'bar' );
+
+    isa_ok $obj, 'Pithub::Repos::Releases';
+
+    {
+        my $result = $obj->list;
+        is $result->request->method, 'GET', 'HTTP method';
+        is $result->request->uri->path, '/repos/foo/bar/releases', 'HTTP path';
+        my $http_request = $result->request;
+        is $http_request->content, '', 'HTTP body';
+    }
+}
+
+# Pithub::Repos::Releases->get
+{
+    my $obj = Pithub::Test->create( 'Pithub::Repos::Releases', user => 'foo', repo => 'bar' );
+
+    isa_ok $obj, 'Pithub::Repos::Releases';
+
+    throws_ok { $obj->get } qr{Missing key in parameters: release_id}, 'No parameters';
+
+    {
+        my $result = $obj->get( release_id => 1 ) ;
+        is $result->request->method, 'GET', 'HTTP method';
+        is $result->request->uri->path, '/repos/foo/bar/releases/1', 'HTTP path';
+        my $http_request = $result->request;
+        is $http_request->content, '', 'HTTP body';
+    }
+}
+
+# Pithub::Repos::Releases->create
+{
+    my $obj = Pithub::Test->create( 'Pithub::Repos::Releases', user => 'foo', repo => 'bar' );
+
+    isa_ok $obj, 'Pithub::Repos::Releases';
+
+    throws_ok { $obj->create } qr{Missing key in parameters: data \(hashref\)}, 'No data parameter';
+    throws_ok { $obj->create( data => { foo => 'bar' } ); } qr{Access token required for: POST /repos/foo/bar/releases}, 'Token required';
+
+    ok $obj->token(123), 'Token set';
+
+    {
+        my $result = $obj->create( data => { tag_name => 'foo' } );
+        is $result->request->method, 'POST', 'HTTP method';
+        is $result->request->uri->path, '/repos/foo/bar/releases', 'HTTP path';
+        my $http_request = $result->request;
+        my $json   = JSON->new;
+        eq_or_diff $json->decode( $http_request->content ), { tag_name => 'foo' }, 'HTTP body';
+    }
+}
+
+# Pithub::Repos::Releases->update
+{
+    my $obj = Pithub::Test->create( 'Pithub::Repos::Releases', user => 'foo', repo => 'bar' );
+
+    isa_ok $obj, 'Pithub::Repos::Releases';
+
+    throws_ok { $obj->update } qr{Missing key in parameters: release_id}, 'No parameters';
+    throws_ok { $obj->update( release_id => 1 ) } qr{Missing key in parameters: data \(hashref\)}, 'No data parameter';
+    throws_ok { $obj->update( release_id => 1, data => { foo => 'bar' } ); } qr{Access token required for: PATCH /repos/foo/bar/releases/1}, 'Token required';
+
+    ok $obj->token(123), 'Token set';
+
+    {
+        my $result = $obj->update( release_id => 1, data => { tag_name => 'foo' } );
+        is $result->request->method, 'PATCH', 'HTTP method';
+        is $result->request->uri->path, '/repos/foo/bar/releases/1', 'HTTP path';
+        my $http_request = $result->request;
+        my $json   = JSON->new;
+        eq_or_diff $json->decode( $http_request->content ), { tag_name => 'foo' }, 'HTTP body';
+    }
+}
+
+# Pithub::Repos::Releases->delete
+{
+    my $obj = Pithub::Test->create( 'Pithub::Repos::Releases', user => 'foo', repo => 'bar' );
+
+    isa_ok $obj, 'Pithub::Repos::Releases';
+
+    throws_ok { $obj->delete } qr{Missing key in parameters: release_id}, 'No parameters';
+    throws_ok { $obj->delete( release_id => 1 ); } qr{Access token required for: DELETE /repos/foo/bar/releases/1}, 'Token required';
+
+    ok $obj->token(123), 'Token set';
+
+    {
+        my $result = $obj->delete( release_id => 1 );
+        is $result->request->method, 'DELETE', 'HTTP method';
+        is $result->request->uri->path, '/repos/foo/bar/releases/1', 'HTTP path';
+        my $http_request = $result->request;
+        is $http_request->content, '', 'HTTP body';
+    }
+}
+
+
 # Pithub::Repos::Starring->has_watching
 {
     my $obj = Pithub::Test->create( 'Pithub::Repos::Starring', user => 'foo', repo => 'bar' );
