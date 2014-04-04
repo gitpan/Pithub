@@ -1,5 +1,5 @@
 package Pithub::Repos::Downloads;
-$Pithub::Repos::Downloads::VERSION = '0.01022';
+$Pithub::Repos::Downloads::VERSION = '0.01023';
 # ABSTRACT: Github v3 Repo Downloads API
 
 use Moo;
@@ -95,7 +95,7 @@ Pithub::Repos::Downloads - Github v3 Repo Downloads API
 
 =head1 VERSION
 
-version 0.01022
+version 0.01023
 
 =head1 METHODS
 
@@ -210,6 +210,12 @@ a L<Pithub::Result> object (like all other methods do)! If the
 upload was successful the status will be C<< 201 >>.
 
 =back
+
+=head1 NOTE
+
+Github says: The Downloads API (described below) was deprecated on
+December 11, 2012. It will be removed at a future date. We recommend
+using L<Pithub::Repos::Releases> instead.
 
 =head1 AUTHOR
 

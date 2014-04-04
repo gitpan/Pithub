@@ -1,5 +1,5 @@
 package Pithub::Repos::Starring;
-$Pithub::Repos::Starring::VERSION = '0.01022';
+$Pithub::Repos::Starring::VERSION = '0.01023';
 # ABSTRACT: Github v3 Repo Starring API
 
 use Moo;
@@ -81,7 +81,7 @@ Pithub::Repos::Starring - Github v3 Repo Starring API
 
 =head1 VERSION
 
-version 0.01022
+version 0.01023
 
 =head1 METHODS
 

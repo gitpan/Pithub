@@ -1,5 +1,5 @@
 package Pithub::Issues::Labels;
-$Pithub::Issues::Labels::VERSION = '0.01022';
+$Pithub::Issues::Labels::VERSION = '0.01023';
 # ABSTRACT: Github v3 Issue Labels API
 
 use Moo;
@@ -139,7 +139,7 @@ Pithub::Issues::Labels - Github v3 Issue Labels API
 
 =head1 VERSION
 
-version 0.01022
+version 0.01023
 
 =head1 METHODS
 

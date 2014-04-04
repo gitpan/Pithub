@@ -1,5 +1,5 @@
 package Pithub::Base;
-$Pithub::Base::VERSION = '0.01022';
+$Pithub::Base::VERSION = '0.01023';
 # ABSTRACT: Github v3 base class for all Pithub modules
 
 use Moo;
@@ -120,6 +120,7 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^DELETE /repos/[^/]+/[^/]+/milestones/.*?$},
     qr{^DELETE /repos/[^/]+/[^/]+/pulls/comments/.*?$},
     qr{^DELETE /repos/[^/]+/[^/]+/releases/.*?$},
+    qr{^DELETE /repos/[^/]+/[^/]+/releases/assets/.*?$},
     qr{^DELETE /teams/.*?$},
     qr{^DELETE /teams/[^/]+/members/.*?$},
     qr{^DELETE /teams/[^/]+/repos/.*?$},
@@ -168,6 +169,7 @@ my @TOKEN_REQUIRED_REGEXP = (
     qr{^PATCH /teams/.*?$},
     qr{^PATCH /user/keys/.*?$},
     qr{^PATCH /user/repos/.*?$},
+    qr{^POST /repos/[^/]+/[^/]+/releases/[^/]+/assets.*?$},
     qr{^POST /gists/[^/]+/comments$},
     qr{^POST /orgs/[^/]+/repos$},
     qr{^POST /orgs/[^/]+/teams$},
@@ -206,9 +208,9 @@ my @TOKEN_REQUIRED_REGEXP = (
 sub request {
     my ( $self, %args ) = @_;
 
-    my $method = delete $args{method} || croak 'Missing mandatory key in parameters: method';
-    my $path   = delete $args{path}   || croak 'Missing mandatory key in parameters: path';
-    my $data   = delete $args{data};
+    my $method  = delete $args{method} || croak 'Missing mandatory key in parameters: method';
+    my $path    = delete $args{path}   || croak 'Missing mandatory key in parameters: path';
+    my $data    = delete $args{data};
     my $options = delete $args{options};
     my $params  = delete $args{params};
 
@@ -216,12 +218,25 @@ sub request {
 
     my $uri = $self->_uri_for($path);
 
+    if (my $host = delete $args{host}) {
+        $uri->host($host);
+    }
+
+    if (my $query = delete $args{query}) {
+        $uri->query_form(%$query);
+    }
+
     my $request = $self->_request_for( $method, $uri, $data );
+
+    if (my $headers = delete $args{headers}) {
+        foreach my $header (keys %$headers) {
+            $request->header($header, $headers->{$header});
+        }
+    }
 
     if ( $self->_token_required( $method, $path ) && !$self->has_token($request) ) {
         croak sprintf "Access token required for: %s %s (%s)", $method, $path, $uri;
     }
-
 
     if ($options) {
         croak 'The key options must be a hashref' unless ref $options eq 'HASH';
@@ -316,8 +331,8 @@ sub _request_for {
     my $request = HTTP::Request->new( $method, $uri, $headers );
 
     if ($data) {
-        my $json = $self->_json->encode($data);
-        $request->content($json);
+        $data = $self->_json->encode($data) if ref $data;
+        $request->content($data);
     }
 
     $request->header( 'Content-Length' => length $request->content );
@@ -383,7 +398,7 @@ Pithub::Base - Github v3 base class for all Pithub modules
 
 =head1 VERSION
 
-version 0.01022
+version 0.01023
 
 =head1 DESCRIPTION
 

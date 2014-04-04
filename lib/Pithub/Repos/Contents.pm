@@ -1,5 +1,5 @@
 package Pithub::Repos::Contents;
-$Pithub::Repos::Contents::VERSION = '0.01022';
+$Pithub::Repos::Contents::VERSION = '0.01023';
 # ABSTRACT: Github v3 Repo Contents API
 
 use Moo;
@@ -62,7 +62,7 @@ Pithub::Repos::Contents - Github v3 Repo Contents API
 
 =head1 VERSION
 
-version 0.01022
+version 0.01023
 
 =head1 METHODS
 

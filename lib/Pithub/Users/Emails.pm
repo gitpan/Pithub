@@ -1,5 +1,5 @@
 package Pithub::Users::Emails;
-$Pithub::Users::Emails::VERSION = '0.01022';
+$Pithub::Users::Emails::VERSION = '0.01023';
 # ABSTRACT: Github v3 User Emails API
 
 use Moo;
@@ -52,7 +52,7 @@ Pithub::Users::Emails - Github v3 User Emails API
 
 =head1 VERSION
 
-version 0.01022
+version 0.01023
 
 =head1 METHODS
 

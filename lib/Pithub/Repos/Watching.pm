@@ -1,5 +1,5 @@
 package Pithub::Repos::Watching;
-$Pithub::Repos::Watching::VERSION = '0.01022';
+$Pithub::Repos::Watching::VERSION = '0.01023';
 # ABSTRACT: Github v3 Repo Watching API
 
 use Moo;
@@ -81,7 +81,7 @@ Pithub::Repos::Watching - Github v3 Repo Watching API
 
 =head1 VERSION
 
-version 0.01022
+version 0.01023
 
 =head1 METHODS
 
