@@ -1,5 +1,5 @@
 package Pithub::Repos::Releases;
-$Pithub::Repos::Releases::VERSION = '0.01023';
+$Pithub::Repos::Releases::VERSION = '0.01024';
 # ABSTRACT: Github v3 Repo Releases API
 
 use Moo;
@@ -86,7 +86,7 @@ Pithub::Repos::Releases - Github v3 Repo Releases API
 
 =head1 VERSION
 
-version 0.01023
+version 0.01024
 
 =head1 METHODS
 

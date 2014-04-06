@@ -1,5 +1,5 @@
 package Pithub::Search;
-$Pithub::Search::VERSION = '0.01023';
+$Pithub::Search::VERSION = '0.01024';
 # ABSTRACT: Github v3 Search API
 
 use Moo;
@@ -66,7 +66,7 @@ Pithub::Search - Github v3 Search API
 
 =head1 VERSION
 
-version 0.01023
+version 0.01024
 
 =head1 METHODS
 

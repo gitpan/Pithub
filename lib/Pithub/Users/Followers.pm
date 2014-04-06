@@ -1,5 +1,5 @@
 package Pithub::Users::Followers;
-$Pithub::Users::Followers::VERSION = '0.01023';
+$Pithub::Users::Followers::VERSION = '0.01024';
 # ABSTRACT: Github v3 User Followers API
 
 use Moo;
@@ -87,7 +87,7 @@ Pithub::Users::Followers - Github v3 User Followers API
 
 =head1 VERSION
 
-version 0.01023
+version 0.01024
 
 =head1 METHODS
 

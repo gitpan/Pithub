@@ -1,5 +1,5 @@
 package Pithub::GitData::Commits;
-$Pithub::GitData::Commits::VERSION = '0.01023';
+$Pithub::GitData::Commits::VERSION = '0.01024';
 # ABSTRACT: Github v3 Git Data Commits API
 
 use Moo;
@@ -44,7 +44,7 @@ Pithub::GitData::Commits - Github v3 Git Data Commits API
 
 =head1 VERSION
 
-version 0.01023
+version 0.01024
 
 =head1 METHODS
 

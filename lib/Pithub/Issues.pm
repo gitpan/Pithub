@@ -1,5 +1,5 @@
 package Pithub::Issues;
-$Pithub::Issues::VERSION = '0.01023';
+$Pithub::Issues::VERSION = '0.01024';
 # ABSTRACT: Github v3 Issues API
 
 use Moo;
@@ -105,7 +105,7 @@ Pithub::Issues - Github v3 Issues API
 
 =head1 VERSION
 
-version 0.01023
+version 0.01024
 
 =head1 METHODS
 

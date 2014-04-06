@@ -1,5 +1,8 @@
 Revision history for Pithub
 
+0.01024   2014-04-06 09:59:51+02:00 Europe/Berlin
+          - No changes.
+
 0.01023   2014-04-04 16:55:58+02:00 Europe/Berlin
           - Add Pithub::Repos::Releases::Assets (Johannes Plunien)
 

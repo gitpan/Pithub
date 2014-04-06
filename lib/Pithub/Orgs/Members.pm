@@ -1,5 +1,5 @@
 package Pithub::Orgs::Members;
-$Pithub::Orgs::Members::VERSION = '0.01023';
+$Pithub::Orgs::Members::VERSION = '0.01024';
 # ABSTRACT: Github v3 Org Members API
 
 use Moo;
@@ -102,7 +102,7 @@ Pithub::Orgs::Members - Github v3 Org Members API
 
 =head1 VERSION
 
-version 0.01023
+version 0.01024
 
 =head1 METHODS
 

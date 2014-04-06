@@ -1,5 +1,5 @@
 package Pithub::Repos::Keys;
-$Pithub::Repos::Keys::VERSION = '0.01023';
+$Pithub::Repos::Keys::VERSION = '0.01024';
 # ABSTRACT: Github v3 Repo Keys API
 
 use Moo;
@@ -80,7 +80,7 @@ Pithub::Repos::Keys - Github v3 Repo Keys API
 
 =head1 VERSION
 
-version 0.01023
+version 0.01024
 
 =head1 METHODS
 

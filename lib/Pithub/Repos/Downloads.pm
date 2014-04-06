@@ -1,5 +1,5 @@
 package Pithub::Repos::Downloads;
-$Pithub::Repos::Downloads::VERSION = '0.01023';
+$Pithub::Repos::Downloads::VERSION = '0.01024';
 # ABSTRACT: Github v3 Repo Downloads API
 
 use Moo;
@@ -95,7 +95,7 @@ Pithub::Repos::Downloads - Github v3 Repo Downloads API
 
 =head1 VERSION
 
-version 0.01023
+version 0.01024
 
 =head1 METHODS
 

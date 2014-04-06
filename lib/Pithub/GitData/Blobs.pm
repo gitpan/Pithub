@@ -1,5 +1,5 @@
 package Pithub::GitData::Blobs;
-$Pithub::GitData::Blobs::VERSION = '0.01023';
+$Pithub::GitData::Blobs::VERSION = '0.01024';
 # ABSTRACT: Github v3 Git Data Blobs API
 
 use Moo;
@@ -44,7 +44,7 @@ Pithub::GitData::Blobs - Github v3 Git Data Blobs API
 
 =head1 VERSION
 
-version 0.01023
+version 0.01024
 
 =head1 DESCRIPTION
 
