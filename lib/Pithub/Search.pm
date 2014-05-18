@@ -1,5 +1,9 @@
 package Pithub::Search;
-$Pithub::Search::VERSION = '0.01024';
+$Pithub::Search::VERSION = '0.01025';
+BEGIN {
+  $Pithub::Search::AUTHORITY = 'cpan:PLU';
+}
+
 # ABSTRACT: Github v3 Search API
 
 use Moo;
@@ -66,7 +70,7 @@ Pithub::Search - Github v3 Search API
 
 =head1 VERSION
 
-version 0.01024
+version 0.01025
 
 =head1 METHODS
 

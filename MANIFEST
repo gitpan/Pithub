@@ -8,6 +8,7 @@ Makefile.PL
 README
 dist.ini
 examples/create_release.pl
+examples/fork_to_org.pl
 examples/gitdata_commit.pl
 examples/list_repos.pl
 examples/releases.pl

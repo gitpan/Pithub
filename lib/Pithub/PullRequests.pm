@@ -1,5 +1,9 @@
 package Pithub::PullRequests;
-$Pithub::PullRequests::VERSION = '0.01024';
+$Pithub::PullRequests::VERSION = '0.01025';
+BEGIN {
+  $Pithub::PullRequests::AUTHORITY = 'cpan:PLU';
+}
+
 # ABSTRACT: Github v3 Pull Requests API
 
 use Moo;
@@ -122,7 +126,7 @@ Pithub::PullRequests - Github v3 Pull Requests API
 
 =head1 VERSION
 
-version 0.01024
+version 0.01025
 
 =head1 METHODS
 

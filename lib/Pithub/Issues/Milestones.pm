@@ -1,5 +1,9 @@
 package Pithub::Issues::Milestones;
-$Pithub::Issues::Milestones::VERSION = '0.01024';
+$Pithub::Issues::Milestones::VERSION = '0.01025';
+BEGIN {
+  $Pithub::Issues::Milestones::AUTHORITY = 'cpan:PLU';
+}
+
 # ABSTRACT: Github v3 Issue Milestones API
 
 use Moo;
@@ -80,7 +84,7 @@ Pithub::Issues::Milestones - Github v3 Issue Milestones API
 
 =head1 VERSION
 
-version 0.01024
+version 0.01025
 
 =head1 METHODS
 

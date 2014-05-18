@@ -1,5 +1,9 @@
 package Pithub::Orgs;
-$Pithub::Orgs::VERSION = '0.01024';
+$Pithub::Orgs::VERSION = '0.01025';
+BEGIN {
+  $Pithub::Orgs::AUTHORITY = 'cpan:PLU';
+}
+
 # ABSTRACT: Github v3 Orgs API
 
 use Moo;
@@ -72,7 +76,7 @@ Pithub::Orgs - Github v3 Orgs API
 
 =head1 VERSION
 
-version 0.01024
+version 0.01025
 
 =head1 METHODS
 

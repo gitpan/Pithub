@@ -1,5 +1,9 @@
 package Pithub;
-$Pithub::VERSION = '0.01024';
+$Pithub::VERSION = '0.01025';
+BEGIN {
+  $Pithub::AUTHORITY = 'cpan:PLU';
+}
+
 # ABSTRACT: Github v3 API
 
 use Moo;
@@ -75,7 +79,7 @@ Pithub - Github v3 API
 
 =head1 VERSION
 
-version 0.01024
+version 0.01025
 
 =head1 SYNOPSIS
 

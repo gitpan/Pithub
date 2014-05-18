@@ -51,7 +51,7 @@
          "web" : "https://github.com/plu/Pithub"
       }
    },
-   "version" : "0.01024",
+   "version" : "0.01025",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.018002"
@@ -131,6 +131,11 @@
             "class" : "Dist::Zilla::Plugin::UploadToCPAN",
             "name" : "@Basic/UploadToCPAN",
             "version" : "5.015"
+         },
+         {
+            "class" : "Dist::Zilla::Plugin::Authority",
+            "name" : "Authority",
+            "version" : "1.006"
          },
          {
             "class" : "Dist::Zilla::Plugin::MetaConfig",
@@ -352,6 +357,7 @@
          },
          "version" : "5.015"
       }
-   }
+   },
+   "x_authority" : "cpan:PLU"
 }
 

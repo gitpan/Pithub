@@ -1,5 +1,9 @@
 package Pithub::Orgs::Teams;
-$Pithub::Orgs::Teams::VERSION = '0.01024';
+$Pithub::Orgs::Teams::VERSION = '0.01025';
+BEGIN {
+  $Pithub::Orgs::Teams::AUTHORITY = 'cpan:PLU';
+}
+
 # ABSTRACT: Github v3 Org Teams API
 
 use Moo;
@@ -175,7 +179,7 @@ Pithub::Orgs::Teams - Github v3 Org Teams API
 
 =head1 VERSION
 
-version 0.01024
+version 0.01025
 
 =head1 METHODS
 

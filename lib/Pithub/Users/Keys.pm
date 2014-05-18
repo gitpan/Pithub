@@ -1,5 +1,9 @@
 package Pithub::Users::Keys;
-$Pithub::Users::Keys::VERSION = '0.01024';
+$Pithub::Users::Keys::VERSION = '0.01025';
+BEGIN {
+  $Pithub::Users::Keys::AUTHORITY = 'cpan:PLU';
+}
+
 # ABSTRACT: Github v3 User Keys API
 
 use Moo;
@@ -75,7 +79,7 @@ Pithub::Users::Keys - Github v3 User Keys API
 
 =head1 VERSION
 
-version 0.01024
+version 0.01025
 
 =head1 METHODS
 

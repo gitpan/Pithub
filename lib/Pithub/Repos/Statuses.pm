@@ -1,5 +1,9 @@
 package Pithub::Repos::Statuses;
-$Pithub::Repos::Statuses::VERSION = '0.01024';
+$Pithub::Repos::Statuses::VERSION = '0.01025';
+BEGIN {
+  $Pithub::Repos::Statuses::AUTHORITY = 'cpan:PLU';
+}
+
 # ABSTRACT:  Github v3 repos / statuses API
 
 use Moo;
@@ -62,7 +66,7 @@ Pithub::Repos::Statuses - Github v3 repos / statuses API
 
 =head1 VERSION
 
-version 0.01024
+version 0.01025
 
 =head1 METHODS
 

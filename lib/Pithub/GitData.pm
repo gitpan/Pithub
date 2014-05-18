@@ -1,5 +1,9 @@
 package Pithub::GitData;
-$Pithub::GitData::VERSION = '0.01024';
+$Pithub::GitData::VERSION = '0.01025';
+BEGIN {
+  $Pithub::GitData::AUTHORITY = 'cpan:PLU';
+}
+
 # ABSTRACT: Github v3 Git Data API
 
 use Moo;
@@ -50,7 +54,7 @@ Pithub::GitData - Github v3 Git Data API
 
 =head1 VERSION
 
-version 0.01024
+version 0.01025
 
 =head1 METHODS
 

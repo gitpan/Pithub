@@ -33,7 +33,7 @@ my %WriteMakefileArgs = (
     "MIME::Base64" => 0,
     "Test::Most" => 0
   },
-  "VERSION" => "0.01024",
+  "VERSION" => "0.01025",
   "test" => {
     "TESTS" => "t/*.t t/live/*.t"
   }

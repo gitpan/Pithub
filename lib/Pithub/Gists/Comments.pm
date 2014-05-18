@@ -1,5 +1,9 @@
 package Pithub::Gists::Comments;
-$Pithub::Gists::Comments::VERSION = '0.01024';
+$Pithub::Gists::Comments::VERSION = '0.01025';
+BEGIN {
+  $Pithub::Gists::Comments::AUTHORITY = 'cpan:PLU';
+}
+
 # ABSTRACT: Github v3 Gist Comments API
 
 use Moo;
@@ -77,7 +81,7 @@ Pithub::Gists::Comments - Github v3 Gist Comments API
 
 =head1 VERSION
 
-version 0.01024
+version 0.01025
 
 =head1 METHODS
 

@@ -1,5 +1,9 @@
 package Pithub::GitData::References;
-$Pithub::GitData::References::VERSION = '0.01024';
+$Pithub::GitData::References::VERSION = '0.01025';
+BEGIN {
+  $Pithub::GitData::References::AUTHORITY = 'cpan:PLU';
+}
+
 # ABSTRACT: Github v3 Git Data References API
 
 use Moo;
@@ -75,7 +79,7 @@ Pithub::GitData::References - Github v3 Git Data References API
 
 =head1 VERSION
 
-version 0.01024
+version 0.01025
 
 =head1 METHODS
 

@@ -1,5 +1,9 @@
 package Pithub::GitData::Trees;
-$Pithub::GitData::Trees::VERSION = '0.01024';
+$Pithub::GitData::Trees::VERSION = '0.01025';
+BEGIN {
+  $Pithub::GitData::Trees::AUTHORITY = 'cpan:PLU';
+}
+
 # ABSTRACT: Github v3 Git Data Trees API
 
 use Moo;
@@ -50,7 +54,7 @@ Pithub::GitData::Trees - Github v3 Git Data Trees API
 
 =head1 VERSION
 
-version 0.01024
+version 0.01025
 
 =head1 METHODS
 
