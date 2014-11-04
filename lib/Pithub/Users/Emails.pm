@@ -1,8 +1,6 @@
 package Pithub::Users::Emails;
-$Pithub::Users::Emails::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Users::Emails::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Users::Emails::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 User Emails API
 
@@ -56,7 +54,7 @@ Pithub::Users::Emails - Github v3 User Emails API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

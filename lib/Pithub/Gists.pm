@@ -1,8 +1,6 @@
 package Pithub::Gists;
-$Pithub::Gists::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Gists::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Gists::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Gists API
 
@@ -13,7 +11,7 @@ extends 'Pithub::Base';
 
 
 sub comments {
-    return shift->_create_instance('Pithub::Gists::Comments');
+    return shift->_create_instance('Pithub::Gists::Comments', @_);
 }
 
 
@@ -150,7 +148,7 @@ Pithub::Gists - Github v3 Gists API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

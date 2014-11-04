@@ -1,8 +1,6 @@
 package Pithub::Repos::Contents;
-$Pithub::Repos::Contents::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Repos::Contents::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Repos::Contents::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Repo Contents API
 
@@ -66,7 +64,7 @@ Pithub::Repos::Contents - Github v3 Repo Contents API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

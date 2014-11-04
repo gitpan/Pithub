@@ -1,8 +1,6 @@
 package Pithub::Repos::Downloads;
-$Pithub::Repos::Downloads::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Repos::Downloads::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Repos::Downloads::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Repo Downloads API
 
@@ -99,7 +97,7 @@ Pithub::Repos::Downloads - Github v3 Repo Downloads API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

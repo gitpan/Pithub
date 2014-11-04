@@ -1,8 +1,6 @@
 package Pithub::Gists::Comments;
-$Pithub::Gists::Comments::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Gists::Comments::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Gists::Comments::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Gist Comments API
 
@@ -25,10 +23,11 @@ sub create {
 
 sub delete {
     my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: gist_id' unless $args{gist_id};
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     return $self->request(
         method => 'DELETE',
-        path   => sprintf( '/gists/comments/%s', delete $args{comment_id} ),
+        path   => sprintf( '/gists/%s/comments/%s', delete $args{gist_id}, delete $args{comment_id} ),
         %args,
     );
 }
@@ -36,10 +35,11 @@ sub delete {
 
 sub get {
     my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: gist_id' unless $args{gist_id};
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     return $self->request(
         method => 'GET',
-        path   => sprintf( '/gists/comments/%s', delete $args{comment_id} ),
+        path   => sprintf( '/gists/%s/comments/%s', delete $args{gist_id}, delete $args{comment_id} ),
         %args,
     );
 }
@@ -58,11 +58,12 @@ sub list {
 
 sub update {
     my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: gist_id' unless $args{gist_id};
     croak 'Missing key in parameters: comment_id' unless $args{comment_id};
     croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
     return $self->request(
         method => 'PATCH',
-        path   => sprintf( '/gists/comments/%s', delete $args{comment_id} ),
+        path   => sprintf( '/gists/%s/comments/%s', delete $args{gist_id}, delete $args{comment_id} ),
         %args,
     );
 }
@@ -81,7 +82,7 @@ Pithub::Gists::Comments - Github v3 Gist Comments API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 
@@ -101,7 +102,7 @@ Parameters:
 
 =item *
 
-B<gist_id>: mandatory integer
+B<gist_id>: mandatory string
 
 =item *
 
@@ -121,7 +122,7 @@ Examples:
 
     my $c = Pithub::Gists::Comments->new;
     my $result = $c->create(
-        gist_id => 1,
+        gist_id => 'c0ff33',
         data    => { body => 'Just commenting for the sake of commenting' },
     );
 
@@ -129,7 +130,7 @@ Response: B<Status: 201 Created>
 
     {
         "id": 1,
-        "url": "https://api.github.com/gists/comments/1",
+        "url": "https://api.github.com/gists/c0ff33/comments/1",
         "body": "Just commenting for the sake of commenting",
         "user": {
             "login": "octocat",
@@ -150,11 +151,15 @@ Response: B<Status: 201 Created>
 
 Delete a comment
 
-    DELETE /gists/comments/:id
+    DELETE /gists/:gist_id/comments/:id
 
 Parameters:
 
 =over
+
+=item *
+
+B<gist_id>: mandatory string
 
 =item *
 
@@ -165,7 +170,10 @@ B<comment_id>: mandatory integer
 Examples:
 
     my $c = Pithub::Gists::Comments->new;
-    my $result = $c->delete( comment_id => 1 );
+    my $result = $c->delete(
+        gist_id    => 'c0ff33',
+        comment_id => 1
+    );
 
 Response: B<Status: 204 No Content>
 
@@ -179,11 +187,15 @@ Response: B<Status: 204 No Content>
 
 Get a single comment
 
-    GET /gists/comments/:id
+    GET /gists/:gist_id/comments/:id
 
 Parameters:
 
 =over
+
+=item *
+
+B<gist_id>: mandatory string
 
 =item *
 
@@ -194,13 +206,16 @@ B<comment_id>: mandatory integer
 Examples:
 
     my $c = Pithub::Gists::Comments->new;
-    my $result = $c->get( comment_id => 1 );
+    my $result = $c->get(
+        gist_id    => 'c0ff33',
+        comment_id => 1
+    );
 
 Response: B<Status: 200 OK>
 
     {
         "id": 1,
-        "url": "https://api.github.com/gists/comments/1",
+        "url": "https://api.github.com/gists/c0ff33/comments/1",
         "body": "Just commenting for the sake of commenting",
         "user": {
             "login": "octocat",
@@ -229,7 +244,7 @@ Parameters:
 
 =item *
 
-B<gist_id>: mandatory integer
+B<gist_id>: mandatory string
 
 =back
 
@@ -243,7 +258,7 @@ Response: B<Status: 200 OK>
     [
         {
             "id": 1,
-            "url": "https://api.github.com/gists/comments/1",
+            "url": "https://api.github.com/gists/c0ff33/comments/1",
             "body": "Just commenting for the sake of commenting",
             "user": {
                 "login": "octocat",
@@ -265,11 +280,15 @@ Response: B<Status: 200 OK>
 
 Edit a comment
 
-    PATCH /gists/comments/:id
+    PATCH /gists/:gist_id/comments/:id
 
 Parameters:
 
 =over
+
+=item *
+
+B<gist_id>: mandatory string
 
 =item *
 
@@ -293,6 +312,7 @@ Examples:
 
     my $c = Pithub::Gists::Comments->new;
     my $result = $c->update(
+        gist_id    => 'c0ff33',
         comment_id => 1,
         data       => { body => 'some comment' }
     );
@@ -301,7 +321,7 @@ Response: B<Status: 200 OK>
 
     {
         "id": 1,
-        "url": "https://api.github.com/gists/comments/1",
+        "url": "https://api.github.com/gists/c0ff33/comments/1",
         "body": "Just commenting for the sake of commenting",
         "user": {
             "login": "octocat",

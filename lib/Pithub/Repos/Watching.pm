@@ -1,8 +1,6 @@
 package Pithub::Repos::Watching;
-$Pithub::Repos::Watching::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Repos::Watching::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Repos::Watching::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Repo Watching API
 
@@ -85,7 +83,7 @@ Pithub::Repos::Watching - Github v3 Repo Watching API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

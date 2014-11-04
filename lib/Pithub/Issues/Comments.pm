@@ -1,8 +1,6 @@
 package Pithub::Issues::Comments;
-$Pithub::Issues::Comments::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Issues::Comments::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Issues::Comments::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Issue Comments API
 
@@ -86,7 +84,7 @@ Pithub::Issues::Comments - Github v3 Issue Comments API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

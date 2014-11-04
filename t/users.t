@@ -1,7 +1,7 @@
 use FindBin;
 use lib "$FindBin::Bin/lib";
 use JSON;
-use Pithub::Test;
+use Pithub::Test::Factory;
 use Test::Most;
 
 BEGIN {
@@ -13,7 +13,8 @@ BEGIN {
 
 # Pithub::Users->get
 {
-    my $obj = Pithub::Test->create('Pithub::Users');
+    my $obj = Pithub::Test::Factory->create('Pithub::Users');
+    $obj->ua->add_response('users/plu.GET');
 
     isa_ok $obj, 'Pithub::Users';
 
@@ -55,7 +56,7 @@ BEGIN {
 
 # Pithub::Users->update
 {
-    my $obj = Pithub::Test->create('Pithub::Users');
+    my $obj = Pithub::Test::Factory->create('Pithub::Users');
 
     isa_ok $obj, 'Pithub::Users';
 
@@ -71,7 +72,7 @@ BEGIN {
 
 # Pithub::Users::Emails->add
 {
-    my $obj = Pithub::Test->create('Pithub::Users::Emails');
+    my $obj = Pithub::Test::Factory->create('Pithub::Users::Emails');
 
     isa_ok $obj, 'Pithub::Users::Emails';
 
@@ -101,7 +102,7 @@ BEGIN {
 
 # Pithub::Users::Emails->delete
 {
-    my $obj = Pithub::Test->create('Pithub::Users::Emails');
+    my $obj = Pithub::Test::Factory->create('Pithub::Users::Emails');
 
     isa_ok $obj, 'Pithub::Users::Emails';
 
@@ -131,7 +132,7 @@ BEGIN {
 
 # Pithub::Users::Emails->list
 {
-    my $obj = Pithub::Test->create('Pithub::Users::Emails');
+    my $obj = Pithub::Test::Factory->create('Pithub::Users::Emails');
 
     isa_ok $obj, 'Pithub::Users::Emails';
 
@@ -148,7 +149,7 @@ BEGIN {
 
 # Pithub::Users::Followers->follow
 {
-    my $obj = Pithub::Test->create('Pithub::Users::Followers');
+    my $obj = Pithub::Test::Factory->create('Pithub::Users::Followers');
 
     isa_ok $obj, 'Pithub::Users::Followers';
 
@@ -166,7 +167,8 @@ BEGIN {
 
 # Pithub::Users::Followers->is_following
 {
-    my $obj = Pithub::Test->create('Pithub::Users::Followers');
+    my $obj = Pithub::Test::Factory->create('Pithub::Users::Followers');
+    $obj->ua->add_response('user/following/rafl.GET');
 
     isa_ok $obj, 'Pithub::Users::Followers';
 
@@ -190,7 +192,7 @@ BEGIN {
 
 # Pithub::Users::Followers->list
 {
-    my $obj = Pithub::Test->create('Pithub::Users::Followers');
+    my $obj = Pithub::Test::Factory->create('Pithub::Users::Followers');
 
     isa_ok $obj, 'Pithub::Users::Followers';
 
@@ -212,7 +214,7 @@ BEGIN {
 
 # Pithub::Users::Followers->list_following
 {
-    my $obj = Pithub::Test->create('Pithub::Users::Followers');
+    my $obj = Pithub::Test::Factory->create('Pithub::Users::Followers');
 
     isa_ok $obj, 'Pithub::Users::Followers';
 
@@ -234,7 +236,7 @@ BEGIN {
 
 # Pithub::Users::Followers->unfollow
 {
-    my $obj = Pithub::Test->create('Pithub::Users::Followers');
+    my $obj = Pithub::Test::Factory->create('Pithub::Users::Followers');
 
     isa_ok $obj, 'Pithub::Users::Followers';
 
@@ -251,7 +253,7 @@ BEGIN {
 
 # Pithub::Users::Keys->create
 {
-    my $obj = Pithub::Test->create('Pithub::Users::Keys');
+    my $obj = Pithub::Test::Factory->create('Pithub::Users::Keys');
 
     isa_ok $obj, 'Pithub::Users::Keys';
 
@@ -267,7 +269,7 @@ BEGIN {
 
 # Pithub::Users::Keys->delete
 {
-    my $obj = Pithub::Test->create('Pithub::Users::Keys');
+    my $obj = Pithub::Test::Factory->create('Pithub::Users::Keys');
 
     isa_ok $obj, 'Pithub::Users::Keys';
 
@@ -284,7 +286,7 @@ BEGIN {
 
 # Pithub::Users::Keys->get
 {
-    my $obj = Pithub::Test->create('Pithub::Users::Keys');
+    my $obj = Pithub::Test::Factory->create('Pithub::Users::Keys');
 
     isa_ok $obj, 'Pithub::Users::Keys';
 
@@ -301,7 +303,7 @@ BEGIN {
 
 # Pithub::Users::Keys->list
 {
-    my $obj = Pithub::Test->create('Pithub::Users::Keys');
+    my $obj = Pithub::Test::Factory->create('Pithub::Users::Keys');
 
     isa_ok $obj, 'Pithub::Users::Keys';
 
@@ -313,23 +315,6 @@ BEGIN {
         is $result->request->method, 'GET', 'HTTP method';
         is $result->request->uri->path, '/user/keys', 'HTTP path';
     }
-}
-
-# Pithub::Users::Keys->update
-{
-    my $obj = Pithub::Test->create('Pithub::Users::Keys');
-
-    isa_ok $obj, 'Pithub::Users::Keys';
-
-    throws_ok { $obj->update } qr{Missing key in parameters: key_id}, 'No parameters';
-    throws_ok { $obj->update( key_id => 123 ) } qr{Missing key in parameters: data \(hashref\)}, 'No parameters';
-    throws_ok { $obj->update( key_id => 123 => data => { title => 1, key => 1 } ) } qr{Access token required for: PATCH /user/keys/123}, 'Token required';
-
-    ok $obj->token(123), 'Token set';
-
-    my $result = $obj->update( key_id => 123 => data => { title => 'plu@localhost', key => 'ssh-rsa AAA...' } );
-    is $result->request->method, 'PATCH', 'HTTP method';
-    is $result->request->uri->path, '/user/keys/123', 'HTTP path';
 }
 
 done_testing;

@@ -1,8 +1,6 @@
 package Pithub::Result;
-$Pithub::Result::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Result::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Result::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 result object
 
@@ -69,6 +67,7 @@ has 'response' => (
     isa      => sub { die 'must be a HTTP::Response, but is ' . ref $_[0] unless ref $_[0] eq 'HTTP::Response' },
     required => 1,
 );
+
 
 # required for next_page etc
 has '_request' => (
@@ -189,6 +188,12 @@ sub prev_page {
 }
 
 
+sub etag {
+    my ($self) = @_;
+    return $self->response->header('ETag');
+}
+
+
 sub ratelimit {
     my ($self) = @_;
     return $self->response->header('X-RateLimit-Limit');
@@ -292,7 +297,7 @@ Pithub::Result - Github v3 result object
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 DESCRIPTION
 
@@ -365,6 +370,23 @@ page. This can return undef.
 The L<HTTP::Response> object.
 
 =head1 METHODS
+
+=head2 raw_content
+
+Returns the content of the API response as a string, it will probably
+be JSON.
+
+=head2 request
+
+Returns the L<HTTP::Request> object used to make the API call.
+
+=head2 code
+
+Returns the HTTP code from the API call.
+
+=head2 success
+
+Returns whether the API call was successful.
 
 =head2 count
 
@@ -470,6 +492,10 @@ L</auto_pagination>.
     } while $result = $result->prev_page;
 
 =back
+
+=head2 etag
+
+Returns the value of the C<< ETag >> http header.
 
 =head2 ratelimit
 

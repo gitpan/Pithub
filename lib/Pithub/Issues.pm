@@ -1,8 +1,6 @@
 package Pithub::Issues;
-$Pithub::Issues::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Issues::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Issues::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Issues API
 
@@ -17,12 +15,12 @@ extends 'Pithub::Base';
 
 
 sub assignees {
-    return shift->_create_instance('Pithub::Issues::Assignees');
+    return shift->_create_instance('Pithub::Issues::Assignees', @_);
 }
 
 
 sub comments {
-    return shift->_create_instance('Pithub::Issues::Comments');
+    return shift->_create_instance('Pithub::Issues::Comments', @_);
 }
 
 
@@ -39,7 +37,7 @@ sub create {
 
 
 sub events {
-    return shift->_create_instance('Pithub::Issues::Events');
+    return shift->_create_instance('Pithub::Issues::Events', @_);
 }
 
 
@@ -56,7 +54,7 @@ sub get {
 
 
 sub labels {
-    return shift->_create_instance('Pithub::Issues::Labels');
+    return shift->_create_instance('Pithub::Issues::Labels', @_);
 }
 
 
@@ -79,7 +77,7 @@ sub list {
 
 
 sub milestones {
-    return shift->_create_instance('Pithub::Issues::Milestones');
+    return shift->_create_instance('Pithub::Issues::Milestones', @_);
 }
 
 
@@ -109,7 +107,7 @@ Pithub::Issues - Github v3 Issues API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

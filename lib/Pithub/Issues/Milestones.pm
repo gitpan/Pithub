@@ -1,8 +1,6 @@
 package Pithub::Issues::Milestones;
-$Pithub::Issues::Milestones::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Issues::Milestones::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Issues::Milestones::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Issue Milestones API
 
@@ -84,7 +82,7 @@ Pithub::Issues::Milestones - Github v3 Issue Milestones API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

@@ -1,8 +1,8 @@
 use FindBin;
 use lib "$FindBin::Bin/lib";
 use JSON;
+use Pithub::Test::Factory;
 use Pithub::Test;
-use Test::Most;
 
 BEGIN {
     use_ok('Pithub::Repos');
@@ -22,7 +22,7 @@ BEGIN {
 
 # Pithub::Repos->create
 {
-    my $obj = Pithub::Test->create('Pithub::Repos');
+    my $obj = Pithub::Test::Factory->create('Pithub::Repos');
 
     isa_ok $obj, 'Pithub::Repos';
 
@@ -51,9 +51,25 @@ BEGIN {
     }
 }
 
+
+subtest "Pithub::Repos->delete" => sub {
+    my $obj = Pithub::Test::Factory->create('Pithub::Repos');
+    throws_ok { $obj->delete }
+      qr{^Missing key in parameters: user};
+    throws_ok { $obj->delete( user => "foobarorg" ); }
+      qr{^Missing key in parameters: repo};
+    throws_ok { $obj->delete( user => "foobarorg", repo => "blahblah" ); }
+      qr{^Access token required for: DELETE /repos/foobarorg/blahblah};
+
+    $obj->token(123);
+    my $result = $obj->delete( user => "foobarorg", repo => "blahblah" );
+    is $result->request->method, "DELETE";
+    uri_is $result->request->uri, "https://api.github.com/repos/foobarorg/blahblah?per_page=100";
+};
+
 # Pithub::Repos->get
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos';
 
@@ -66,9 +82,34 @@ BEGIN {
     }
 }
 
+
+subtest "Pithub::Repos->branch" => sub {
+    my $obj = Pithub::Test::Factory->create(
+        'Pithub::Repos',
+        user => 'foo',
+        repo => 'bar'
+    );
+
+    isa_ok $obj, 'Pithub::Repos';
+
+    subtest "too few arguments" => sub {
+        throws_ok { $obj->branch } qr/^Missing key in parameters: branch/;
+    };
+
+    subtest "basic get branch" => sub {
+        my $result = $obj->branch( branch => "master" );
+        is $result->request->method, 'GET', 'HTTP method';
+        is $result->request->uri->path, '/repos/foo/bar/branches/master', 'HTTP path';
+        my $http_request = $result->request;
+        is $http_request->content, '', 'HTTP body';
+    };
+};
+
 # Pithub::Repos->list
 {
-    my $obj = Pithub::Test->create('Pithub::Repos');
+    my $obj = Pithub::Test::Factory->create('Pithub::Repos');
+    $obj->ua->add_response('users/plu/repos.GET');
+    $obj->ua->add_response('orgs/CPAN-API/repos.GET');
 
     isa_ok $obj, 'Pithub::Repos';
 
@@ -112,7 +153,7 @@ BEGIN {
 
 # Pithub::Repos->update
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos';
 
@@ -133,7 +174,7 @@ BEGIN {
 
 # Pithub::Repos::Collaborators->add
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Collaborators', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Collaborators', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Collaborators';
 
@@ -149,7 +190,7 @@ BEGIN {
 
 # Pithub::Repos::Collaborators->is_collaborator
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Collaborators', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Collaborators', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Collaborators';
 
@@ -166,7 +207,7 @@ BEGIN {
 
 # Pithub::Repos::Collaborators->remove
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Collaborators', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Collaborators', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Collaborators';
 
@@ -182,7 +223,7 @@ BEGIN {
 
 # Pithub::Repos::Commits->compare
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Commits', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Commits', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Commits';
 
@@ -198,7 +239,7 @@ BEGIN {
 
 # Pithub::Repos::Commits->create_comment
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Commits', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Commits', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Commits';
 
@@ -224,7 +265,7 @@ BEGIN {
 
 # Pithub::Repos::Commits->delete_comment
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Commits', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Commits', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Commits';
 
@@ -242,7 +283,7 @@ BEGIN {
 
 # Pithub::Repos::Commits->get
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Commits', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Commits', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Commits';
 
@@ -257,7 +298,7 @@ BEGIN {
 
 # Pithub::Repos::Commits->get_comment
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Commits', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Commits', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Commits';
 
@@ -272,7 +313,7 @@ BEGIN {
 
 # Pithub::Repos::Commits->list_comments
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Commits', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Commits', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Commits';
 
@@ -291,7 +332,7 @@ BEGIN {
 
 # Pithub::Repos::Commits->update_comment
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Commits', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Commits', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Commits';
 
@@ -315,7 +356,7 @@ BEGIN {
 
 # Pithub::Repos::Contents->archive
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Contents', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Contents', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Contents';
 
@@ -331,42 +372,39 @@ BEGIN {
 
 # Pithub::Repos::Contents->get
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Contents', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Contents', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Contents';
 
     {
         my $result = $obj->get( params => { ref => 'bla' } );
         is $result->request->method, 'GET', 'HTTP method';
-        is $result->request->uri->path, '/repos/foo/bar/contents', 'HTTP path';
-        is $result->request->uri->query, 'ref=bla', 'HTTP query params';
+        uri_is $result->request->uri, 'https://api.github.com/repos/foo/bar/contents?ref=bla&per_page=100';
     }
 
     {
         my $result = $obj->get( path => 'bla/fasel/file.pm', params => { ref => 'bla' } );
         is $result->request->method, 'GET', 'HTTP method';
-        is $result->request->uri->path, '/repos/foo/bar/contents/bla/fasel/file.pm', 'HTTP path';
-        is $result->request->uri->query, 'ref=bla', 'HTTP query params';
+        uri_is $result->request->uri, 'https://api.github.com/repos/foo/bar/contents/bla/fasel/file.pm?ref=bla&per_page=100';
     }
 }
 
 # Pithub::Repos::Contents->readme
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Contents', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Contents', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Contents';
 
     {
         my $result = $obj->readme( params => { ref => 'bla' } );
         is $result->request->method, 'GET', 'HTTP method';
-        is $result->request->uri->path, '/repos/foo/bar/readme', 'HTTP path';
-        is $result->request->uri->query, 'ref=bla', 'HTTP query params';
+        uri_is $result->request->uri, 'https://api.github.com/repos/foo/bar/readme?ref=bla&per_page=100';
     }
 }
 
 # Pithub::Repos::Downloads->create
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Downloads', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Downloads', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Downloads';
 
@@ -393,7 +431,7 @@ BEGIN {
 
 # Pithub::Repos::Downloads->delete
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Downloads', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Downloads', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Downloads';
 
@@ -411,7 +449,7 @@ BEGIN {
 
 # Pithub::Repos::Downloads->get
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Downloads', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Downloads', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Downloads';
 
@@ -426,7 +464,8 @@ BEGIN {
 
 # Pithub::Repos::Downloads->upload
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Downloads', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Downloads', user => 'foo', repo => 'bar' );
+    $obj->ua->add_response('repos/foo/bar/downloads.POST');
 
     isa_ok $obj, 'Pithub::Repos::Downloads';
 
@@ -461,7 +500,7 @@ BEGIN {
 
 # Pithub::Repos::Forks->create
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Forks', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Forks', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Forks';
 
@@ -489,7 +528,7 @@ BEGIN {
 
 # Pithub::Repos::Keys->create
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Keys', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Keys', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Keys';
 
@@ -513,7 +552,7 @@ BEGIN {
 
 # Pithub::Repos::Keys->delete
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Keys', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Keys', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Keys';
 
@@ -533,7 +572,7 @@ BEGIN {
 
 # Pithub::Repos::Keys->get
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Keys', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Keys', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Keys';
 
@@ -551,34 +590,9 @@ BEGIN {
     }
 }
 
-# Pithub::Repos::Keys->update
-{
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Keys', user => 'foo', repo => 'bar' );
-
-    isa_ok $obj, 'Pithub::Repos::Keys';
-
-    throws_ok { $obj->update } qr{Missing key in parameters: key_id}, 'No parameters';
-    throws_ok { $obj->update( key_id => 123 ) } qr{Missing key in parameters: data \(hashref\)}, 'No data parameter';
-    throws_ok {
-        $obj->update( key_id => 123, data => { title => 'some key' } );
-    }
-    qr{Access token required for: PATCH /repos/foo/bar/keys/123}, 'Token required';
-
-    ok $obj->token(123), 'Token set';
-
-    {
-        my $json = JSON->new;
-        my $result = $obj->update( key_id => 123, data => { title => 'some key' } );
-        is $result->request->method, 'PATCH', 'HTTP method';
-        is $result->request->uri->path, '/repos/foo/bar/keys/123', 'HTTP path';
-        my $http_request = $result->request;
-        eq_or_diff $json->decode( $http_request->content ), { 'title' => 'some key' }, 'HTTP body';
-    }
-}
-
 # Pithub::Repos::Releases->list
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Releases', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Releases', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Releases';
 
@@ -593,7 +607,7 @@ BEGIN {
 
 # Pithub::Repos::Releases->get
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Releases', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Releases', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Releases';
 
@@ -610,7 +624,7 @@ BEGIN {
 
 # Pithub::Repos::Releases->create
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Releases', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Releases', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Releases';
 
@@ -631,7 +645,7 @@ BEGIN {
 
 # Pithub::Repos::Releases->update
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Releases', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Releases', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Releases';
 
@@ -653,7 +667,7 @@ BEGIN {
 
 # Pithub::Repos::Releases->delete
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Releases', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Releases', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Releases';
 
@@ -673,7 +687,7 @@ BEGIN {
 
 # Pithub::Repos::Releases::Assets->create
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Releases::Assets', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Releases::Assets', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Releases::Assets';
     throws_ok { $obj->create } qr{Missing key in parameters: name}, 'No parameters';
@@ -697,7 +711,7 @@ BEGIN {
 
 # Pithub::Repos::Releases::Assets->delete
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Releases::Assets', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Releases::Assets', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Releases::Assets';
     throws_ok { $obj->delete } qr{Missing key in parameters: asset_id}, 'No parameters';
@@ -716,7 +730,7 @@ BEGIN {
 
 # Pithub::Repos::Releases::Assets->get
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Releases::Assets', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Releases::Assets', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Releases::Assets';
     throws_ok { $obj->get } qr{Missing key in parameters: asset_id}, 'No parameters';
@@ -734,7 +748,7 @@ BEGIN {
 
 # Pithub::Repos::Releases::Assets->list
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Releases::Assets', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Releases::Assets', user => 'foo', repo => 'bar' );
 
     throws_ok { $obj->list } qr{Missing key in parameters: release_id}, 'No parameters';
 
@@ -752,7 +766,7 @@ BEGIN {
 # Pithub::Repos::Releases::Assets->update
 {
     my $json = JSON->new;
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Releases::Assets', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Releases::Assets', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Releases::Assets';
     throws_ok { $obj->update } qr{Missing key in parameters: asset_id}, 'No parameters';
@@ -773,7 +787,7 @@ BEGIN {
 
 # Pithub::Repos::Starring->has_watching
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Starring', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Starring', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Starring';
 
@@ -792,7 +806,7 @@ BEGIN {
 
 # Pithub::Repos::Starring->list_repos
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Starring', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Starring', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Starring';
 
@@ -816,7 +830,7 @@ BEGIN {
 
 # Pithub::Repos::Starring->star
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Starring', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Starring', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Starring';
 
@@ -835,7 +849,7 @@ BEGIN {
 
 # Pithub::Repos::Starring->unstar
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Starring', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Starring', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Starring';
 
@@ -854,7 +868,7 @@ BEGIN {
 
 # Pithub::Repos::Watching->is_watching
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Watching', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Watching', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Watching';
 
@@ -873,7 +887,7 @@ BEGIN {
 
 # Pithub::Repos::Watching->list_repos
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Watching', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Watching', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Watching';
 
@@ -899,7 +913,7 @@ BEGIN {
 
 # Pithub::Repos::Watching->start_watching
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Watching', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Watching', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Watching';
 
@@ -918,7 +932,7 @@ BEGIN {
 
 # Pithub::Repos::Watching->stop_watching
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Watching', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Watching', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Watching';
 
@@ -937,7 +951,7 @@ BEGIN {
 
 # Pithub::Repos::Hooks->list
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Hooks', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Hooks', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Hooks';
 
@@ -954,7 +968,7 @@ BEGIN {
 
 # Pithub::Repos::Hooks->get
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Hooks', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Hooks', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Hooks';
 
@@ -972,7 +986,7 @@ BEGIN {
 
 # Pithub::Repos::Hooks->delete
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Hooks', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Hooks', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Hooks';
 
@@ -990,7 +1004,7 @@ BEGIN {
 
 # Pithub::Repos::Hooks->test
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Hooks', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Hooks', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Hooks';
 
@@ -1008,7 +1022,7 @@ BEGIN {
 
 # Pithub::Repos::Hooks->create
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Hooks', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Hooks', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Hooks';
 
@@ -1033,7 +1047,7 @@ BEGIN {
 
 # Pithub::Repos::Hooks->update
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Hooks', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Hooks', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, 'Pithub::Repos::Hooks';
 
@@ -1059,7 +1073,7 @@ BEGIN {
 
 # Pithub::Repos::Stats->contributors
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Stats', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Stats', user => 'foo', repo => 'bar' );
 
     isa_ok $obj, "Pithub::Repos::Stats";
 
@@ -1077,7 +1091,7 @@ BEGIN {
 # Pithub::Repos::Statuses->create
 #
 {
-    my $obj = Pithub::Test->create( 'Pithub::Repos::Statuses', user => 'foo', repo => 'bar' );
+    my $obj = Pithub::Test::Factory->create( 'Pithub::Repos::Statuses', user => 'foo', repo => 'bar' );
     isa_ok $obj, "Pithub::Repos::Statuses";
 
     {

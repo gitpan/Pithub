@@ -1,8 +1,6 @@
 package Pithub::Orgs;
-$Pithub::Orgs::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Orgs::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Orgs::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Orgs API
 
@@ -42,12 +40,12 @@ sub list {
 
 
 sub members {
-    return shift->_create_instance('Pithub::Orgs::Members');
+    return shift->_create_instance('Pithub::Orgs::Members', @_);
 }
 
 
 sub teams {
-    return shift->_create_instance('Pithub::Orgs::Teams');
+    return shift->_create_instance('Pithub::Orgs::Teams', @_);
 }
 
 
@@ -76,7 +74,7 @@ Pithub::Orgs - Github v3 Orgs API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

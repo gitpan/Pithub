@@ -1,8 +1,6 @@
 package Pithub::GitData::Commits;
-$Pithub::GitData::Commits::VERSION = '0.01025';
-BEGIN {
-  $Pithub::GitData::Commits::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::GitData::Commits::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Git Data Commits API
 
@@ -48,7 +46,7 @@ Pithub::GitData::Commits - Github v3 Git Data Commits API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

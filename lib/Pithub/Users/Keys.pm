@@ -1,8 +1,6 @@
 package Pithub::Users::Keys;
-$Pithub::Users::Keys::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Users::Keys::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Users::Keys::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 User Keys API
 
@@ -53,18 +51,6 @@ sub list {
     );
 }
 
-
-sub update {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: key_id' unless $args{key_id};
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    return $self->request(
-        method => 'PATCH',
-        path   => sprintf( '/user/keys/%s', delete $args{key_id} ),
-        %args,
-    );
-}
-
 1;
 
 __END__
@@ -79,7 +65,7 @@ Pithub::Users::Keys - Github v3 User Keys API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 
@@ -153,29 +139,6 @@ Examples:
 
     my $k = Pithub::Users::Keys->new( token => 'b3c62c6' );
     my $result = $k->list;
-
-=back
-
-=head2 update
-
-=over
-
-=item *
-
-Update a public key
-
-    PATCH /user/keys/:id
-
-Examples:
-
-    my $k = Pithub::Users::Keys->new( token => 'b3c62c6' );
-    my $result = $k->update(
-        key_id => 123,
-        data => {
-            title => 'plu@localhost',
-            key   => 'ssh-rsa AAA...',
-        }
-    );
 
 =back
 

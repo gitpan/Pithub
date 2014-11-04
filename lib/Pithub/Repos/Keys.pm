@@ -1,8 +1,6 @@
 package Pithub::Repos::Keys;
-$Pithub::Repos::Keys::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Repos::Keys::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Repos::Keys::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Repo Keys API
 
@@ -57,19 +55,6 @@ sub list {
     );
 }
 
-
-sub update {
-    my ( $self, %args ) = @_;
-    croak 'Missing key in parameters: key_id' unless $args{key_id};
-    croak 'Missing key in parameters: data (hashref)' unless ref $args{data} eq 'HASH';
-    $self->_validate_user_repo_args( \%args );
-    return $self->request(
-        method => 'PATCH',
-        path   => sprintf( '/repos/%s/%s/keys/%s', delete $args{user}, delete $args{repo}, delete $args{key_id} ),
-        %args,
-    );
-}
-
 1;
 
 __END__
@@ -84,7 +69,7 @@ Pithub::Repos::Keys - Github v3 Repo Keys API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 
@@ -170,28 +155,6 @@ Examples:
     my $result = $k->list(
         user => 'plu',
         repo => 'Pithub',
-    );
-
-=back
-
-=head2 update
-
-=over
-
-=item *
-
-Edit
-
-    PATCH /repos/:user/:repo/keys/:id
-
-Examples:
-
-    my $k = Pithub::Repos::Keys->new;
-    my $result = $k->update(
-        user   => 'plu',
-        repo   => 'Pithub',
-        key_id => 1,
-        data   => { title => 'some new title' },
     );
 
 =back

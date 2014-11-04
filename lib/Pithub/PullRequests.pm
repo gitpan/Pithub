@@ -1,8 +1,6 @@
 package Pithub::PullRequests;
-$Pithub::PullRequests::VERSION = '0.01025';
-BEGIN {
-  $Pithub::PullRequests::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::PullRequests::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Pull Requests API
 
@@ -13,7 +11,7 @@ extends 'Pithub::Base';
 
 
 sub comments {
-    return shift->_create_instance('Pithub::PullRequests::Comments');
+    return shift->_create_instance('Pithub::PullRequests::Comments', @_);
 }
 
 
@@ -126,7 +124,7 @@ Pithub::PullRequests - Github v3 Pull Requests API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

@@ -1,8 +1,6 @@
 package Pithub::Repos::Releases::Assets;
-$Pithub::Repos::Releases::Assets::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Repos::Releases::Assets::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Repos::Releases::Assets::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Repo Releases Assets API
 
@@ -93,7 +91,7 @@ Pithub::Repos::Releases::Assets - Github v3 Repo Releases Assets API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

@@ -1,8 +1,6 @@
 package Pithub::Issues::Labels;
-$Pithub::Issues::Labels::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Issues::Labels::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Issues::Labels::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Issue Labels API
 
@@ -143,7 +141,7 @@ Pithub::Issues::Labels - Github v3 Issue Labels API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

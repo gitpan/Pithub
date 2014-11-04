@@ -1,8 +1,6 @@
 package Pithub;
-$Pithub::VERSION = '0.01025';
-BEGIN {
-  $Pithub::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 API
 
@@ -21,47 +19,47 @@ extends 'Pithub::Base';
 
 
 sub events {
-    return shift->_create_instance('Pithub::Events');
+    return shift->_create_instance('Pithub::Events', @_);
 }
 
 
 sub gists {
-    return shift->_create_instance('Pithub::Gists');
+    return shift->_create_instance('Pithub::Gists', @_);
 }
 
 
 sub git_data {
-    return shift->_create_instance('Pithub::GitData');
+    return shift->_create_instance('Pithub::GitData', @_);
 }
 
 
 sub issues {
-    return shift->_create_instance('Pithub::Issues');
+    return shift->_create_instance('Pithub::Issues', @_);
 }
 
 
 sub orgs {
-    return shift->_create_instance('Pithub::Orgs');
+    return shift->_create_instance('Pithub::Orgs', @_);
 }
 
 
 sub pull_requests {
-    return shift->_create_instance('Pithub::PullRequests');
+    return shift->_create_instance('Pithub::PullRequests', @_);
 }
 
 
 sub repos {
-    return shift->_create_instance('Pithub::Repos');
+    return shift->_create_instance('Pithub::Repos', @_);
 }
 
 
 sub search {
-    return shift->_create_instance('Pithub::Search');
+    return shift->_create_instance('Pithub::Search', @_);
 }
 
 
 sub users {
-    return shift->_create_instance('Pithub::Users');
+    return shift->_create_instance('Pithub::Users', @_);
 }
 
 
@@ -79,7 +77,7 @@ Pithub - Github v3 API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 SYNOPSIS
 

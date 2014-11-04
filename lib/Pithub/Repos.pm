@@ -1,8 +1,6 @@
 package Pithub::Repos;
-$Pithub::Repos::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Repos::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Repos::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Repos API
 
@@ -23,6 +21,22 @@ use Pithub::Repos::Watching;
 extends 'Pithub::Base';
 
 
+sub branch {
+    my ( $self, %args ) = @_;
+    croak 'Missing key in parameters: branch (string)' unless defined $args{branch};
+    $self->_validate_user_repo_args( \%args );
+    return $self->request(
+        method => 'GET',
+        path   => sprintf(
+            '/repos/%s/%s/branches/%s', delete $args{user},
+                                        delete $args{repo},
+                                        delete $args{branch},
+        ),
+        %args,
+    );
+}
+
+
 sub branches {
     my ( $self, %args ) = @_;
     $self->_validate_user_repo_args( \%args );
@@ -35,17 +49,17 @@ sub branches {
 
 
 sub collaborators {
-    return shift->_create_instance('Pithub::Repos::Collaborators');
+    return shift->_create_instance('Pithub::Repos::Collaborators', @_);
 }
 
 
 sub commits {
-    return shift->_create_instance('Pithub::Repos::Commits');
+    return shift->_create_instance('Pithub::Repos::Commits', @_);
 }
 
 
 sub contents {
-    return shift->_create_instance('Pithub::Repos::Contents');
+    return shift->_create_instance('Pithub::Repos::Contents', @_);
 }
 
 
@@ -80,13 +94,24 @@ sub create {
 }
 
 
+sub delete {
+    my( $self, %args ) = @_;
+    $self->_validate_user_repo_args( \%args );
+    return $self->request(
+        method => 'DELETE',
+        path   => sprintf( '/repos/%s/%s', delete $args{user}, delete $args{repo} ),
+        %args,
+    );
+}
+
+
 sub downloads {
-    return shift->_create_instance('Pithub::Repos::Downloads');
+    return shift->_create_instance('Pithub::Repos::Downloads', @_);
 }
 
 
 sub forks {
-    return shift->_create_instance('Pithub::Repos::Forks');
+    return shift->_create_instance('Pithub::Repos::Forks', @_);
 }
 
 
@@ -102,12 +127,12 @@ sub get {
 
 
 sub hooks {
-    return shift->_create_instance('Pithub::Repos::Hooks');
+    return shift->_create_instance('Pithub::Repos::Hooks', @_);
 }
 
 
 sub keys {
-    return shift->_create_instance('Pithub::Repos::Keys');
+    return shift->_create_instance('Pithub::Repos::Keys', @_);
 }
 
 
@@ -149,22 +174,22 @@ sub list {
 
 
 sub releases {
-    return shift->_create_instance('Pithub::Repos::Releases');
+    return shift->_create_instance('Pithub::Repos::Releases', @_);
 }
 
 
 sub starring {
-    return shift->_create_instance('Pithub::Repos::Starring');
+    return shift->_create_instance('Pithub::Repos::Starring', @_);
 }
 
 
 sub stats {
-    return shift->_create_instance('Pithub::Repos::Stats');
+    return shift->_create_instance('Pithub::Repos::Stats', @_);
 }
 
 
 sub statuses {
-    return shift->_create_instance('Pithub::Repos::Statuses');
+    return shift->_create_instance('Pithub::Repos::Statuses', @_);
 }
 
 
@@ -203,7 +228,7 @@ sub update {
 
 
 sub watching {
-    return shift->_create_instance('Pithub::Repos::Watching');
+    return shift->_create_instance('Pithub::Repos::Watching', @_);
 }
 
 1;
@@ -220,9 +245,25 @@ Pithub::Repos - Github v3 Repos API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
+
+=head2 branch
+
+Get information about a single branch.
+
+    GET /repos/:owner/:repo/branches/:branch
+
+Example:
+
+    my $result = Pithub->new->branch(
+        user => 'plu',
+        repo => 'Pithub',
+        branch => "master"
+    );
+
+See also L<branches> to get a list of all branches.
 
 =head2 branches
 
@@ -238,6 +279,8 @@ Examples:
 
     my $repos  = Pithub::Repos->new;
     my $result = $repos->branches( user => 'plu', repo => 'Pithub' );
+
+See also L<branch> to get information about a single branch.
 
 =back
 
@@ -301,6 +344,12 @@ Examples:
     );
 
 =back
+
+=head2 delete
+
+Delete a repository.
+
+    DELETE /repos/:owner/:repo
 
 =head2 downloads
 

@@ -1,8 +1,6 @@
 package Pithub::Repos::Forks;
-$Pithub::Repos::Forks::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Repos::Forks::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Repos::Forks::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Repo Forks API
 
@@ -54,7 +52,7 @@ Pithub::Repos::Forks - Github v3 Repo Forks API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

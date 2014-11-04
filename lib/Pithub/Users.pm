@@ -1,8 +1,6 @@
 package Pithub::Users;
-$Pithub::Users::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Users::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Users::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Users API
 
@@ -15,12 +13,12 @@ extends 'Pithub::Base';
 
 
 sub emails {
-    return shift->_create_instance('Pithub::Users::Emails');
+    return shift->_create_instance('Pithub::Users::Emails', @_);
 }
 
 
 sub followers {
-    return shift->_create_instance('Pithub::Users::Followers');
+    return shift->_create_instance('Pithub::Users::Followers', @_);
 }
 
 
@@ -42,7 +40,7 @@ sub get {
 
 
 sub keys {
-    return shift->_create_instance('Pithub::Users::Keys');
+    return shift->_create_instance('Pithub::Users::Keys', @_);
 }
 
 
@@ -70,7 +68,7 @@ Pithub::Users - Github v3 Users API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

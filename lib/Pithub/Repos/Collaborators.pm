@@ -1,8 +1,6 @@
 package Pithub::Repos::Collaborators;
-$Pithub::Repos::Collaborators::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Repos::Collaborators::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Repos::Collaborators::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Repo Collaborators API
 
@@ -71,7 +69,7 @@ Pithub::Repos::Collaborators - Github v3 Repo Collaborators API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

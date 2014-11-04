@@ -1,8 +1,6 @@
 package Pithub::Users::Followers;
-$Pithub::Users::Followers::VERSION = '0.01025';
-BEGIN {
-  $Pithub::Users::Followers::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::Users::Followers::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 User Followers API
 
@@ -91,7 +89,7 @@ Pithub::Users::Followers - Github v3 User Followers API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 

@@ -1,8 +1,6 @@
 package Pithub::GitData;
-$Pithub::GitData::VERSION = '0.01025';
-BEGIN {
-  $Pithub::GitData::AUTHORITY = 'cpan:PLU';
-}
+$Pithub::GitData::VERSION = '0.01026';
+our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Git Data API
 
@@ -17,27 +15,27 @@ extends 'Pithub::Base';
 
 
 sub blobs {
-    return shift->_create_instance('Pithub::GitData::Blobs');
+    return shift->_create_instance('Pithub::GitData::Blobs', @_);
 }
 
 
 sub commits {
-    return shift->_create_instance('Pithub::GitData::Commits');
+    return shift->_create_instance('Pithub::GitData::Commits', @_);
 }
 
 
 sub references {
-    return shift->_create_instance('Pithub::GitData::References');
+    return shift->_create_instance('Pithub::GitData::References', @_);
 }
 
 
 sub tags {
-    return shift->_create_instance('Pithub::GitData::Tags');
+    return shift->_create_instance('Pithub::GitData::Tags', @_);
 }
 
 
 sub trees {
-    return shift->_create_instance('Pithub::GitData::Trees');
+    return shift->_create_instance('Pithub::GitData::Trees', @_);
 }
 
 1;
@@ -54,7 +52,7 @@ Pithub::GitData - Github v3 Git Data API
 
 =head1 VERSION
 
-version 0.01025
+version 0.01026
 
 =head1 METHODS
 
