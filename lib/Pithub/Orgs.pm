@@ -1,5 +1,5 @@
 package Pithub::Orgs;
-$Pithub::Orgs::VERSION = '0.01026';
+$Pithub::Orgs::VERSION = '0.01027';
 our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Orgs API
@@ -74,7 +74,7 @@ Pithub::Orgs - Github v3 Orgs API
 
 =head1 VERSION
 
-version 0.01026
+version 0.01027
 
 =head1 METHODS
 

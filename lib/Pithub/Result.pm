@@ -1,5 +1,5 @@
 package Pithub::Result;
-$Pithub::Result::VERSION = '0.01026';
+$Pithub::Result::VERSION = '0.01027';
 our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 result object
@@ -297,7 +297,7 @@ Pithub::Result - Github v3 result object
 
 =head1 VERSION
 
-version 0.01026
+version 0.01027
 
 =head1 DESCRIPTION
 

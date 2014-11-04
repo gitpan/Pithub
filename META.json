@@ -53,7 +53,7 @@
          "web" : "https://github.com/plu/Pithub"
       }
    },
-   "version" : "0.01026",
+   "version" : "0.01027",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.018001"
@@ -138,6 +138,11 @@
             "class" : "Dist::Zilla::Plugin::Authority",
             "name" : "Authority",
             "version" : "1.009"
+         },
+         {
+            "class" : "Dist::Zilla::Plugin::CheckChangesHasContent",
+            "name" : "CheckChangesHasContent",
+            "version" : "0.007"
          },
          {
             "class" : "Dist::Zilla::Plugin::MetaConfig",
@@ -339,7 +344,7 @@
                "Dist::Zilla::Plugin::Git::Tag" : {
                   "branch" : null,
                   "signed" : 0,
-                  "tag" : "v0.01026",
+                  "tag" : "v0.01027",
                   "tag_format" : "v%v",
                   "tag_message" : "v%v",
                   "time_zone" : "local"

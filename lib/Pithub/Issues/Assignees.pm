@@ -1,5 +1,5 @@
 package Pithub::Issues::Assignees;
-$Pithub::Issues::Assignees::VERSION = '0.01026';
+$Pithub::Issues::Assignees::VERSION = '0.01027';
 our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Issue Assignees API
@@ -45,7 +45,7 @@ Pithub::Issues::Assignees - Github v3 Issue Assignees API
 
 =head1 VERSION
 
-version 0.01026
+version 0.01027
 
 =head1 METHODS
 

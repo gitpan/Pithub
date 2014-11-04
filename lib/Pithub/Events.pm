@@ -1,5 +1,5 @@
 package Pithub::Events;
-$Pithub::Events::VERSION = '0.01026';
+$Pithub::Events::VERSION = '0.01027';
 our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Events API
@@ -118,7 +118,7 @@ Pithub::Events - Github v3 Events API
 
 =head1 VERSION
 
-version 0.01026
+version 0.01027
 
 =head1 METHODS
 

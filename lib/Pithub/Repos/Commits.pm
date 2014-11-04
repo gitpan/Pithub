@@ -1,5 +1,5 @@
 package Pithub::Repos::Commits;
-$Pithub::Repos::Commits::VERSION = '0.01026';
+$Pithub::Repos::Commits::VERSION = '0.01027';
 our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Repo Commits API
@@ -126,7 +126,7 @@ Pithub::Repos::Commits - Github v3 Repo Commits API
 
 =head1 VERSION
 
-version 0.01026
+version 0.01027
 
 =head1 METHODS
 

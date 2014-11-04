@@ -1,5 +1,5 @@
 package Pithub::Users::Keys;
-$Pithub::Users::Keys::VERSION = '0.01026';
+$Pithub::Users::Keys::VERSION = '0.01027';
 our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 User Keys API
@@ -65,7 +65,7 @@ Pithub::Users::Keys - Github v3 User Keys API
 
 =head1 VERSION
 
-version 0.01026
+version 0.01027
 
 =head1 METHODS
 

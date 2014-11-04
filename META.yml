@@ -27,7 +27,7 @@ requires:
 resources:
   homepage: https://github.com/plu/Pithub
   repository: https://github.com/plu/Pithub.git
-version: '0.01026'
+version: '0.01027'
 x_Dist_Zilla:
   perl:
     version: '5.018001'
@@ -95,6 +95,10 @@ x_Dist_Zilla:
       class: Dist::Zilla::Plugin::Authority
       name: Authority
       version: '1.009'
+    -
+      class: Dist::Zilla::Plugin::CheckChangesHasContent
+      name: CheckChangesHasContent
+      version: '0.007'
     -
       class: Dist::Zilla::Plugin::MetaConfig
       name: MetaConfig
@@ -250,7 +254,7 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::Git::Tag:
           branch: ~
           signed: 0
-          tag: v0.01026
+          tag: v0.01027
           tag_format: v%v
           tag_message: v%v
           time_zone: local

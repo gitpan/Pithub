@@ -1,5 +1,5 @@
 package Pithub;
-$Pithub::VERSION = '0.01026';
+$Pithub::VERSION = '0.01027';
 our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 API
@@ -77,7 +77,7 @@ Pithub - Github v3 API
 
 =head1 VERSION
 
-version 0.01026
+version 0.01027
 
 =head1 SYNOPSIS
 
