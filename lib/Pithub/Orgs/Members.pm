@@ -1,5 +1,5 @@
 package Pithub::Orgs::Members;
-$Pithub::Orgs::Members::VERSION = '0.01027';
+$Pithub::Orgs::Members::VERSION = '0.01028';
 our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Org Members API
@@ -104,7 +104,7 @@ Pithub::Orgs::Members - Github v3 Org Members API
 
 =head1 VERSION
 
-version 0.01027
+version 0.01028
 
 =head1 METHODS
 

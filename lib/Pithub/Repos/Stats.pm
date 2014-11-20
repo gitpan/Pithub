@@ -1,5 +1,5 @@
 package Pithub::Repos::Stats;
-$Pithub::Repos::Stats::VERSION = '0.01027';
+$Pithub::Repos::Stats::VERSION = '0.01028';
 our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 repos / stats API
@@ -51,7 +51,7 @@ Pithub::Repos::Stats - Github v3 repos / stats API
 
 =head1 VERSION
 
-version 0.01027
+version 0.01028
 
 =head1 METHODS
 

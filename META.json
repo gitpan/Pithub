@@ -29,23 +29,26 @@
             "Array::Iterator" : "0",
             "Cache::LRU" : "0.04",
             "HTTP::Message" : "0",
-            "JSON" : "0",
+            "JSON::MaybeXS" : "1.002000",
             "LWP::Protocol::https" : "0",
             "LWP::UserAgent" : "0",
-            "Moo" : "0"
+            "Moo" : "1.001000"
          }
       },
       "test" : {
          "requires" : {
-            "File::Slurp" : "0",
             "Import::Into" : "1.002004",
             "MIME::Base64" : "0",
+            "Path::Tiny" : "0.037",
             "Test::Most" : "0"
          }
       }
    },
    "release_status" : "stable",
    "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/plu/Pithub/issues"
+      },
       "homepage" : "https://github.com/plu/Pithub",
       "repository" : {
          "type" : "git",
@@ -53,7 +56,7 @@
          "web" : "https://github.com/plu/Pithub"
       }
    },
-   "version" : "0.01027",
+   "version" : "0.01028",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.018001"
@@ -344,7 +347,7 @@
                "Dist::Zilla::Plugin::Git::Tag" : {
                   "branch" : null,
                   "signed" : 0,
-                  "tag" : "v0.01027",
+                  "tag" : "v0.01028",
                   "tag_format" : "v%v",
                   "tag_message" : "v%v",
                   "time_zone" : "local"

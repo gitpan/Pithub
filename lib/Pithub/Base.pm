@@ -1,5 +1,5 @@
 package Pithub::Base;
-$Pithub::Base::VERSION = '0.01027';
+$Pithub::Base::VERSION = '0.01028';
 our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 base class for all Pithub modules
@@ -8,7 +8,7 @@ use Moo;
 use Carp qw(croak);
 use HTTP::Headers;
 use HTTP::Request;
-use JSON;
+use JSON::MaybeXS;
 use LWP::UserAgent;
 use Pithub::Result;
 use URI;
@@ -404,7 +404,7 @@ Pithub::Base - Github v3 base class for all Pithub modules
 
 =head1 VERSION
 
-version 0.01027
+version 0.01028
 
 =head1 DESCRIPTION
 

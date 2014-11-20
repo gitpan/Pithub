@@ -1,5 +1,5 @@
 package Pithub::Repos::Starring;
-$Pithub::Repos::Starring::VERSION = '0.01027';
+$Pithub::Repos::Starring::VERSION = '0.01028';
 our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Repo Starring API
@@ -83,7 +83,7 @@ Pithub::Repos::Starring - Github v3 Repo Starring API
 
 =head1 VERSION
 
-version 0.01027
+version 0.01028
 
 =head1 METHODS
 

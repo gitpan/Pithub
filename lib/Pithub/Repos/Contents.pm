@@ -1,5 +1,5 @@
 package Pithub::Repos::Contents;
-$Pithub::Repos::Contents::VERSION = '0.01027';
+$Pithub::Repos::Contents::VERSION = '0.01028';
 our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 Repo Contents API
@@ -64,7 +64,7 @@ Pithub::Repos::Contents - Github v3 Repo Contents API
 
 =head1 VERSION
 
-version 0.01027
+version 0.01028
 
 =head1 METHODS
 
@@ -87,6 +87,8 @@ C<< master >>.
 
 Examples:
 
+    use Path::Tiny;
+
     my $c = Pithub::Repos::Contents->new(
         repo => 'Pithub',
         user => 'plu'
@@ -94,12 +96,12 @@ Examples:
 
     my $result = $c->archive( archive_format => 'tarball' );
     if ( $result->success ) {
-        File::Slurp::write_file('Pithub-master.tgz', $result->raw_content);
+        path('Pithub-master.tgz')->spew($result->raw_content);
     }
 
     $result = $c->archive( archive_format => 'tarball', ref => 'other_branch' );
     if ( $result->success ) {
-        File::Slurp::write_file('Pithub-other_branch.tgz', $result->raw_content);
+        path('Pithub-other_branch.tgz')->spew($result->raw_content);
     }
 
 =back

@@ -3,9 +3,9 @@ abstract: 'Github v3 API'
 author:
   - 'Johannes Plunien <plu@cpan.org>'
 build_requires:
-  File::Slurp: '0'
   Import::Into: '1.002004'
   MIME::Base64: '0'
+  Path::Tiny: '0.037'
   Test::Most: '0'
 configure_requires:
   ExtUtils::MakeMaker: '0'
@@ -20,14 +20,15 @@ requires:
   Array::Iterator: '0'
   Cache::LRU: '0.04'
   HTTP::Message: '0'
-  JSON: '0'
+  JSON::MaybeXS: '1.002000'
   LWP::Protocol::https: '0'
   LWP::UserAgent: '0'
-  Moo: '0'
+  Moo: '1.001000'
 resources:
+  bugtracker: https://github.com/plu/Pithub/issues
   homepage: https://github.com/plu/Pithub
   repository: https://github.com/plu/Pithub.git
-version: '0.01027'
+version: '0.01028'
 x_Dist_Zilla:
   perl:
     version: '5.018001'
@@ -254,7 +255,7 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::Git::Tag:
           branch: ~
           signed: 0
-          tag: v0.01027
+          tag: v0.01028
           tag_format: v%v
           tag_message: v%v
           time_zone: local

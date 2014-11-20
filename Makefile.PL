@@ -23,18 +23,18 @@ my %WriteMakefileArgs = (
     "Array::Iterator" => 0,
     "Cache::LRU" => "0.04",
     "HTTP::Message" => 0,
-    "JSON" => 0,
+    "JSON::MaybeXS" => "1.002000",
     "LWP::Protocol::https" => 0,
     "LWP::UserAgent" => 0,
-    "Moo" => 0
+    "Moo" => "1.001000"
   },
   "TEST_REQUIRES" => {
-    "File::Slurp" => 0,
     "Import::Into" => "1.002004",
     "MIME::Base64" => 0,
+    "Path::Tiny" => "0.037",
     "Test::Most" => 0
   },
-  "VERSION" => "0.01027",
+  "VERSION" => "0.01028",
   "test" => {
     "TESTS" => "t/*.t t/live/*.t"
   }
@@ -44,14 +44,14 @@ my %WriteMakefileArgs = (
 my %FallbackPrereqs = (
   "Array::Iterator" => 0,
   "Cache::LRU" => "0.04",
-  "File::Slurp" => 0,
   "HTTP::Message" => 0,
   "Import::Into" => "1.002004",
-  "JSON" => 0,
+  "JSON::MaybeXS" => "1.002000",
   "LWP::Protocol::https" => 0,
   "LWP::UserAgent" => 0,
   "MIME::Base64" => 0,
-  "Moo" => 0,
+  "Moo" => "1.001000",
+  "Path::Tiny" => "0.037",
   "Test::Most" => 0
 );
 

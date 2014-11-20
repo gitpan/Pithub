@@ -1,13 +1,23 @@
 package Pithub::Result;
-$Pithub::Result::VERSION = '0.01027';
+$Pithub::Result::VERSION = '0.01028';
 our $AUTHORITY = 'cpan:PLU';
 
 # ABSTRACT: Github v3 result object
 
 use Moo;
 use Array::Iterator;
-use JSON;
+use JSON::MaybeXS;
 use URI;
+use Carp;
+
+sub _isa_isa_maker {
+    my $class = shift;
+    return sub {
+        confess "must be an instance of $class but isn't a reference" if !ref $_[0];
+        confess "must be an instance of $class, but is a ".ref $_[0]
+          unless eval { $_[0]->isa($class) };
+    };
+}
 
 
 has 'auto_pagination' => (
@@ -64,7 +74,7 @@ has 'response' => (
         success     => 'is_success',
     },
     is       => 'ro',
-    isa      => sub { die 'must be a HTTP::Response, but is ' . ref $_[0] unless ref $_[0] eq 'HTTP::Response' },
+    isa      => _isa_isa_maker('HTTP::Response'),
     required => 1,
 );
 
@@ -72,7 +82,9 @@ has 'response' => (
 # required for next_page etc
 has '_request' => (
     is       => 'ro',
-    isa      => sub { die 'must be a coderef, but is ' . ref $_[0] unless ref $_[0] eq 'CODE' },
+    isa      => sub {
+        croak 'must be a coderef, but is ' . ref $_[0] unless ref $_[0] eq 'CODE'
+    },
     required => 1,
 );
 
@@ -81,14 +93,17 @@ has '_iterator' => (
     builder => '_build__iterator',
     clearer => '_clear_iterator',
     is      => 'ro',
-    isa     => sub { die 'must be a Array::Iterator, but is ' . ref $_[0] unless ref $_[0] eq 'Array::Iterator' },
+    isa     => _isa_isa_maker('Array::Iterator'),
     lazy    => 1,
 );
 
 has '_json' => (
     builder => '_build__json',
     is      => 'ro',
-    isa     => sub { die 'must be a JSON, but is ' . ref $_[0] unless ref $_[0] eq 'JSON' },
+    isa     => sub {
+        confess "$_[0] is not a suitable JSON object"
+          unless eval { $_[0]->can("decode") };
+    },
     lazy    => 1,
 );
 
@@ -297,7 +312,7 @@ Pithub::Result - Github v3 result object
 
 =head1 VERSION
 
-version 0.01027
+version 0.01028
 
 =head1 DESCRIPTION
 
